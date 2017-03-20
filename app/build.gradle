@@ -1,7 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
@@ -29,17 +27,12 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
     compile 'com.android.support:appcompat-v7:25.2.0'
     testCompile 'junit:junit:4.12'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'org.jetbrains.anko:anko-appcompat-v7:0.9.1'
     compile 'org.jetbrains.anko:anko-sdk15:0.9.1'
 
     compile "com.squareup.retrofit2:retrofit:2.0.0-beta3"
-    compile "com.squareup.retrofit2:converter-gson:2.0.0-beta3"
     compile "com.squareup.retrofit2:adapter-rxjava:2.0.0-beta3"
     compile "com.squareup.picasso:picasso:2.5.2"
     compile "com.google.guava:guava:19.0"
@@ -50,7 +43,6 @@ dependencies {
     compile'com.nytimes.android:cache:2.0.2'
     compile'com.nytimes.android:middleware:2.0.2'
     compile 'com.nytimes.android:filesystem:2.0.2'
-    retrolambdaConfig "net.orfjackal.retrolambda:retrolambda:2.3.0"
     compile "io.reactivex:rxandroid:1.2.1"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
