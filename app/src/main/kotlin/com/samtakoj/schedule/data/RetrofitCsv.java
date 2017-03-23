@@ -104,6 +104,13 @@ public final class RetrofitCsv {
         }
     };
 
+    private static final TypeAdjuster<Long> longAdjuster = new TypeAdjuster<Long>() {
+        @Override
+        public Long adjust(String o) {
+            return Long.parseLong(o);
+        }
+    };
+
     private static final Map<Class<?>, TypeAdjuster<?>> typeAdjusters = new HashMap<Class<?>, TypeAdjuster<?>>() {{
         put(Integer.class, integerAdjuster);
         put(int.class, integerAdjuster);
@@ -114,6 +121,8 @@ public final class RetrofitCsv {
         put(Boolean.class, boolAdjuster);
         put(boolean.class, boolAdjuster);
         put(String.class, stringAdjuster);
+        put(long.class, longAdjuster);
+        put(Long.class, longAdjuster);
     }};
 }
 
