@@ -6,6 +6,7 @@ import com.nytimes.android.external.store.base.Parser;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -29,12 +30,16 @@ import okio.BufferedSource;
 public final class RetrofitCsv {
     private RetrofitCsv() {}
 
+    public @interface Position {
+        int value() default  0;
+    }
+
     public static <Parsed> Parser<BufferedSource, List<Parsed>> createSourceParser(final Class<Parsed> clazz, final boolean skipHeaders, final String reges) {
         return new Parser<BufferedSource, List<Parsed>>() {
             @Override
             public List<Parsed> call(BufferedSource source) {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(source.inputStream(), Charset.forName("UTF-8")))) {
-                    String line = null;
+                    String line;
                     boolean skip = skipHeaders;
                     final List<Parsed> parsed = Lists.newArrayList();
                     while ((line = reader.readLine()) != null) {
@@ -53,8 +58,23 @@ public final class RetrofitCsv {
 
     private static <Parsed> Parsed createObject(Class<Parsed> clazz, String...data) throws IllegalAccessException, InvocationTargetException, InstantiationException {
         final Constructor<?> first = clazz.getConstructors()[0];
-        final Object castedParams = stringTypeCast(first.getParameterTypes(), data);
+        final String[] filtered = filterData(clazz, data);
+        final Object castedParams = stringTypeCast(first.getParameterTypes(), filtered);
         return (Parsed) first.newInstance(castedParams);
+    }
+
+    private static <T> String[] filterData(Class<T> clazz, String...data) {
+        final Field[] fields = clazz.getDeclaredFields();
+        final String[] filtered = new String[fields.length];
+        for (int i = 0; i < fields.length; i++) {
+            final Field field = fields[i];
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(Position.class)) {
+                final int position = field.getAnnotation(Position.class).value();
+                filtered[i] = data[position];
+            }
+        }
+        return filtered;
     }
 
     private static Object[] stringTypeCast(Class<?>[] paramTypes, String...data) {
