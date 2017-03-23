@@ -11,7 +11,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         MyFirstCotlinComponent().setContentView(this)
 
-        val fetcher = ScheduleFetcher(application as TransportApplication)
 
     }
 
