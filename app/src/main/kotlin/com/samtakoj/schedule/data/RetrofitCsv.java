@@ -29,8 +29,15 @@ import retrofit2.Retrofit;
  * An example of How_To_Use:
  *
  * StoreBuilder.<BarCode, BufferedSource, List<Stop>>parsedWithKey()
- *      .parser(RetrofitCsv.createSourceParser(Stop.class, true, ","))
+ *      .parser(RetrofitCsv.createSourceParser(Stop.class, true, ";"))
  *      .open();
+ *
+ *
+ * Retrofit.Builder()
+ *      .baseUrl("http://...")
+ *      .addConverterFactory(RetrofitCsv.createConverterFactory(Stop.class, true, ","))
+ *      .build()
+ *      .create(AnyClassYouWant.class)
  *
  */
 public final class RetrofitCsv {
@@ -49,7 +56,7 @@ public final class RetrofitCsv {
         };
     }
 
-    public static <T> Converter.Factory creteConverterFactory(final Class<T> clazz, final boolean skipHeaders, final String regex) {
+    public static <T> Converter.Factory createConverterFactory(final Class<T> clazz, final boolean skipHeaders, final String regex) {
         return new Converter.Factory() {
             @Override
             public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
