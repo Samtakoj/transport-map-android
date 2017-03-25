@@ -102,7 +102,7 @@ public final class RetrofitCsv {
             field.setAccessible(true);
             if (field.isAnnotationPresent(Position.class)) {
                 final int position = field.getAnnotation(Position.class).value();
-                filtered[i] = data[position];
+                filtered[i] = data[position - 1];
             }
         }
         return filtered;

@@ -4,14 +4,16 @@ import android.app.Application
 import com.nytimes.android.external.fs.SourcePersisterFactory
 import com.nytimes.android.external.store.base.impl.BarCode
 import com.nytimes.android.external.store.base.impl.Store
-import com.samtakoj.schedule.model.Stop
-import com.nytimes.android.external.store.middleware.GsonParserFactory
 import okio.BufferedSource
 import com.nytimes.android.external.store.base.impl.StoreBuilder
 import rx.Observable
 import com.nytimes.android.external.store.base.Persister
 import com.samtakoj.schedule.api.Api
 import com.samtakoj.schedule.data.RetrofitCsv
+import com.samtakoj.schedule.data.TimeCsvParser
+import com.samtakoj.schedule.model.RouteCsv
+import com.samtakoj.schedule.model.StopCsv
+import com.samtakoj.schedule.model.TimeCsv
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.RxJavaCallAdapterFactory
@@ -22,33 +24,51 @@ import retrofit2.RxJavaCallAdapterFactory
  */
 class TransportApplication : Application() {
 
-    private var persistedStore : Store<List<Stop>, BarCode> = null!!
+    private var persistedStopStore: Store<List<StopCsv>, BarCode> = null!!
+    private var persistedTimeStore: Store<List<TimeCsv>, BarCode> = null!!
+    private var persistedRouteStore: Store<List<RouteCsv>, BarCode> = null!!
     private var persister: Persister<BufferedSource, BarCode> = null!!
 
     override fun onCreate() {
         persister = SourcePersisterFactory.create(applicationContext.cacheDir)
-        persistedStore = providePersistedRedditStore()
-    }
+        persistedStopStore = providePersistedStore(StopCsv::class.java, true, ";")
+        persistedRouteStore = providePersistedStore(RouteCsv::class.java, true, ";")
 
-    private fun providePersistedRedditStore(): Store<List<Stop>, BarCode> {
-        return StoreBuilder.parsedWithKey<BarCode, BufferedSource, List<Stop>>()
-                .fetcher(this::fetcher)
+        val parser = TimeCsvParser()
+        persistedTimeStore = StoreBuilder.parsedWithKey<BarCode, BufferedSource, List<TimeCsv>>()
+                .fetcher({barCode ->
+                    Retrofit.Builder()
+                        .baseUrl("http://minsktrans.by/")
+                        .addConverterFactory(parser)
+                        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                        .validateEagerly(BuildConfig.DEBUG)
+                        .build()
+                        .create(Api::class.java)
+                        .fetchData(barCode.key).map(ResponseBody::source)
+                })
                 .persister(persister)
-                .parser(RetrofitCsv.createSourceParser(Stop::class.java, true,  ";"))
+                .parser(parser)
                 .open()
     }
 
-
-    private fun fetcher(barCode: BarCode): Observable<BufferedSource> {
-        return provideRetrofit().fetchData(barCode.key).map(ResponseBody::source)
+    private fun <T> providePersistedStore(clazz: Class<T>, skipHeader: Boolean, delimiter: String): Store<List<T>, BarCode> {
+        return StoreBuilder.parsedWithKey<BarCode, BufferedSource, List<T>>()
+                .fetcher({barCode -> fetcher(barCode, clazz, skipHeader, delimiter)})
+                .persister(persister)
+                .parser(RetrofitCsv.createSourceParser(clazz, skipHeader,  delimiter))
+                .open()
     }
 
-    private fun provideRetrofit() : Api {
+    private fun <T> fetcher(barCode: BarCode, clazz: Class<T>, skipHeader: Boolean, delimiter: String): Observable<BufferedSource> {
+        return provideRetrofit(clazz, skipHeader, delimiter).fetchData(barCode.key).map(ResponseBody::source)
+    }
+
+    private fun <T> provideRetrofit(clazz: Class<T>, skipHeader: Boolean, delimiter: String) : Api {
         return  Retrofit.Builder()
                 .baseUrl("http://minsktrans.by/")
-//                .addConverterFactory(/*GsonConverterFactory.create(provideGson())*/)
+                .addConverterFactory(RetrofitCsv.createConverterFactory(clazz, skipHeader, delimiter))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .validateEagerly(BuildConfig.DEBUG)  // Fail early: check Retrofit configuration at creation time in Debug build.
+                .validateEagerly(BuildConfig.DEBUG)
                 .build()
                 .create(Api::class.java)
     }
