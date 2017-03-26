@@ -1,5 +1,6 @@
 package com.samtakoj.schedule.api
 
+import com.nytimes.android.external.store.base.impl.BarCode
 import com.samtakoj.schedule.TransportApplication
 
 
@@ -9,6 +10,7 @@ import com.samtakoj.schedule.TransportApplication
 object ScheduleFetcher {
 
     fun test(app: TransportApplication)  {
+//        val stops = app.persistedStopStore.get(BarCode("Stop", "stops"))
 
     }
 

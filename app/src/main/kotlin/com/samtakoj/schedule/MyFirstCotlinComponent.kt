@@ -8,10 +8,8 @@ class MyFirstCotlinComponent : AnkoComponent<MainActivity> {
         relativeLayout {
             padding = dip(20)
 
-            editText {
-                hint = "Name"
-                textSize = 15F
-
+            textView {
+                text = "Test"
             }
         }
     }
