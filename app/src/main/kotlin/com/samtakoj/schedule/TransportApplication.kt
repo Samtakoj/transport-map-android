@@ -24,10 +24,10 @@ import retrofit2.RxJavaCallAdapterFactory
  */
 class TransportApplication : Application() {
 
-    var persistedStopStore: Store<List<StopCsv>, BarCode> = null!!
-    var persistedTimeStore: Store<List<TimeCsv>, BarCode> = null!!
-    var persistedRouteStore: Store<List<RouteCsv>, BarCode> = null!!
-    private var persister: Persister<BufferedSource, BarCode> = null!!
+    private lateinit var persister: Persister<BufferedSource, BarCode>
+    lateinit var persistedStopStore: Store<List<StopCsv>, BarCode>
+    lateinit var persistedTimeStore: Store<List<TimeCsv>, BarCode>
+    lateinit var persistedRouteStore: Store<List<RouteCsv>, BarCode>
 
     override fun onCreate() {
         persister = SourcePersisterFactory.create(applicationContext.cacheDir)
