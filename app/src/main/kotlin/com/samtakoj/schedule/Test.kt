@@ -1,78 +1,75 @@
 package com.samtakoj.schedule
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import org.jetbrains.anko.*
-import android.content.Context.LOCATION_SERVICE
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.content.pm.PackageManager
-import android.util.Log
-
+import android.widget.TextView
+import io.nlopez.smartlocation.SmartLocation
+import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider
+import com.google.android.gms.location.DetectedActivity
+import io.nlopez.smartlocation.location.config.LocationAccuracy
+import io.nlopez.smartlocation.location.config.LocationParams
 
 /**
  * Created by Александр on 11.03.2017.
  */
 
-class TestActivity : AppCompatActivity(), LocationListener {
+class TestActivity : AppCompatActivity() {
+
+    val TV_ID = 1234
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ApplicationPermissions.requestBasic(this)
-
         verticalLayout {
             textView("Hello world!") {
+                id = TV_ID
+                textSize = 24f
+            }
+            textView("Null") {
+                id = TV_ID + 1
                 textSize = 24f
             }
             button("Click") {
                 onClick {
-                    toast("Hi!")
-                    (getSystemService(Context.LOCATION_SERVICE) as LocationManager).removeUpdates(this@TestActivity)
                     startActivity<MainActivity>()
                     finish()
                 }
             }
         }
-    }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            ApplicationPermissions.INITIAL_REQUEST -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        val textView = find<TextView>(TV_ID)
+        val textView1 = find<TextView>(TV_ID + 1)
+        val provider = LocationGooglePlayServicesProvider()
+        provider.setCheckLocationSettings(true)
+        provider.setLocationSettingsAlwaysShow(true)
 
-                    val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        SmartLocation.with(this).
+                location(provider).
+                config(LocationParams.Builder().setAccuracy(LocationAccuracy.HIGH).setDistance(0.0F).setInterval(300L).build()). //TODO: need to move these to the SharedPreferences
+                start { location ->
+            textView1.text = "Lat: ${location?.latitude}, Lng: ${location?.longitude}"
+        }
 
-
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, this)
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return
-            }
+        SmartLocation.with(this).activity().start { activity ->
+            textView.text = "Activity: ${getNameFromType(activity)}, confidence: ${activity?.confidence}"
         }
     }
 
-    override fun onLocationChanged(location: Location?) {
-        Log.i("TRANSPOTR_SCHED", "Lat: ${location?.latitude}, Lng: ${location?.longitude}")
+    override fun onStop() {
+        SmartLocation.with(this).location().stop()
+        SmartLocation.with(this).activity().stop()
+        super.onStop()
     }
 
-    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-
-    }
-
-    override fun onProviderEnabled(provider: String?) {
-
-    }
-
-    override fun onProviderDisabled(provider: String?) {
-
+    private fun getNameFromType(activityType: DetectedActivity): String {
+        when (activityType.type) {
+            DetectedActivity.IN_VEHICLE -> return "in vehicle"
+            DetectedActivity.ON_BICYCLE -> return "on bicycle"
+            DetectedActivity.ON_FOOT -> return "on foot"
+            DetectedActivity.STILL -> return "still"
+            DetectedActivity.TILTING -> return "tilting"
+            else -> return "unknown"
+        }
     }
 }
