@@ -6,6 +6,7 @@ import com.samtakoj.schedule.api.ScheduleFetcher
 import android.location.Location
 import android.location.LocationListener
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import com.samtakoj.schedule.api.LocListener
 import io.nlopez.smartlocation.SmartLocation
@@ -31,7 +32,13 @@ class MainActivity : AppCompatActivity() {
             textView {
                 text = "Speed: ${location?.speed}"
             }
+            textView("Null") {
+                id = 123
+                textSize = 24f
+            }
         }
+
+        ScheduleFetcher.test(application as TransportApplication)
 
         SmartLocation.with(this).location().oneFix().start { location ->
             toast("Lat: ${location.latitude}, Long: ${location.longitude}")
@@ -41,5 +48,10 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         SmartLocation.with(this).location().stop()
         super.onStop()
+    }
+
+    override fun onDestroy() {
+        ScheduleFetcher.subStop.unsubscribe()
+        super.onDestroy()
     }
 }
