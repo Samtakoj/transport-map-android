@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keep public class android.support.v4.app.Fragment
+-keepclassmembers class com.samtakoj.schedule.TestActivity.TestFragment {
+  public *;
+}
