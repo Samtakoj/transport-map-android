@@ -22,8 +22,24 @@ object ScheduleFetcher {
     //        val csvStops = app.persistedStopStore.get(BarCode("Stop", "stops"))
     //        val csvRoutes = app.persistedRouteStore.get(BarCode("Route", "routes"))
     //        val csvTimes = app.persistedTimeStore.get(BarCode("Time", "times"))
-    fun stops(app: TransportApplication, subscriber: Subscriber<StopCsv>): Subscription  {
+    fun stops (app: TransportApplication, subscriber: Subscriber<StopCsv>): Subscription  {
         return app.persistedStopStore.get(BarCode("Stop", "stops"))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap { Observable.from(it) }
+                .subscribe(subscriber)
+    }
+
+    fun routes (app: TransportApplication, subscriber: Subscriber<RouteCsv>): Subscription {
+        return app.persistedRouteStore.get(BarCode("Route", "routes"))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap { Observable.from(it) }
+                .subscribe(subscriber)
+    }
+
+    fun times (app: TransportApplication, subscriber: Subscriber<TimeCsv>): Subscription {
+        return app.persistedTimeStore.get(BarCode("Time", "times"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap { Observable.from(it) }

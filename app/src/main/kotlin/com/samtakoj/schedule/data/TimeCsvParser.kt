@@ -49,8 +49,14 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
         //TODO: parse line to TimeCsv object
 
         val firstCommaIndex: Int = line.indexOf(",")
-        val routeIdString: String = line.substring(0, firstCommaIndex)
-        val routeId: Int = routeIdString.toInt()
+        var routeIdString: String = line.substring(0, firstCommaIndex)
+        var routeId: Int = 0
+        try {
+            routeId = routeIdString.toInt()
+        } catch (e: Exception) {
+            routeIdString = line.substring(1, firstCommaIndex)
+            routeId = routeIdString.toInt()
+        }
 
         val dataString: String = line.substring(firstCommaIndex + 1)
 
