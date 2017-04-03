@@ -14,12 +14,13 @@ object ApplicationPermissions {
 
     val INITIAL = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
     )
 
     fun requestBasic(activity: Activity) {
         if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.READ_CONTACTS)
+                Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(activity, INITIAL, INITIAL_REQUEST)
     }
 }
