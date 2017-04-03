@@ -1,18 +1,16 @@
 package com.samtakoj.schedule
 
-import android.app.Activity
-import android.app.Fragment
-import android.app.FragmentManager
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.v4.app.FragmentActivity
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.jetbrains.anko.*
+import org.jetbrains.anko.support.v4.*
 import android.widget.TextView
 import com.beyondar.android.fragment.BeyondarFragmentSupport
 import com.beyondar.android.world.GeoObject
@@ -57,26 +55,26 @@ class TestActivity : AppCompatActivity() {
         lng.text = "%.2f".format(location?.longitude)
 
         val world = World(this)
-        world.setDefaultImage(R.mipmap.ic_launcher)
-        world.setLocation(location)
+        world.setDefaultImage(R.drawable.flymer)
+        world.setGeoPosition(41.90533734214473, 2.565848038959814)
 
         val obj1 = GeoObject(3)
-        obj1.setLocation(location)
+        obj1.setGeoPosition(41.90523339794433, 2.565036406654116)
         obj1.imageUri = "http://beyondar.com/sites/default/files/logo_reduced.png"
         obj1.name = "Name"
 
         val obj2 = GeoObject(4)
-        obj2.setGeoPosition(41.26518966360719, 1.92582424468222)
-        obj2.imageUri = "http://beyondar.com/sites/default/files/logo_reduced.png"
+        obj2.setGeoPosition(41.90518966360719, 2.56582424468222)
+        obj2.imageUri = "https://pp.userapi.com/c624720/v624720384/4b281/1CByOkc-Ftw.jpg"
         obj2.name = "Name1"
 
         val obj3 = GeoObject(5)
-        obj3.setGeoPosition(41.26550959641445, 1.925873388087619)
+        obj3.setGeoPosition(41.90550959641445, 2.565873388087619)
         obj3.setImageResource(R.drawable.flymer)
         obj3.name = "Name2"
 
         val obj4 = GeoObject(6)
-        obj4.setGeoPosition(41.26518862002349, 1.925662767707665)
+        obj4.setGeoPosition(41.90518862002349, 2.565662767707665)
         obj4.setImageResource(R.drawable.flymer)
         obj4.name = "Name3"
 
@@ -85,13 +83,15 @@ class TestActivity : AppCompatActivity() {
         world.addBeyondarObject(obj3)
         world.addBeyondarObject(obj4)
 
-        val fragment = supportFragmentManager.findFragmentByTag("TestFragment")?: createBeyondARFragment(this)
+        val fragment = supportFragmentManager.findFragmentByTag("TestFragment") ?: BeyondarFragmentSupport()
         supportFragmentManager.beginTransaction().replace(MainActivityUi.ContainerID, fragment, "TestFragment").commit()
 
-        supportFragmentManager.registerFragmentLifecycleCallbacks(object: android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks(){
-            override fun onFragmentViewCreated(fm: android.support.v4.app.FragmentManager?, f: android.support.v4.app.Fragment?, v: View?, savedInstanceState: Bundle?) {
+        supportFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentViewCreated(fm: FragmentManager?, f: Fragment?, v: View?, savedInstanceState: Bundle?) {
                 super.onFragmentViewCreated(fm, f, v, savedInstanceState)
                 (fragment as BeyondarFragmentSupport).world = world
+                fragment.showFPS(true)
+                fragment.distanceFactor = 1f
             }
         }, true)
     }
@@ -130,12 +130,7 @@ class TestActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun createBeyondARFragment(activity: Activity): BeyondarFragmentSupport {
-        val fragment = BeyondarFragmentSupport()
-        return fragment
-    }
-
-    class TestFragment: Fragment() {
+    class TestFragment : Fragment() {
         override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             return UI {
                 frameLayout {
@@ -150,7 +145,7 @@ class TestActivity : AppCompatActivity() {
                             id = MainActivityUi.LocationID
                             textSize = 24f
                         }
-                        space().lparams(width = wrapContent, height = dip(30))
+//                        space().lparams(width = wrapContent, height = dip(30))
                         button("Click") {
                             onClick {
                                 startActivity<MainActivity>()
