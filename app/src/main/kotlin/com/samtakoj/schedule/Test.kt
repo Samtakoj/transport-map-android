@@ -1,35 +1,60 @@
 package com.samtakoj.schedule
 
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.*
 import android.widget.TextView
 import com.beyondar.android.fragment.BeyondarFragmentSupport
+import com.beyondar.android.opengl.util.LowPassFilter
+import com.beyondar.android.view.BeyondarViewAdapter
+import com.beyondar.android.view.OnClickBeyondarObjectListener
+import com.beyondar.android.world.BeyondarObject
 import com.beyondar.android.world.GeoObject
 import com.beyondar.android.world.World
 import io.nlopez.smartlocation.SmartLocation
 import com.google.android.gms.location.DetectedActivity
+import com.nytimes.android.external.store.base.impl.BarCode
+import com.samtakoj.schedule.model.StopCsv
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider
 import io.nlopez.smartlocation.location.providers.LocationManagerProvider
 import io.nlopez.smartlocation.location.providers.MultiFallbackProvider
+import rx.Observable
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import java.util.ArrayList
 
 /**
  * Created by Александр on 11.03.2017.
  */
 
-class TestActivity : AppCompatActivity() {
+class TestActivity : AppCompatActivity(), OnClickBeyondarObjectListener{
+    override fun onClickBeyondarObject(beyondarObjects: ArrayList<BeyondarObject>?) {
+        if (beyondarObjects?.size == 0) return
+        val beyondarObject = beyondarObjects?.get(0)
+        if (showViewOn.contains(beyondarObject)) {
+            showViewOn.remove(beyondarObject)
+        } else {
+            showViewOn.add(beyondarObject as BeyondarObject)
+        }
+    }
 
     companion object {
         lateinit var textView1: TextView
+        var previous = StopCsv(1, "", 1, 1)
+        val showViewOn = ArrayList<BeyondarObject>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,44 +79,62 @@ class TestActivity : AppCompatActivity() {
         lat.text = "%.2f".format(location?.latitude)
         lng.text = "%.2f".format(location?.longitude)
 
-        val world = World(this)
-        world.setDefaultImage(R.drawable.flymer)
-        world.setGeoPosition(41.90533734214473, 2.565848038959814)
-
-        val obj1 = GeoObject(3)
-        obj1.setGeoPosition(41.90523339794433, 2.565036406654116)
-        obj1.imageUri = "http://beyondar.com/sites/default/files/logo_reduced.png"
-        obj1.name = "Name"
-
-        val obj2 = GeoObject(4)
-        obj2.setGeoPosition(41.90518966360719, 2.56582424468222)
-        obj2.imageUri = "https://pp.userapi.com/c624720/v624720384/4b281/1CByOkc-Ftw.jpg"
-        obj2.name = "Name1"
-
-        val obj3 = GeoObject(5)
-        obj3.setGeoPosition(41.90550959641445, 2.565873388087619)
-        obj3.setImageResource(R.drawable.flymer)
-        obj3.name = "Name2"
-
-        val obj4 = GeoObject(6)
-        obj4.setGeoPosition(41.90518862002349, 2.565662767707665)
-        obj4.setImageResource(R.drawable.flymer)
-        obj4.name = "Name3"
-
-        world.addBeyondarObject(obj1)
-        world.addBeyondarObject(obj2)
-        world.addBeyondarObject(obj3)
-        world.addBeyondarObject(obj4)
-
         val fragment = supportFragmentManager.findFragmentByTag("TestFragment") ?: BeyondarFragmentSupport()
         supportFragmentManager.beginTransaction().replace(MainActivityUi.ContainerID, fragment, "TestFragment").commit()
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
             override fun onFragmentViewCreated(fm: FragmentManager?, f: Fragment?, v: View?, savedInstanceState: Bundle?) {
                 super.onFragmentViewCreated(fm, f, v, savedInstanceState)
-                (fragment as BeyondarFragmentSupport).world = world
-                fragment.showFPS(true)
-                fragment.distanceFactor = 1f
+
+                val playServicesProvider = LocationGooglePlayServicesProvider()
+                playServicesProvider.setCheckLocationSettings(true)
+                playServicesProvider.setLocationSettingsAlwaysShow(true)
+                val provider = MultiFallbackProvider.Builder().
+                        withProvider(playServicesProvider).
+                        withProvider(LocationManagerProvider()).
+                        build()
+                SmartLocation.with(this@TestActivity).location(provider).start { location ->
+                    val world = World(this@TestActivity)
+                    world.setLocation(location)
+                    world.setDefaultImage(R.drawable.flymer)
+                    (application as TransportApplication).persistedStopStore.get(BarCode("Stop", "stops"))
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .flatMap { Observable.from(it) }
+                            .map({ stop ->
+                                stop.name = if (stop.name != "") stop.name else previous.name
+                                stop.id = if (stop.id != 0) stop.id else previous.id
+                                stop.lng = if (stop.lng != 0.toLong()) stop.lng else previous.lng
+                                stop.ltd = if (stop.ltd != 0.toLong()) stop.ltd else previous.ltd
+                                previous = stop
+                                return@map stop
+                            }).map { (id, name, lng1, ltd) ->
+                        val obj = GeoObject(id.toLong())
+                        obj.setGeoPosition(ltd * 0.00001, lng1 * 0.00001)
+                        obj.setImageResource(R.drawable.flymer)
+                        obj.name = name
+                        return@map obj
+                    }.subscribe(object: Subscriber<GeoObject>() {
+                        override fun onCompleted() {
+                            (fragment as BeyondarFragmentSupport).world = world
+                            fragment.showFPS(true)
+                            fragment.setOnClickBeyondarObjectListener(this@TestActivity)
+                            val customBeyondarViewAdapter = CustomBeyondarViewAdapter(this@TestActivity)
+                            fragment.setBeyondarViewAdapter(customBeyondarViewAdapter)
+                            fragment.maxDistanceToRender = 800f
+                            fragment.distanceFactor = 30f
+                            fragment.pushAwayDistance = 80f
+                            LowPassFilter.ALPHA = 0.01f
+                            Log.i("SCHEDULE", "World size: ${world.beyondarObjectLists.get(0).size()}")
+                        }
+                        override fun onNext(t: GeoObject?) {
+                            world.addBeyondarObject(t)
+                        }
+                        override fun onError(e: Throwable?) {
+                            e?.printStackTrace()
+                        }
+                    })
+                }
             }
         }, true)
     }
@@ -129,6 +172,30 @@ class TestActivity : AppCompatActivity() {
         SmartLocation.with(this).activity().stop()
         super.onDestroy()
     }
+
+    class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context) {
+
+		val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+        override fun getView(beyondarObject: BeyondarObject?, recycledView: View?, parent: ViewGroup?): View? {
+            if (!showViewOn.contains(beyondarObject)) {
+                return Util.nullHack()
+            }
+
+            var view = recycledView
+            if (recycledView == null) {
+                view = inflater.inflate(R.layout.object_view, null)
+            }
+
+            val textView = view?.findViewById(R.id.info) as TextView
+            textView.text = "${beyondarObject?.name} -> ${beyondarObject?.distanceFromUser}m"
+
+            setPosition(beyondarObject?.screenPositionTopRight)
+
+            return view
+        }
+	}
+
 
     class TestFragment : Fragment() {
         override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
