@@ -200,9 +200,9 @@ public class BitmapCache {
 
 		mRes = resources;
 		mBitmapContainer = new BitmapCacheContainer(cacheSize, alwaysPurge);
-		mLoadingResources = new Hashtable<String, Integer>();
+		mLoadingResources = new Hashtable<>();
 		
-		mBlockingQueue = new ArrayBlockingQueue<Runnable>(MAXIMUM_POOL_SIZE);
+		mBlockingQueue = new ArrayBlockingQueue<>(MAXIMUM_POOL_SIZE);
 		mThreadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_THREAD, TimeUnit.MILLISECONDS, mBlockingQueue);
 	}
 
@@ -494,7 +494,7 @@ public class BitmapCache {
 	 */
 	public void addOnExternalBitmapLoadedCahceListener(OnExternalBitmapLoadedCacheListener listener) {
 		if (mOnLoadBitmapListener == null) {
-			mOnLoadBitmapListener = new ArrayList<OnExternalBitmapLoadedCacheListener>();
+			mOnLoadBitmapListener = new ArrayList<>();
 		}
 		if (!mOnLoadBitmapListener.contains(listener)) {
 			mOnLoadBitmapListener.add(listener);
@@ -618,7 +618,7 @@ public class BitmapCache {
 
 	}
 
-	public static interface OnExternalBitmapLoadedCacheListener {
+	public interface OnExternalBitmapLoadedCacheListener {
 
 		/**
 		 * This method is called when an external image (such as a network
@@ -631,7 +631,7 @@ public class BitmapCache {
 		 * @param btm
 		 *            The Bitmap loaded
 		 */
-		public void onExternalBitmapLoaded(BitmapCache cache, String url, Bitmap btm);
+		void onExternalBitmapLoaded(BitmapCache cache, String url, Bitmap btm);
 
 	}
 

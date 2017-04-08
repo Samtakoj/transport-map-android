@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.*
 import android.widget.TextView
@@ -123,8 +122,8 @@ class TestActivity : AppCompatActivity(), OnClickBeyondarObjectListener{
                             fragment.setBeyondarViewAdapter(customBeyondarViewAdapter)
                             fragment.maxDistanceToRender = 800f
                             fragment.distanceFactor = 30f
-                            fragment.pushAwayDistance = 80f
-                            LowPassFilter.ALPHA = 0.01f
+//                            fragment.pushAwayDistance = 80f
+//                            LowPassFilter.ALPHA = 0.1f
                             Log.i("SCHEDULE", "World size: ${world.beyondarObjectLists.get(0).size()}")
                         }
                         override fun onNext(t: GeoObject?) {

@@ -46,7 +46,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	 * Callback to get notify when a picture from the camera has been taken.
 	 * 
 	 */
-	public static interface BeyondarPictureCallback {
+	public interface BeyondarPictureCallback {
 		/**
 		 * This method is called when the snapshot of the camera is ready. If
 		 * there is an error, the image will be null

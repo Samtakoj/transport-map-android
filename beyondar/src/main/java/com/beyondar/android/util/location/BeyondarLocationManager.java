@@ -26,16 +26,16 @@ import com.beyondar.android.world.World;
 /**
  * This class provides a helper to get the best location. To do that the
  * application needs to add the following permissions in the manifest: <br>
- * 
+ *
  * <pre>
  *     android.permission.ACCESS_FINE_LOCATION
  *     android.permission.ACCESS_COARSE_LOCATION
  * </pre>
- * 
+ *
  * Remember that you also can use the Location utility in the Google Services. <br>
  * <br>
  * Here is a small example how to use {@link BeyondarLocationManager}: <br>
- * 
+ *
  * <pre>
  * <code>
  * void onCreate(Bundle savedInstanceState){
@@ -47,7 +47,7 @@ import com.beyondar.android.world.World;
  * void onResume(){
  * 	BeyondarLocationManager.enable();
  * }
- * 
+ *
  * void onPause(){
  * 	BeyondarLocationManager.disable();
  * }
@@ -61,7 +61,7 @@ public class BeyondarLocationManager {
 	private BeyondarLocationManager() {
 	}
 
-	private static enum BeyondarLocationManagerSingleton {
+	private enum BeyondarLocationManagerSingleton {
 		INSTANCE;
 
 		private LocationManager mLocationManager;
@@ -70,7 +70,7 @@ public class BeyondarLocationManager {
 		private boolean mIsEnabled;
 		private boolean mGpsFix;
 
-		private BeyondarLocationManagerSingleton() {
+		BeyondarLocationManagerSingleton() {
 			mLocationListener = new BeyondarLocation();
 			mGpsListener = new BeyondarGpsListener();
 			mIsEnabled = false;

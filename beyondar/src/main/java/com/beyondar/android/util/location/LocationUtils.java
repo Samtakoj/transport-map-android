@@ -84,5 +84,4 @@ public class LocationUtils {
 		}
 		return provider1.equals(provider2);
 	}
-
 }

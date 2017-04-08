@@ -37,7 +37,7 @@ public class DebugBitmap {
 	private static HashMap<String, ArrayList<Bitmap>> sBitmapsTracker;
 
 	static {
-		sBitmapsTracker = new HashMap<String, ArrayList<Bitmap>>();
+		sBitmapsTracker = new HashMap<>();
 	}
 
 	public synchronized static Bitmap decodeFile(String file, Options options) {
@@ -103,7 +103,7 @@ public class DebugBitmap {
 
 		ArrayList<Bitmap> list = sBitmapsTracker.get(uri);
 		if (list == null) {
-			list = new ArrayList<Bitmap>();
+			list = new ArrayList<>();
 			sBitmapsTracker.put(uri, list);
 		}
 
@@ -119,7 +119,7 @@ public class DebugBitmap {
 		Integer recycled = 0;
 		Iterator<String> keySet = sBitmapsTracker.keySet().iterator();
 		while (keySet.hasNext()) {
-			String string = (String) keySet.next();
+			String string = keySet.next();
 			Logger.d("DebugBitmap", "URI:  " + string);
 			ArrayList<Bitmap> arrayList = sBitmapsTracker.get(string);
 			printArrayList(arrayList, count, recycled);

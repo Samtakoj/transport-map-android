@@ -69,7 +69,7 @@ public class World implements Plugable<WorldPlugin> {
 		mContext = context;
 		mBitmapHolder = BitmapCache.initialize(mContext.getResources(), getClass().getName(), true);
 		createBeyondarObjectListArray();
-		plugins = new ArrayList<WorldPlugin>(DEFAULT_PLUGINS_CAPACITY);
+		plugins = new ArrayList<>(DEFAULT_PLUGINS_CAPACITY);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	private void createBeyondarObjectListArray() {
-		mBeyondarObjectLists = new ArrayList<BeyondarObjectList>();
+		mBeyondarObjectLists = new ArrayList<>();
 		mBeyondarObjectLists.add(new BeyondarObjectList(LIST_TYPE_DEFAULT, this));
 
 	}
@@ -199,7 +199,7 @@ public class World implements Plugable<WorldPlugin> {
 	@Override
 	public List<WorldPlugin> getAllPlugins() {
 		synchronized (lockplugins) {
-			return new ArrayList<WorldPlugin>(plugins);
+			return new ArrayList<>(plugins);
 		}
 	}
 

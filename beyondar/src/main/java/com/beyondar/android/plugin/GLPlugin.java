@@ -32,14 +32,14 @@ public interface GLPlugin extends Plugin {
 	/**
 	 * This method is invoked when the plugin is removed.
 	 */
-	public void onDetached();
+	void onDetached();
 
 	/**
 	 * Check if the plugin is attached.
 	 * 
 	 * @return
 	 */
-	public boolean isAttached();
+	boolean isAttached();
 
 	/**
 	 * Setup the plugin according to the world. This method is also call if a
@@ -49,7 +49,7 @@ public interface GLPlugin extends Plugin {
 	 *            The {@link World} information
 	 * 
 	 */
-	public void setup(World world, ARRenderer renderer);
+	void setup(World world, ARRenderer renderer);
 
 	/**
 	 * Called when the camera position has been changed.
@@ -57,7 +57,7 @@ public interface GLPlugin extends Plugin {
 	 * @param newCameraPos
 	 *            new camera position.
 	 */
-	public void onCameraPositionChanged(Point3 newCameraPos);
+	void onCameraPositionChanged(Point3 newCameraPos);
 
 	/**
 	 * Called before a {@link com.beyondar.android.world.BeyondarObject
@@ -74,22 +74,22 @@ public interface GLPlugin extends Plugin {
 	 *            {@link com.beyondar.android.opengl.texture.Texture Texture} is
 	 *            not loaded.
 	 */
-	public void onDrawBeyondaarObject(GL10 gl, BeyondarObject beyondarObject, Texture defaultTexture);
+	void onDrawBeyondaarObject(GL10 gl, BeyondarObject beyondarObject, Texture defaultTexture);
 
 	/**
 	 * Called when a frame has been rendered.
 	 * 
 	 * @param gl
 	 */
-	public void onFrameRendered(GL10 gl);
+	void onFrameRendered(GL10 gl);
 
-	public void onMaxDistanceSizeChanged(float newMaxDistance);
+	void onMaxDistanceSizeChanged(float newMaxDistance);
 
-	public void onMinDistanceSizeChanged(float newMinDistance);
+	void onMinDistanceSizeChanged(float newMinDistance);
 
-	public void onSurfaceChanged(GL10 gl, int width, int height);
+	void onSurfaceChanged(GL10 gl, int width, int height);
 
-	public void onSurfaceCreated(GL10 gl, EGLConfig config);
+	void onSurfaceCreated(GL10 gl, EGLConfig config);
 
 	/**
 	 * This method is called to pre-load any additional textures that may be
@@ -97,16 +97,16 @@ public interface GLPlugin extends Plugin {
 	 * 
 	 * @param gl
 	 */
-	public void loadAdditionalTextures(GL10 gl);
+	void loadAdditionalTextures(GL10 gl);
 
 	/**
 	 * Called when the activity has been paused.
 	 */
-	public void onPause();
+	void onPause();
 
 	/**
 	 * Called when the activity has been resumed.
 	 */
-	public void onResume();
+	void onResume();
 
 }

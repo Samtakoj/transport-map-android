@@ -137,7 +137,7 @@ public class ImageUtils {
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoOutput(true);
 
-		InputStream is = (InputStream) urlConn.getInputStream();
+		InputStream is = urlConn.getInputStream();
 		return DebugBitmap.decodeStream(is, uri);
 	}
 

@@ -26,12 +26,11 @@ public class MathUtils {
 	public static void calcAngleFaceToCamera(Point3 p1, Point3 p2, Point3 out) {
 
 		float x = (float) Math.toDegrees(Math.atan2(p1.y - p2.y, p1.z - p2.z));
-		// float y = (float) Math.toDegrees(Math.atan2(p1.x - p2.x, p1.z -
-		// p2.z));
+		float y = (float) Math.toDegrees(Math.atan2(p1.x - p2.x, p1.z - p2.z));//
 		float z = (float) Math.toDegrees(Math.atan2(p1.y - p2.y, p1.x - p2.x));
 
 		x = (x + 270) % 360;
-		// y = (x + 270) % 360;
+		y = (x + 270) % 360;//
 		z = (z + 270) % 360;
 
 		out.z = z;
@@ -68,9 +67,9 @@ public class MathUtils {
 	public static void linearInterpolate(float x_start, float y_start, float z_start, float x_end,
 			float y_end, float z_end, float newDistance, float totalDistanceToMove, Point3 dstPoint) {
 
-		float x = (x_start + newDistance * (x_end - x_start) / (float) totalDistanceToMove);
-		float y = (y_start + newDistance * (y_end - y_start) / (float) totalDistanceToMove);
-		float z = (z_start + newDistance * (z_end) / (float) totalDistanceToMove);
+		float x = (x_start + newDistance * (x_end - x_start) / totalDistanceToMove);
+		float y = (y_start + newDistance * (y_end - y_start) / totalDistanceToMove);
+		float z = (z_start + newDistance * (z_end) / totalDistanceToMove);
 
 		dstPoint.x = x;
 		dstPoint.y = y;

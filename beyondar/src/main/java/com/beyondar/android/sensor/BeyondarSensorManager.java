@@ -39,7 +39,7 @@ public class BeyondarSensorManager {
 	private BeyondarSensorManager() {
 	}
 
-	static enum BeyondarSensorManagerSingleton implements SensorEventListener {
+	enum BeyondarSensorManagerSingleton implements SensorEventListener {
 		INSTANCE;
 
 		private Object mLock;
@@ -53,7 +53,7 @@ public class BeyondarSensorManager {
 
 		BeyondarSensorManagerSingleton() {
 			mLock = new Object();
-			mSensorsListener = new ArrayList<BeyondarSensorListener>();
+			mSensorsListener = new ArrayList<>();
 			isListenerRegistered = false;
 		}
 

@@ -28,14 +28,14 @@ public interface Plugable<T extends Plugin> {
 	/**
 	 * Recommended initial size of the list that contains all the loade plugins.
 	 */
-	public static int DEFAULT_PLUGINS_CAPACITY = 3;
+	int DEFAULT_PLUGINS_CAPACITY = 3;
 
 	/**
 	 * Add a new plugin. This plugin's will be initialize ones is added
 	 * 
 	 * @param plugin
 	 */
-	public void addPlugin(T plugin);
+	void addPlugin(T plugin);
 
 	/**
 	 * Remove an specific plugin.
@@ -43,14 +43,14 @@ public interface Plugable<T extends Plugin> {
 	 * @param pluginClass
 	 * @return true if it has been removed
 	 */
-	public boolean removePlugin(T pluginClass);
+	boolean removePlugin(T pluginClass);
 
 	/**
 	 * Clean all the plugin's
 	 */
-	public void removeAllPlugins();
+	void removeAllPlugins();
 
-	public T getFirstPlugin(Class<? extends T> pluginClass);
+	T getFirstPlugin(Class<? extends T> pluginClass);
 
 	/**
 	 * Test whether any plugin class exist.
@@ -58,7 +58,7 @@ public interface Plugable<T extends Plugin> {
 	 * @param pluginClass
 	 * @return true if there is any plugin, false otherwise
 	 */
-	public boolean containsAnyPlugin(Class<? extends T> pluginClass);
+	boolean containsAnyPlugin(Class<? extends T> pluginClass);
 
 	/**
 	 * Test whether the plugin exist
@@ -66,7 +66,7 @@ public interface Plugable<T extends Plugin> {
 	 * @param plugin
 	 * @return true if there is any plugin, false otherwise
 	 */
-	public boolean containsPlugin(T plugin);
+	boolean containsPlugin(T plugin);
 
 	/**
 	 * Get all plugin's which implemented a specific class.
@@ -78,7 +78,7 @@ public interface Plugable<T extends Plugin> {
 	 *            A list where all the plugins will be stored
 	 * @return
 	 */
-	public List<T> getAllPlugins(Class<? extends T> pluginClass, List<T> result);
+	List<T> getAllPlugins(Class<? extends T> pluginClass, List<T> result);
 
 	/**
 	 * Get all plugin's which implement an specific class
@@ -87,7 +87,7 @@ public interface Plugable<T extends Plugin> {
 	 *            The specific class that we want to retrieve
 	 * @return
 	 */
-	public List<T> getAllPugins(Class<? extends T> pluginClass);
+	List<T> getAllPugins(Class<? extends T> pluginClass);
 
 	/**
 	 * Get a {@link List} copy of the added plugin's. Adding/removing plugin's
@@ -95,6 +95,6 @@ public interface Plugable<T extends Plugin> {
 	 * 
 	 * @return
 	 */
-	public List<T> getAllPlugins();
+	List<T> getAllPlugins();
 
 }

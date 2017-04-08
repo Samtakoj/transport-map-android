@@ -35,7 +35,7 @@ public interface MeshCollider {
 	 * @return <b>true</b> if the given point is contained by the armature.
 	 *         <b>false</b> otherwise
 	 */
-	public boolean contains(Point3 p);
+	boolean contains(Point3 p);
 
 	/**
 	 * Test whether a ray intersects with the mesh collider. If it does, returns the
@@ -45,7 +45,7 @@ public interface MeshCollider {
 	 *            the ray
 	 * @return the intersection point. <b>null</b> if there is no intersection
 	 */
-	public Point3 getIntersectionPoint(Ray r);
+	Point3 getIntersectionPoint(Ray r);
 
 	/**
 	 * Return if the given ray intersects with the mesh collider
@@ -54,6 +54,6 @@ public interface MeshCollider {
 	 *            the ray
 	 * @return <b>true</b> if there is intersection. <b>false</b> otherwise
 	 */
-	public boolean intersects(Ray r);
+	boolean intersects(Ray r);
 
 }

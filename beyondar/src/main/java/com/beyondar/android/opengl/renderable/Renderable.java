@@ -46,20 +46,20 @@ public interface Renderable {
 	 * @return True to force to paint the object, false otherwise. If false, the
 	 *         {@link ARRenderer} will draw it if it close enough to the camera
 	 */
-	public boolean update(long time, double distance, BeyondarObject beyondarObject);
+	boolean update(long time, double distance, BeyondarObject beyondarObject);
 
 	/**
 	 * This method is called when the {@link com.beyondar.android.opengl.renderable.Renderable Renderable} is not rendered, for
 	 * example because is too far
 	 */
-	public void onNotRendered(double dst);
+	void onNotRendered(double dst);
 
 	/**
 	 * Get the texture object for the {@link com.beyondar.android.opengl.renderable.Renderable Renderable}
 	 * 
 	 * @return
 	 */
-	public Texture getTexture();
+	Texture getTexture();
 
 	/**
 	 * Get the plane that represents the {@link com.beyondar.android.opengl.renderable.Renderable Renderable}. Used for collision
@@ -67,7 +67,7 @@ public interface Renderable {
 	 * 
 	 * @return
 	 */
-	public Plane getPlane();
+	Plane getPlane();
 
 	/**
 	 * Set the position where the {@link com.beyondar.android.opengl.renderable.Renderable Renderable} needs to be rendered.
@@ -76,14 +76,14 @@ public interface Renderable {
 	 * @param y
 	 * @param z
 	 */
-	public void setPosition(float x, float y, float z);
+	void setPosition(float x, float y, float z);
 
 	/**
 	 * Get the position where the {@link com.beyondar.android.opengl.renderable.Renderable Renderable} will be rendered.
 	 * 
 	 * @return
 	 */
-	public Point3 getPosition();
+	Point3 getPosition();
 
 	/**
 	 * Set the angle of the {@link com.beyondar.android.opengl.renderable.Renderable Renderable}.
@@ -92,20 +92,20 @@ public interface Renderable {
 	 * @param y
 	 * @param z
 	 */
-	public void setAngle(float x, float y, float z);
+	void setAngle(float x, float y, float z);
 
 	/**
 	 * Get the angle of the {@link com.beyondar.android.opengl.renderable.Renderable Renderable}.
 	 * 
 	 * @return
 	 */
-	public Point3 getAngle();
+	Point3 getAngle();
 
 	/**
 	 * Get the time mark.
 	 * 
 	 * @return
 	 */
-	public long getTimeMark();
+	long getTimeMark();
 
 }

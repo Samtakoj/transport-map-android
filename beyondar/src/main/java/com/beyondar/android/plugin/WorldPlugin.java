@@ -28,14 +28,14 @@ public interface WorldPlugin extends Plugin {
 	/**
 	 * This method is invoked when the plugin is removed.
 	 */
-	public void onDetached();
+	void onDetached();
 
 	/**
 	 * Check if the plugin is attached.
 	 * 
 	 * @return
 	 */
-	public boolean isAttached();
+	boolean isAttached();
 
 	/**
 	 * Setup the plugin according to the world.
@@ -44,7 +44,7 @@ public interface WorldPlugin extends Plugin {
 	 *            The world that loads the plugin
 	 * 
 	 */
-	public void setup(World world);
+	void setup(World world);
 
 	/**
 	 * This method is invoked when a new
@@ -55,7 +55,7 @@ public interface WorldPlugin extends Plugin {
 	 * @param beyondarObject
 	 * @param beyondarObjectList
 	 */
-	public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList);
+	void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList);
 
 	/**
 	 * This method is invoked when a
@@ -66,19 +66,19 @@ public interface WorldPlugin extends Plugin {
 	 * @param beyondarObject
 	 * @param beyondarObjectList
 	 */
-	public void onBeyondarObjectRemoved(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList);
+	void onBeyondarObjectRemoved(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList);
 
 	/**
 	 * This method is invoked when a new
 	 * {@link com.beyondar.android.world.BeyondarObjectList BeyondarObjectList}
 	 * is created.
 	 */
-	public void onBeyondarObjectListCreated(BeyondarObjectList beyondarObjectList);
+	void onBeyondarObjectListCreated(BeyondarObjectList beyondarObjectList);
 
 	/**
 	 * This method is invoked when the world is cleaned.
 	 */
-	public void onWorldCleaned();
+	void onWorldCleaned();
 
 	/**
 	 * This method is invoked when the position is changed.
@@ -87,7 +87,7 @@ public interface WorldPlugin extends Plugin {
 	 * @param longitude
 	 * @param altitude
 	 */
-	public void onGeoPositionChanged(double latitude, double longitude, double altitude);
+	void onGeoPositionChanged(double latitude, double longitude, double altitude);
 
 	/**
 	 * This method is invoked when the default image for all the
@@ -95,16 +95,16 @@ public interface WorldPlugin extends Plugin {
 	 * 
 	 * @param uri
 	 */
-	public void onDefaultImageChanged(String uri);
+	void onDefaultImageChanged(String uri);
 
 	/**
 	 * Called when the activity has been paused.
 	 */
-	public void onPause();
+	void onPause();
 
 	/**
 	 * Called when the activity has been resumed.
 	 */
-	public void onResume();
+	void onResume();
 
 }

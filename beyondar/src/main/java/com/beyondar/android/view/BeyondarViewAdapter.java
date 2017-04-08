@@ -73,8 +73,8 @@ public abstract class BeyondarViewAdapter {
 	final LayoutParams mLayoutParams;
 
 	public BeyondarViewAdapter(Context context) {
-		mReusedViews = new LinkedList<ViewGroup>();
-		mNewViews = new LinkedList<ViewGroup>();
+		mReusedViews = new LinkedList<>();
+		mNewViews = new LinkedList<>();
 		mContext = context;
 		mLayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 	}

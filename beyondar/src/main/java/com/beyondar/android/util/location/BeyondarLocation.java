@@ -41,9 +41,9 @@ class BeyondarLocation implements LocationListener {
 		mLockGeoObject = new Object();
 		mLockWorld = new Object();
 		mLockLocationListener = new Object();
-		mArrayListGeoObject = new ArrayList<GeoObject>();
-		mArrayListWorld = new ArrayList<World>();
-		mArrayLocationListener = new ArrayList<LocationListener>();
+		mArrayListGeoObject = new ArrayList<>();
+		mArrayListWorld = new ArrayList<>();
+		mArrayLocationListener = new ArrayList<>();
 	}
 
 	void addGeoObjectLocationUpdate(GeoObject geoObject) {

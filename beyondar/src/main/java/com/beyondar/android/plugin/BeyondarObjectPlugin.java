@@ -35,7 +35,7 @@ public interface BeyondarObjectPlugin extends Plugin {
 	 * @param angle
 	 *            New angle.
 	 */
-	public void onAngleChanged(Point3 angle);
+	void onAngleChanged(Point3 angle);
 
 	/**
 	 * Called when the position of the
@@ -45,7 +45,7 @@ public interface BeyondarObjectPlugin extends Plugin {
 	 * @param position
 	 *            New position.
 	 */
-	public void onPositionChanged(Point3 position);
+	void onPositionChanged(Point3 position);
 
 	/**
 	 * Called when the {@link com.beyondar.android.opengl.texture.Texture
@@ -55,7 +55,7 @@ public interface BeyondarObjectPlugin extends Plugin {
 	 * @param texture
 	 *            New texture.
 	 */
-	public void onTextureChanged(Texture texture);
+	void onTextureChanged(Texture texture);
 
 	/**
 	 * Called when the {@link com.beyondar.android.opengl.renderable.Renderable
@@ -65,7 +65,7 @@ public interface BeyondarObjectPlugin extends Plugin {
 	 * @param renderable
 	 *            New Renderable.
 	 */
-	public void onRenderableChanged(Renderable renderable);
+	void onRenderableChanged(Renderable renderable);
 
 	/**
 	 * Called when the {@link com.beyondar.android.world.BeyondarObject
@@ -74,7 +74,7 @@ public interface BeyondarObjectPlugin extends Plugin {
 	 * @param faceToCamera
 	 *            True if it is facing to the camera, false otherwise.
 	 */
-	public void onFaceToCameraChanged(boolean faceToCamera);
+	void onFaceToCameraChanged(boolean faceToCamera);
 
 	/**
 	 * Called when the visibility of the
@@ -84,7 +84,7 @@ public interface BeyondarObjectPlugin extends Plugin {
 	 * @param visible
 	 *            True if it is visible, false otherwise.
 	 */
-	public void onVisibilityChanged(boolean visible);
+	void onVisibilityChanged(boolean visible);
 
 	/**
 	 * Called when the name of the
@@ -94,7 +94,7 @@ public interface BeyondarObjectPlugin extends Plugin {
 	 * @param name
 	 *            New name.
 	 */
-	public void onNameChanged(String name);
+	void onNameChanged(String name);
 
 	/**
 	 * Called when the image uri of the
@@ -104,19 +104,19 @@ public interface BeyondarObjectPlugin extends Plugin {
 	 * @param uri
 	 *            New image uri.
 	 */
-	public void onImageUriChanged(String uri);
+	void onImageUriChanged(String uri);
 
 	/**
 	 * This method is invoked when the plugin is removed.
 	 */
-	public void onDetached();
+	void onDetached();
 
 	/**
 	 * Check if the plugin is attached.
 	 * 
 	 * @return
 	 */
-	public boolean isAttached();
+	boolean isAttached();
 
 	/**
 	 * Get the {@link com.beyondar.android.world.BeyondarObject BeyondarObject}
@@ -124,5 +124,5 @@ public interface BeyondarObjectPlugin extends Plugin {
 	 * 
 	 * @return
 	 */
-	public BeyondarObject getbeyondarObject();
+	BeyondarObject getbeyondarObject();
 }

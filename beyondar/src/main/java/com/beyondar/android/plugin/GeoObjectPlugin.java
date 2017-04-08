@@ -27,13 +27,13 @@ public interface GeoObjectPlugin extends BeyondarObjectPlugin {
 	/**
 	 * Notified when the geo position changes.
 	 */
-	public void onGeoPositionChanged(double latitude, double longitude, double altitude);
+	void onGeoPositionChanged(double latitude, double longitude, double altitude);
 
 	/**
 	 * Get the {@link com.beyondar.android.world.GeoObject GeoObject} where the plugin is attached.
 	 * 
 	 * @return
 	 */
-	public GeoObject getGeoObject();
+	GeoObject getGeoObject();
 
 }

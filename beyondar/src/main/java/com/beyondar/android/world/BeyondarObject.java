@@ -79,7 +79,7 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	private void init() {
-		plugins = new ArrayList<BeyondarObjectPlugin>(DEFAULT_PLUGINS_CAPACITY);
+		plugins = new ArrayList<>(DEFAULT_PLUGINS_CAPACITY);
 		mPosition = new Point3();
 		mAngle = new Point3();
 		mTexture = new Texture();
@@ -189,7 +189,7 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	@Override
 	public List<BeyondarObjectPlugin> getAllPlugins() {
 		synchronized (lockPlugins) {
-			return new ArrayList<BeyondarObjectPlugin>(plugins);
+			return new ArrayList<>(plugins);
 		}
 	}
 

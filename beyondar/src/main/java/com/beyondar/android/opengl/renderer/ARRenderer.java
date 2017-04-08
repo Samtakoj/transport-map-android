@@ -74,7 +74,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	/**
 	 * Callback to get notified when the snapshot of the OpenGL view is taken.
 	 */
-	public static interface GLSnapshotCallback {
+	public interface GLSnapshotCallback {
 		/**
 		 * This method is called when the snapshot of the GL Surface is ready.
 		 * If there is an error, the image will be null
@@ -173,13 +173,13 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		mReloadWorldTextures = false;
 		setRendering(true);
 		mCameraPosition = new Point3(0, 0, 0);
-		mFloat4ArrayPool = new ConcurrentLinkedQueue<float[]>();
+		mFloat4ArrayPool = new ConcurrentLinkedQueue<>();
 
-		mRenderedObjects = new ArrayList<BeyondarObject>();
+		mRenderedObjects = new ArrayList<>();
 
 		mFillPositions = false;
 
-		plugins = new ArrayList<GLPlugin>();
+		plugins = new ArrayList<>();
 	}
 
 	/**
@@ -482,7 +482,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 *            set again the default behavior
 	 */
 	public void setPullCloserDistance(float maxDistanceSize) {
-		mMaxDistanceSizePoints = (float) (maxDistanceSize / 2);
+		mMaxDistanceSizePoints = maxDistanceSize / 2;
 		synchronized (lockPlugins) {
 			for (GLPlugin plugin : plugins) {
 				plugin.onMaxDistanceSizeChanged(mMaxDistanceSizePoints);
@@ -497,7 +497,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * @return The current max distance. 0 is the default behavior
 	 */
 	public float getPullCloserDistance() {
-		return (float) (mMaxDistanceSizePoints * 2);
+		return mMaxDistanceSizePoints * 2;
 	}
 
 	/**
@@ -515,7 +515,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 *            set again the default behavior
 	 */
 	public void setPushAwayDistance(float minDistanceSize) {
-		mMinDistanceSizePoints = (float) (minDistanceSize / 2);
+		mMinDistanceSizePoints = minDistanceSize / 2;
 		synchronized (lockPlugins) {
 			for (GLPlugin plugin : plugins) {
 				plugin.onMaxDistanceSizeChanged(mMinDistanceSizePoints);
@@ -530,7 +530,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * @return The current minimum distance. 0 is the default behavior
 	 */
 	public float getPushAwayDistance() {
-		return (float) (mMinDistanceSizePoints * 2);
+		return mMinDistanceSizePoints * 2;
 	}
 
 	/**
@@ -561,7 +561,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 *            Time mark to be used for drawing the frame.
 	 */
 	protected void renderWorld(GL10 gl, long time) {
-		BeyondarObjectList list = null;
+		BeyondarObjectList list;
 		try {
 			for (int i = 0; i < mWorld.getBeyondarObjectLists().size(); i++) {
 				list = mWorld.getBeyondarObjectLists().get(i);
@@ -646,7 +646,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		if (renderable == null || !beyondarObject.isVisible()) {
 			return;
 		}
-		double dst = 0;
+		double dst;
 		if (beyondarObject instanceof GeoObject) {
 			dst = ((GeoObject) beyondarObject).calculateDistanceMeters(mWorld.getLongitude(),
 					mWorld.getLatitude());
@@ -847,7 +847,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	private void loadWorldTextures(GL10 gl) {
 		if (null != mWorld) {
 			try {
-				BeyondarObjectList list = null;
+				BeyondarObjectList list;
 				for (int i = 0; i < mWorld.getBeyondarObjectLists().size(); i++) {
 					list = mWorld.getBeyondarObjectLists().get(i);
 					if (null != list) {
@@ -917,7 +917,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		if (null == btm) {
 			return null;
 		}
-		Texture texture = null;
+		Texture texture;
 		// Check if the texture already exist
 		texture = sTextureHolder.get(uri);
 		if (texture == null) {
@@ -1224,7 +1224,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		mFillPositions = fill;
 	}
 
-	public static interface FpsUpdatable {
+	public interface FpsUpdatable {
 
 		/**
 		 * This method will get the frames per second rendered by the
@@ -1233,7 +1233,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		 * @param fps
 		 *            The Frames per second rendered
 		 */
-		public void onFpsUpdate(float fps);
+		void onFpsUpdate(float fps);
 	}
 
 	@Override
@@ -1305,14 +1305,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 	@Override
 	public List<GLPlugin> getAllPugins(Class<? extends GLPlugin> pluginClass) {
-		ArrayList<GLPlugin> result = new ArrayList<GLPlugin>(5);
+		ArrayList<GLPlugin> result = new ArrayList<>(5);
 		return getAllPlugins(pluginClass, result);
 	}
 
 	@Override
 	public List<GLPlugin> getAllPlugins() {
 		synchronized (lockPlugins) {
-			return new ArrayList<GLPlugin>(plugins);
+			return new ArrayList<>(plugins);
 		}
 	}
 

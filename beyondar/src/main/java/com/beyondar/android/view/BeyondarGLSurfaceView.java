@@ -344,7 +344,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 * Set the distance factor for rendering all the objects. As bigger the
 	 * factor the closer the objects.
 	 * 
-	 * @param factor
+	 * @param meters
 	 *            number bigger than 0.
 	 */
 	public void setDistanceFactor(float meters)

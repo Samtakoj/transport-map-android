@@ -24,7 +24,7 @@ public class PendingBitmapsToBeLoaded<E> {
 	private HashMap<String, ArrayList<E>> mHolder;
 
 	public PendingBitmapsToBeLoaded() {
-		mHolder = new HashMap<String, ArrayList<E>>();
+		mHolder = new HashMap<>();
 		mLock = new Object();
 	}
 
@@ -35,7 +35,7 @@ public class PendingBitmapsToBeLoaded<E> {
 		synchronized (mLock) {
 			ArrayList<E> list = mHolder.get(uri);
 			if (list == null) {
-				list = new ArrayList<E>();
+				list = new ArrayList<>();
 				mHolder.put(uri, list);
 			}
 			list.add(object);

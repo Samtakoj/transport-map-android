@@ -30,6 +30,6 @@ public interface OnTouchBeyondarViewListener {
 	 * @param event
 	 * @param beyondarView
 	 */
-	public void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyondarView);
+	void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyondarView);
 
 }

@@ -44,8 +44,8 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	BeyondarObjectList(int type, World world) {
 		mType = type;
 		mVisibility = true;
-		mContainer = new ArrayList<BeyondarObject>();
-		mToRemoveQueue = new ArrayList<BeyondarObject>();
+		mContainer = new ArrayList<>();
+		mToRemoveQueue = new ArrayList<>();
 		mWorld = world;
 		mTexture = new Texture();
 		mLock = new Object();
