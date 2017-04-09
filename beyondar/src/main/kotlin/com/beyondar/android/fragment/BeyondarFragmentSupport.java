@@ -31,6 +31,7 @@ import com.beyondar.android.sensor.BeyondarSensorManager;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.BeyondarViewAdapter;
+import com.beyondar.android.view.Camera2View;
 import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
@@ -52,7 +53,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	private static final int MAXIMUM_POOL_SIZE = 1;
 	private static final long KEEP_ALIVE_TIME = 1000; // 1000 ms
 
-	private CameraView mBeyondarCameraView;
+	private Camera2View mBeyondarCameraView;
 	private BeyondarGLSurfaceView mBeyondarGLSurface;
 	private TextView mFpsTextView;
 	private RelativeLayout mMainLayout;
@@ -72,7 +73,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mBlockingQueue = new LinkedBlockingQueue<Runnable>();
+		mBlockingQueue = new LinkedBlockingQueue<>();
 		mThreadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME,
 				TimeUnit.MILLISECONDS, mBlockingQueue);
 	}
@@ -131,8 +132,8 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * 
 	 * @return
 	 */
-	protected CameraView createCameraView() {
-		return new CameraView(getActivity());
+	protected Camera2View createCameraView() {
+		return new Camera2View(getActivity());
 	}
 
 	/**
@@ -141,7 +142,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * 
 	 * @return
 	 */
-	public CameraView getCameraView() {
+	public Camera2View getCameraView() {
 		return mBeyondarCameraView;
 	}
 
@@ -164,7 +165,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	@Override
 	public void onResume() {
 		super.onResume();
-		mBeyondarCameraView.startPreviewCamera();
+		mBeyondarCameraView.onResume();
 		mBeyondarGLSurface.onResume();
 		BeyondarSensorManager.resume(mSensorManager);
 		if (mWorld != null) {
@@ -175,7 +176,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	@Override
 	public void onPause() {
 		super.onPause();
-		mBeyondarCameraView.releaseCamera();
+		mBeyondarCameraView.onPause();
 		mBeyondarGLSurface.onPause();
 		BeyondarSensorManager.pause(mSensorManager);
 		if (mWorld != null) {
@@ -477,7 +478,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * Set the distance factor for rendering all the objects. As bigger the
 	 * factor the closer the objects.
 	 * 
-	 * @param factor
+	 * @param meters
 	 *            number bigger than 0.
 	 */
 	public void setDistanceFactor(float meters)
@@ -506,7 +507,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 *            Bitmap options.
 	 */
 	public void takeScreenshot(OnScreenshotListener listener, BitmapFactory.Options options) {
-		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(), listener, options);
+//		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(), listener, options);
 	}
 
 	/**

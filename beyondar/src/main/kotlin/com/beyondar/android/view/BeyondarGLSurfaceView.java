@@ -195,7 +195,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 
 	private void registerSensorListener(int sensorDealy) {
 		BeyondarSensorManager.registerSensorListener(mRenderer);
-
 	}
 
 	@Override

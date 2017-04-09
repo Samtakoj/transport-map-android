@@ -10,6 +10,7 @@
 
     <uses-feature android:name="android.hardware.location.gps" />
     <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera2.full" />
     <uses-feature android:name="android.hardware.sensor.accelerometer" />
     <uses-feature android:name="android.hardware.sensor.compass" />
 
@@ -22,7 +23,6 @@
         android:name=".TransportApplication">
 
         <activity android:name=".MainActivity" >
-
         </activity>
         <activity android:name=".TestActivity"
             android:screenOrientation="portrait">
