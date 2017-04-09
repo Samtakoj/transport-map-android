@@ -33,9 +33,14 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import com.beyondar.android.util.DebugBitmap;
 import com.beyondar.android.util.Logger;
+
+import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 
 public class BitmapCache {
 
@@ -65,6 +70,13 @@ public class BitmapCache {
 	public static final String HEADER_RESOURCE = "res://";
 	public static final String HEADER_ASSETS = "assets://";
 
+    public static Paint paint = new Paint(ANTI_ALIAS_FLAG);
+    static {
+        paint.setTextSize(50);
+        paint.setColor(Color.RED);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setShadowLayer(1f, 0f, 1f, Color.BLACK);
+    }
 	private static final boolean DEBUG_CACHE = false;
 
 	private String mIdCache;
@@ -82,6 +94,16 @@ public class BitmapCache {
 	
 	private ThreadPoolExecutor mThreadPool;
 	private BlockingQueue<Runnable> mBlockingQueue;
+
+	public Bitmap getBitmapFromText(String text) {
+        float baseline = Math.abs(paint.ascent());
+        int width = (int) (paint.measureText(text) + 0.5f);
+        int height = (int) (baseline + paint.descent() + 0.5f);
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(image);
+        canvas.drawText(text, 0, baseline, paint);
+        return image;
+	}
 
 
 	private class BitmapCacheContainer extends LruCache<String, Bitmap> {
@@ -444,8 +466,8 @@ public class BitmapCache {
 	 *            The resource id to load
 	 * @return The bitmap if the image is already loaded, null otherwise
 	 */
-	public Bitmap getBitmap(int id) {
-		return getBitmap(HEADER_RESOURCE + id);
+	public Bitmap getBitmap(int id, String text) {
+		return getBitmap(HEADER_RESOURCE + id, text);
 	}
 
 	/**
@@ -455,23 +477,26 @@ public class BitmapCache {
 	 * @param uri
 	 * @return
 	 */
-	public Bitmap getBitmap(String uri) {
+	public Bitmap getBitmap(String uri, String text) {
 
 		// if (DEBUG) {
 		// cacheLog(TAG, mIdCache + " * Requesting: " + uri);
 		// }
-		if (uri == null) {
+		if (uri == null && text == null) {
 			return null;
 		}
 
-		Bitmap btm = mBitmapContainer.get(uri);
+		String loc = uri;
+		if (uri == null) loc = text;
+
+		Bitmap btm = mBitmapContainer.get(loc);
 
 		if (btm == null || btm.isRecycled()) {
 			if (btm != null) {
-				mBitmapContainer.remove(uri);
+				mBitmapContainer.remove(loc);
 			}
-
-			btm = loadBitmap(uri);
+			if (uri == null) btm = getBitmapFromText(text);
+			else btm = loadBitmap(uri);
 		}
 
 		return btm;

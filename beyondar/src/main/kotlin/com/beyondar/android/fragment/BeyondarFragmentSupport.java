@@ -97,7 +97,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		mBeyondarGLSurface.setOnTouchListener(this);
 
 		mBeyondarCameraView = createCameraView();
-        mBeyondarCameraView.setAlpha(0.9F);
+        mBeyondarCameraView.setAlpha(0.6F);
 
         mMainLayout.addView(mBeyondarGLSurface, params);
 		mMainLayout.addView(mBeyondarCameraView, params);
