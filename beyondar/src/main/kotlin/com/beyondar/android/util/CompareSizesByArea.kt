@@ -1,7 +1,7 @@
 package com.beyondar.android.util
 
 import android.util.Size
-import java.util.Comparator
+import kotlin.Comparator
 
 /**
  * Created by artsiom.chuiko on 09/04/2017.

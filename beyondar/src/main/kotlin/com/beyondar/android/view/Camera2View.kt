@@ -238,7 +238,7 @@ class Camera2View(fragment: Fragment): AutoFitTextureView(fragment.activity) {
                     val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
 
                     // For still image captures, we use the largest available size.
-                    val largest = Collections.max(Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)), CompareSizesByArea())
+                    val largest =  map.getOutputSizes(ImageFormat.JPEG).maxWith(CompareSizesByArea())
 
                     // Find out if we need to swap dimension to get the preview size relative to sensor
                     // coordinate.
@@ -319,14 +319,14 @@ class Camera2View(fragment: Fragment): AutoFitTextureView(fragment.activity) {
      * @return The optimal {@code Size}, or an arbitrary one if none were big enough
      */
     private fun chooseOptimalSize(choices: Array<Size>, textureViewWidth: Int, textureViewHeight: Int,
-                                  maxWidth: Int, maxHeight: Int, aspectRatio: Size): Size {
+                                  maxWidth: Int, maxHeight: Int, aspectRatio: Size?): Size {
 
         // Collect the supported resolutions that are at least as big as the preview Surface
         val bigEnough = arrayListOf<Size>()
         // Collect the supported resolutions that are smaller than the preview Surface
         val notBigEnough = arrayListOf<Size>()
-        val w = aspectRatio.width
-        val h = aspectRatio.height
+        val w = aspectRatio?.width?: 1
+        val h = aspectRatio?.height?:1
         choices.filter {
             it.width <= maxWidth && it.height <= maxHeight && it.height == it.width * h / w
         }.forEach {
