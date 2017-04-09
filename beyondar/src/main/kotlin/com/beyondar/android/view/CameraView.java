@@ -40,6 +40,7 @@ import com.beyondar.android.util.Logger;
  * acquiring/releasing the camera.
  * 
  */
+@Deprecated
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback, Camera.PictureCallback {
 
 	/**
@@ -108,9 +109,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	 * 
 	 * @return The Camera object, null if it has not been acquired.
 	 */
-	public Camera getCamera() {
-		return mCamera;
-	}
+//	public Camera getCamera() {
+//		return mCamera;
+//	}
 
 	private void configureCamera() {
 		if (mCamera != null) {

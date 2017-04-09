@@ -39,6 +39,7 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	private int mTypeList;
 	private Texture mTexture;
 	private String mImageUri;
+	private String text;
 	private String mName;
 	private boolean mVisible;
 	private Renderable mRenderable;
@@ -408,6 +409,14 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	 */
 	public String getImageUri() {
 		return mImageUri;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
 	}
 
 	/**

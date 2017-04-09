@@ -116,9 +116,9 @@ public class SquareRenderable implements Renderable {
 		// gl.glPopMatrix();
 
 		// rotate to the previous state
-		gl.glRotatef((float) mAngle.x, -1, 0, 0);
-		gl.glRotatef((float) mAngle.y, 0, -1, 0);
-		gl.glRotatef((float) mAngle.z, 0, 0, -1);
+		gl.glRotatef( mAngle.x, -1, 0, 0);
+		gl.glRotatef( mAngle.y, 0, -1, 0);
+		gl.glRotatef( mAngle.z, 0, 0, -1);
 
 		gl.glTranslatef(-mPosition.x, -mPosition.y, -mPosition.z);
 	}

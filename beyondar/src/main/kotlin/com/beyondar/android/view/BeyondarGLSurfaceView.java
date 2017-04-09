@@ -58,7 +58,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	public BeyondarGLSurfaceView(Context context) {
 		super(context);
 		init(context);
-
 	}
 
 	public BeyondarGLSurfaceView(Context context, AttributeSet attrs) {
@@ -195,7 +194,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 
 	private void registerSensorListener(int sensorDealy) {
 		BeyondarSensorManager.registerSensorListener(mRenderer);
-
 	}
 
 	@Override

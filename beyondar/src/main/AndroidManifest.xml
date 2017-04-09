@@ -2,5 +2,4 @@
 
     package="com.beyondar.android">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 </manifest>
