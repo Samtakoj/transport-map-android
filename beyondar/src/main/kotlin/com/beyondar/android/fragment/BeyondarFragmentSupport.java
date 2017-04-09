@@ -14,6 +14,9 @@ import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -89,13 +92,16 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
 		mMainLayout = new RelativeLayout(getActivity());
+        mMainLayout.setVerticalGravity(Gravity.CENTER_VERTICAL);
 		mBeyondarGLSurface = createBeyondarGLSurfaceView();
+//        mBeyondarGLSurface.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
 		mBeyondarGLSurface.setOnTouchListener(this);
 
 		mBeyondarCameraView = createCameraView();
+        mBeyondarCameraView.setAlpha(0.9F);
 
+        mMainLayout.addView(mBeyondarGLSurface, params);
 		mMainLayout.addView(mBeyondarCameraView, params);
-		mMainLayout.addView(mBeyondarGLSurface, params);
 	}
 
 	private void checkIfSensorsAvailable() {
@@ -133,7 +139,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * @return
 	 */
 	protected Camera2View createCameraView() {
-		return new Camera2View(getActivity());
+		return new Camera2View(this);
 	}
 
 	/**
@@ -175,13 +181,13 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 
 	@Override
 	public void onPause() {
-		super.onPause();
 		mBeyondarCameraView.onPause();
 		mBeyondarGLSurface.onPause();
 		BeyondarSensorManager.pause(mSensorManager);
 		if (mWorld != null) {
 			mWorld.onPause();
 		}
+		super.onPause();
 	}
 
 	/**

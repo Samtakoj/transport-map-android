@@ -58,7 +58,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	public BeyondarGLSurfaceView(Context context) {
 		super(context);
 		init(context);
-
 	}
 
 	public BeyondarGLSurfaceView(Context context, AttributeSet attrs) {

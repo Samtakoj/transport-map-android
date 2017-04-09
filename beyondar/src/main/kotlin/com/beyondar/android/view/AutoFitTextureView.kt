@@ -1,11 +1,12 @@
 package com.beyondar.android.view
 
 import android.content.Context
+import android.util.Log
 import android.view.TextureView
 import android.view.View
 
 /**
- * Created by arttsiom.chuiko on 09/04/2017.
+ * Created by artsiom.chuiko on 09/04/2017.
  */
 open class AutoFitTextureView(context: Context): TextureView(context, null) {
     private var ratioWidth: Int = 0
@@ -36,7 +37,7 @@ open class AutoFitTextureView(context: Context): TextureView(context, null) {
         if (0 == ratioWidth || 0 == ratioHeight) {
             setMeasuredDimension(width, height)
         } else {
-            if (width < height * ratioWidth / ratioHeight) {
+            if (width > height * ratioWidth / ratioHeight) {
                 setMeasuredDimension(width, width * ratioHeight / ratioWidth)
             } else {
                 setMeasuredDimension(height * ratioWidth / ratioHeight, height)

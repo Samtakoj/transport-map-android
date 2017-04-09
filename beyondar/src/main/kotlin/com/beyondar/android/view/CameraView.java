@@ -40,6 +40,7 @@ import com.beyondar.android.util.Logger;
  * acquiring/releasing the camera.
  * 
  */
+@Deprecated
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback, Camera.PictureCallback {
 
 	/**
