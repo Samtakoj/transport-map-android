@@ -1,7 +1,6 @@
 package com.beyondar.android.view
 
 import android.content.Context
-import android.util.Log
 import android.view.TextureView
 import android.view.View
 
@@ -37,7 +36,7 @@ open class AutoFitTextureView(context: Context): TextureView(context, null) {
         if (0 == ratioWidth || 0 == ratioHeight) {
             setMeasuredDimension(width, height)
         } else {
-            if (width > height * ratioWidth / ratioHeight) {
+            if (width >= height * ratioWidth / ratioHeight) {
                 setMeasuredDimension(width, width * ratioHeight / ratioWidth)
             } else {
                 setMeasuredDimension(height * ratioWidth / ratioHeight, height)

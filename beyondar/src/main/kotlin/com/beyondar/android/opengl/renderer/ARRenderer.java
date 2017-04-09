@@ -115,9 +115,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	private MatrixGrabber mMatrixGrabber = new MatrixGrabber();
 	private int mWidth, mHeight;
 
-	private static HashMap<String, Texture> sTextureHolder = new HashMap<String, Texture>();
-	private static PendingBitmapsToBeLoaded<BeyondarObject> sPendingTextureObjects = new PendingBitmapsToBeLoaded<BeyondarObject>();
-	private static ArrayList<UriAndBitmap> sNewBitmapsLoaded = new ArrayList<UriAndBitmap>();
+	private static HashMap<String, Texture> sTextureHolder = new HashMap<>();
+	private static PendingBitmapsToBeLoaded<BeyondarObject> sPendingTextureObjects = new PendingBitmapsToBeLoaded<>();
+	private static ArrayList<UriAndBitmap> sNewBitmapsLoaded = new ArrayList<>();
 	private static final float[] sInclination = new float[16];
 
 	private float mArViewDistance;

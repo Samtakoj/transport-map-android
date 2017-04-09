@@ -23,7 +23,7 @@ class MainActivityUi: AnkoComponent<TestActivity> {
             backgroundColor = ContextCompat.getColor(ctx, android.R.color.white)
             toolbar {
                 id = ToolbarID
-                backgroundColor = ContextCompat.getColor(ctx, R.color.colorPrimary)
+                backgroundColor = ContextCompat.getColor(ctx, android.R.color.white)
             }.lparams(width = matchParent, height = wrapContent).let {
                 (ui.ctx  as TestActivity).setSupportActionBar(it)
             }

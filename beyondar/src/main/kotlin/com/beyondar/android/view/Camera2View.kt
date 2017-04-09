@@ -22,10 +22,8 @@ import java.util.concurrent.TimeUnit
 import android.hardware.camera2.CaptureRequest
 import android.hardware.camera2.CameraCaptureSession
 import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.params.RggbChannelVector
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.util.Range
 
 
 /**
@@ -135,7 +133,7 @@ class Camera2View(fragment: Fragment): AutoFitTextureView(fragment.activity) {
                         return
                     }
                     this@Camera2View.cameraCaptureSession = cameraCaptureSession
-                    captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
+                    captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
                     cameraCaptureSession.setRepeatingRequest(captureRequestBuilder.build(), null, backgroundHandler)
                     Log.e(TAG, "Camera preview is created, HW: $isHardwareAccelerated")
                 }
@@ -232,9 +230,6 @@ class Camera2View(fragment: Fragment): AutoFitTextureView(fragment.activity) {
                     maxPreviewHeight = MAX_PREVIEW_HEIGHT
                 }
 
-                // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
-                // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
-                // garbage capture data.
                 previewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture::class.java),
                         rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
                         maxPreviewHeight, largest)
@@ -276,13 +271,11 @@ class Camera2View(fragment: Fragment): AutoFitTextureView(fragment.activity) {
      */
     private fun chooseOptimalSize(choices: Array<Size>, textureViewWidth: Int, textureViewHeight: Int,
                                   maxWidth: Int, maxHeight: Int, aspectRatio: Size?): Size {
-
-        // Collect the supported resolutions that are at least as big as the preview Surface
         val bigEnough = arrayListOf<Size>()
-        // Collect the supported resolutions that are smaller than the preview Surface
         val notBigEnough = arrayListOf<Size>()
-        val w = aspectRatio?.width?: 1
-        val h = aspectRatio?.height?: 1
+        val w = aspectRatio?.width?: MAX_PREVIEW_WIDTH
+        val h = aspectRatio?.height?: MAX_PREVIEW_HEIGHT
+
         choices.filter {
             it.width <= maxWidth && it.height <= maxHeight && it.height == it.width * h / w
         }.forEach {
@@ -293,8 +286,6 @@ class Camera2View(fragment: Fragment): AutoFitTextureView(fragment.activity) {
             }
         }
 
-        // Pick the smallest of those big enough. If there is no one big enough, pick the
-        // largest of those not big enough.
         if (bigEnough.size > 0) {
             return Collections.min(bigEnough, CompareSizesByArea())
         } else if (notBigEnough.size > 0) {

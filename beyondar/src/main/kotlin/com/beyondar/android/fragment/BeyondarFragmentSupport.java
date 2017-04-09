@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -59,7 +60,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	private Camera2View mBeyondarCameraView;
 	private BeyondarGLSurfaceView mBeyondarGLSurface;
 	private TextView mFpsTextView;
-	private RelativeLayout mMainLayout;
+	private FrameLayout mMainLayout;
 
 	private World mWorld;
 
@@ -91,10 +92,8 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
-		mMainLayout = new RelativeLayout(getActivity());
-        mMainLayout.setVerticalGravity(Gravity.CENTER_VERTICAL);
+		mMainLayout = new FrameLayout(getActivity());
 		mBeyondarGLSurface = createBeyondarGLSurfaceView();
-//        mBeyondarGLSurface.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
 		mBeyondarGLSurface.setOnTouchListener(this);
 
 		mBeyondarCameraView = createCameraView();
