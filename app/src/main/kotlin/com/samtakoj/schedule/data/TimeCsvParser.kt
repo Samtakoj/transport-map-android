@@ -139,7 +139,7 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
         val tokens = dataString.split(",")
 
         val result = Lists.newArrayList<WorkDay>()
-        var countInterval = 0
+        var countInterval = if(tokens.count() > 2) tokens[1].toInt() else 0
         var sum = 0
         for ((index, token) in tokens.withIndex()) {
             if (index % 2 == 0) {
