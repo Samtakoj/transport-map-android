@@ -3,81 +3,103 @@ package com.samtakoj.schedule
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.samtakoj.schedule.api.ScheduleFetcher
-import android.location.Location
-import android.location.LocationListener
 import android.util.Log
-import android.widget.TextView
-import android.widget.Toast
-import com.google.common.collect.Lists
-import com.samtakoj.schedule.api.LocListener
+import android.view.View
+import android.widget.ListView
 import com.samtakoj.schedule.model.RouteCsv
-import com.samtakoj.schedule.model.StopCsv
-import com.samtakoj.schedule.model.TimeCsv
 import io.nlopez.smartlocation.SmartLocation
 import org.jetbrains.anko.*
-import retrofit2.HttpException
 import rx.Subscriber
 import rx.Subscription
+import android.widget.ArrayAdapter
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.AdapterView.OnItemClickListener
+import com.samtakoj.schedule.model.TimeCsv
+
 
 class MainActivity : AppCompatActivity() {
-
-    lateinit var subscription: Subscription
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val location = SmartLocation.with(this).location().lastLocation
-        verticalLayout {
+        val verticalLayout = verticalLayout {
             padding = dip(20)
-            textView {
-                text = "Lat: ${location?.latitude}"
-            }
-            textView {
-                text = "Lon: ${location?.longitude}"
-            }
-            textView {
-                text = "Alt: ${location?.altitude}"
-            }
-            textView {
-                text = "Speed: ${location?.speed}"
-            }
-            textView("Null") {
+            listView {
                 id = 123
-                textSize = 24f
             }
         }
+        val arrStirng = ArrayList<String>()
+        val listView = find<ListView>(123)
+        val adapter = ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1,
+                arrStirng)
+        listView.adapter = adapter
+        adapter.notifyDataSetChanged()
 
-//        val stops = Lists.newArrayList<StopCsv>()
-        val subscriber = object: Subscriber<StopCsv>() {
+        val routes = ScheduleFetcher.routes(application as TransportApplication) //53.929018, 27.585731
+        routes.subscribe(object: Subscriber<RouteCsv>() {
             override fun onCompleted() {
-                Log.i("TRANSPORT_SCHEDULE", "Stops is completed!")
+                Log.i("TRANSPORT_SCHEDULE", "Routes is completed!")
             }
 
             override fun onError(e: Throwable) {
                 e.printStackTrace()
             }
 
-            override fun onNext(stop: StopCsv) {
-//                stops.add(stop)
-                Log.i("TRANSPORT_SCHEDULE", "Stop: ${stop.id}; ${stop.name}; ${stop.lng * 0.00001}; ${stop.ltd * 0.00001}")
+            override fun onNext(route: RouteCsv) {
+                adapter.add("${route.num}-${route.transportType}: ${route.name}")
+//                Log.i("TRANSPORT_SCHEDULE", "RouteCount: ${counter++}")
+            }
+        })
+
+        listView.onItemClickListener = OnItemClickListener { parent, view, position, id ->
+            Log.i("TEST", "itemClick: position = $position, id = $id")
+            routes.take(id.toInt() + 1).last().subscribe { route ->
+//                Log.i("TEST", "Route: ${route.name}")
+                val stops = ScheduleFetcher.getStops(application as TransportApplication, route.stops)
+                stops.forEach {
+                    Log.i("TEST", "Stops: $it")
+                }
+
+                ScheduleFetcher.times(application as TransportApplication, route.id).subscribe{ time ->
+//                    var tempStr = ""
+//                    for(i in 0..time.timeTable.count() - 1) {
+//                        tempStr += " " + time.timeTable[i].toString()
+//                    }
+                    Log.i("TEST", "Time: ${time.workDay}; ${time.intervalCount}; ${time.timeTable}")
+                }
             }
         }
+
+        listView.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View,
+                                        position: Int, id: Long) {
+                Log.d("TEST", "itemSelect: position = $position, id = $id")
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                Log.d("TEST", "itemSelect: nothing")
+            }
+        }
+
+//        val route = routes.filter { route -> route.id == 123456 }.first().to { route -> route.toBlocking().first() }
 //        location?.latitude = 53.929018
 //        location?.longitude = 27.585731  2758469;5392808
-        subscription = ScheduleFetcher.stops(application as TransportApplication, subscriber, 53.927010, 27.576126) //53.929018, 27.585731
-//        subscription = ScheduleFetcher.routes(application as TransportApplication, object: Subscriber<RouteCsv>() {
-//            override fun onCompleted() {
-//                Log.i("TRANSPORT_SCHEDULE", "Routes is completed!")
-//            }
-//
-//            override fun onError(e: Throwable) {
-//                e.printStackTrace()
-//            }
-//
-//            override fun onNext(route: RouteCsv) {
-//                Log.i("TRANSPORT_SCHEDULE", "Route: ${route.id}; ${route.name}; ${route.num}; ${route.weekDays}; ${route.transportType}; ${route.stops}")
-//            }
-//        })
+        ScheduleFetcher.getAllTimes(application as TransportApplication).subscribe(object: Subscriber<TimeCsv>() {
+            override fun onCompleted() {
+                Log.i("TRANSPORT_SCHEDULE", "Times is completed!")
+            }
+
+            override fun onError(e: Throwable) {
+                e.printStackTrace()
+            }
+
+            override fun onNext(time: TimeCsv) {
+//                Log.i("TRANSPORT_SCHEDULE", "Time: ${route.id}; ${route.name}; ${route.num}; ${route.weekDays}; ${route.transportType}; ${route.stops}")
+            }
+        })
 
         SmartLocation.with(this).location().oneFix().start { location ->
             toast("Lat: ${location.latitude}, Long: ${location.longitude}")
@@ -86,7 +108,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         SmartLocation.with(this).location().stop()
-        subscription.unsubscribe()
         super.onDestroy()
     }
 }

@@ -110,7 +110,7 @@ class TestActivity : AppCompatActivity(), OnClickBeyondarObjectListener{
                             }).map { (id, name, lng1, ltd) ->
                         val obj = GeoObject(id.toLong())
                         obj.setGeoPosition(ltd * 0.00001, lng1 * 0.00001)
-                        obj.text = "${obj.name}\n${obj.distanceFromUser}m"
+                        obj.text = "$name\n${obj.distanceFromUser}m"
                         obj.name = name
                         return@map obj
                     }.subscribe(object: Subscriber<GeoObject>() {
