@@ -9,5 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView"
+        android:textColor="@color/colorPrimary"
+        android:background="@android:color/black"
         android:layout_weight="1" />
 </LinearLayout>

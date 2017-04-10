@@ -110,7 +110,7 @@ class TestActivity : AppCompatActivity(), OnClickBeyondarObjectListener{
                             }).map { (id, name, lng1, ltd) ->
                         val obj = GeoObject(id.toLong())
                         obj.setGeoPosition(ltd * 0.00001, lng1 * 0.00001)
-                        obj.text = "$name\n${obj.distanceFromUser}m"
+                        obj.setImageResource(R.drawable.goal)
                         obj.name = name
                         return@map obj
                     }.subscribe(object: Subscriber<GeoObject>() {
@@ -187,7 +187,7 @@ class TestActivity : AppCompatActivity(), OnClickBeyondarObjectListener{
             }
 
             val textView = view?.findViewById(R.id.info) as TextView
-            textView.text = "${beyondarObject?.name} -> ${beyondarObject?.distanceFromUser}m"
+            textView.text = "${beyondarObject?.name} -> ${"%.0f".format(beyondarObject?.distanceFromUser)}m"
 
             setPosition(beyondarObject?.screenPositionTopRight)
 
