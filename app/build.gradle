@@ -34,24 +34,24 @@ dependencies {
     compile(project(":beyondar")) {
         transitive = false
     }
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
-    testCompile 'junit:junit:4.12'
     compile 'org.jetbrains.anko:anko-appcompat-v7:0.9'
     compile 'org.jetbrains.anko:anko-sdk15:0.9'
-    compile "com.squareup.retrofit2:retrofit:2.0.0-beta3"
-    compile "com.squareup.retrofit2:adapter-rxjava:2.0.0-beta3"
-    compile "com.squareup.picasso:picasso:2.5.2"
-    compile "com.google.guava:guava:19.0"
+    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta3'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta3'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.google.guava:guava:19.0'
     compile 'com.nytimes.android:store:2.0.2'
-    compile'com.nytimes.android:cache:2.0.2'
-    compile'com.nytimes.android:middleware:2.0.2'
+    compile 'com.nytimes.android:cache:2.0.2'
+    compile 'com.nytimes.android:middleware:2.0.2'
     compile 'com.nytimes.android:filesystem:2.0.2'
-    compile "io.reactivex:rxandroid:1.2.1"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile "io.nlopez.smartlocation:library:3.3.1"
-    compile "com.yarolegovich:sliding-root-nav:1.0.2"
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.nlopez.smartlocation:library:3.3.1'
+    compile 'com.yarolegovich:sliding-root-nav:1.0.2'
+    testCompile 'junit:junit:4.12'
 }
 repositories {
     mavenCentral()

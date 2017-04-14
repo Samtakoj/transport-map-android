@@ -35,3 +35,9 @@ class MainActivityUi: AnkoComponent<TestActivity> {
         }
     }
 }
+
+class SplashActivityUi: AnkoComponent<SplashActivity> {
+    override fun createView(ui: AnkoContext<SplashActivity>): View {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
