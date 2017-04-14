@@ -138,7 +138,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * @return
 	 */
 	protected Camera2View createCameraView() {
-		return new Camera2View(this);
+		return new Camera2View(getActivity());
 	}
 
 	/**

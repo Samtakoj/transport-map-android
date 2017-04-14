@@ -75,5 +75,4 @@ public class SphericalMeshCollider implements MeshCollider {
 	public float getRadius() {
 		return radius;
 	}
-
 }

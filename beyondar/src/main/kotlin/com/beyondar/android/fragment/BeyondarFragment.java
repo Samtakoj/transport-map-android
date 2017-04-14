@@ -27,12 +27,11 @@ import android.widget.TextView;
 
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
 import com.beyondar.android.screenshot.OnScreenshotListener;
-import com.beyondar.android.screenshot.ScreenshotHelper;
 import com.beyondar.android.sensor.BeyondarSensorManager;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.BeyondarViewAdapter;
-import com.beyondar.android.view.CameraView;
+import com.beyondar.android.view.Camera2View;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
 import com.beyondar.android.world.BeyondarObject;
@@ -53,7 +52,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	private static final int MAXIMUM_POOL_SIZE = 1;
 	private static final long KEEP_ALIVE_TIME = 1000; // 1000 ms
 
-	private CameraView mBeyondarCameraView;
+	private Camera2View mBeyondarCameraView;
 	private BeyondarGLSurfaceView mBeyondarGLSurface;
 	private TextView mFpsTextView;
 	private RelativeLayout mMainLayout;
@@ -132,8 +131,8 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 * 
 	 * @return
 	 */
-	protected CameraView createCameraView() {
-		return new CameraView(getActivity());
+	protected Camera2View createCameraView() {
+		return new Camera2View(getActivity());
 	}
 
 	/**
@@ -142,7 +141,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 * 
 	 * @return
 	 */
-	public CameraView getCameraView() {
+	public Camera2View getCameraView() {
 		return mBeyondarCameraView;
 	}
 
@@ -165,7 +164,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	@Override
 	public void onResume() {
 		super.onResume();
-		mBeyondarCameraView.startPreviewCamera();
+		mBeyondarCameraView.onResume();
 		mBeyondarGLSurface.onResume();
 		BeyondarSensorManager.resume(mSensorManager);
 		if (mWorld != null) {
@@ -175,13 +174,13 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 	@Override
 	public void onPause() {
-		super.onPause();
-		mBeyondarCameraView.releaseCamera();
+		mBeyondarCameraView.onPause();
 		mBeyondarGLSurface.onPause();
 		BeyondarSensorManager.pause(mSensorManager);
 		if (mWorld != null) {
 			mWorld.onPause();
 		}
+		super.onPause();
 	}
 
 	/**
@@ -509,7 +508,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 *            Bitmap options.
 	 */
 	public void takeScreenshot(OnScreenshotListener listener, BitmapFactory.Options options) {
-		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(), listener, options);
+//		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(), listener, options);
 	}
 
 	/**

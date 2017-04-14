@@ -107,5 +107,4 @@ public interface Renderable {
 	 * @return
 	 */
 	long getTimeMark();
-
 }

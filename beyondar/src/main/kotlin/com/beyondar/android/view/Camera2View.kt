@@ -30,7 +30,7 @@ import android.support.v4.content.ContextCompat
  * Created by artsiom.chuiko on 09/04/2017.
  * This is a basic camera view to support the android camera2 api
  */
-class Camera2View(fragment: Fragment): AutoFitTextureView(fragment.activity) {
+class Camera2View(val activity: Activity): AutoFitTextureView(activity) {
 
     companion object {
         val TAG = "BeyondAR/Camera2View"
@@ -38,7 +38,7 @@ class Camera2View(fragment: Fragment): AutoFitTextureView(fragment.activity) {
         private val MAX_PREVIEW_HEIGHT = 1080
     }
 
-    private val activity: Activity = fragment.activity
+//    private val activity: Activity = fragment.activity
     private lateinit var cameraId: String
     private lateinit var cameraDevice: CameraDevice
     private lateinit var cameraCaptureSession: CameraCaptureSession

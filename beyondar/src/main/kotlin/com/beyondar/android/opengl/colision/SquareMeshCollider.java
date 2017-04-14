@@ -67,5 +67,4 @@ public class SquareMeshCollider implements MeshCollider {
 	public boolean intersects(Ray r) {
 		return getIntersectionPoint(r) != null;
 	}
-
 }
