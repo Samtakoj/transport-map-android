@@ -33,7 +33,6 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
     private fun convertToTimeCsv(t: BufferedSource?): List<TimeCsv> {
         try {
             BufferedReader(InputStreamReader(t?.inputStream(), Charset.forName("UTF-8"))).use { reader ->
-                var line: String
                 val parsed = Lists.newArrayList<TimeCsv>()
                 reader.lineSequence().forEach { line ->
                     parsed.add(parseToTimeCsv(line))
@@ -50,7 +49,7 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
 
         val firstCommaIndex: Int = line.indexOf(",")
         var routeIdString: String = line.substring(0, firstCommaIndex)
-        var routeId: Int = 0
+        var routeId: Int
         try {
             routeId = routeIdString.toInt()
         } catch (e: Exception) {

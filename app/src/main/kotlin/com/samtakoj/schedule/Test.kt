@@ -16,6 +16,7 @@ import org.jetbrains.anko.support.v4.*
 import android.widget.TextView
 import com.beyondar.android.fragment.BeyondarFragmentSupport
 import com.beyondar.android.opengl.util.LowPassFilter
+import com.beyondar.android.util.Logger
 import com.beyondar.android.view.BeyondarViewAdapter
 import com.beyondar.android.view.OnClickBeyondarObjectListener
 import com.beyondar.android.world.BeyondarObject
@@ -39,27 +40,18 @@ import java.util.ArrayList
  * Created by Александр on 11.03.2017.
  */
 
-class TestActivity : AppCompatActivity(), OnClickBeyondarObjectListener{
-    override fun onClickBeyondarObject(beyondarObjects: ArrayList<BeyondarObject>?) {
-        if (beyondarObjects?.size == 0) return
-        val beyondarObject = beyondarObjects?.get(0)
-        if (showViewOn.contains(beyondarObject)) {
-            showViewOn.remove(beyondarObject)
-        } else {
-            showViewOn.add(beyondarObject as BeyondarObject)
-        }
-    }
+class TestActivity : AppCompatActivity(){
 
     companion object {
         lateinit var textView1: TextView
         var previous = StopCsv(1, "", 1, 1)
-        val showViewOn = ArrayList<BeyondarObject>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ApplicationPermissions.requestBasic(this)
+        Logger.DEBUG_OPENGL = true
+
         MainActivityUi().setContentView(this)
 
         val toolbar = find<Toolbar>(MainActivityUi.ToolbarID)
@@ -117,14 +109,14 @@ class TestActivity : AppCompatActivity(), OnClickBeyondarObjectListener{
                         override fun onCompleted() {
                             (fragment as BeyondarFragmentSupport).world = world
                             fragment.showFPS(true)
-                            fragment.setOnClickBeyondarObjectListener(this@TestActivity)
                             val customBeyondarViewAdapter = CustomBeyondarViewAdapter(this@TestActivity)
+                            fragment.setOnClickBeyondarObjectListener(customBeyondarViewAdapter)
                             fragment.setBeyondarViewAdapter(customBeyondarViewAdapter)
                             fragment.maxDistanceToRender = 800f
                             fragment.distanceFactor = 30f
 //                            fragment.pushAwayDistance = 80f
 //                            LowPassFilter.ALPHA = 0.1f
-                            Log.i("SCHEDULE", "World size: ${world.beyondarObjectLists.get(0).size()}")
+                            Log.i("SCHEDULE", "World size: ${world.beyondarObjectLists[0].size()}")
                         }
                         override fun onNext(t: GeoObject?) {
                             world.addBeyondarObject(t)
@@ -172,9 +164,19 @@ class TestActivity : AppCompatActivity(), OnClickBeyondarObjectListener{
         super.onDestroy()
     }
 
-    class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context) {
+    class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context), OnClickBeyondarObjectListener {
+        val showViewOn = ArrayList<BeyondarObject>()
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-		val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        override fun onClickBeyondarObject(beyondarObjects: ArrayList<BeyondarObject>?) {
+            if (beyondarObjects?.size == 0) return
+            val beyondarObject = beyondarObjects?.get(0)
+            if (showViewOn.contains(beyondarObject)) {
+                showViewOn.remove(beyondarObject)
+            } else {
+                showViewOn.add(beyondarObject as BeyondarObject)
+            }
+        }
 
         override fun getView(beyondarObject: BeyondarObject?, recycledView: View?, parent: ViewGroup?): View? {
             if (!showViewOn.contains(beyondarObject)) {
