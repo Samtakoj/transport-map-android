@@ -7,3 +7,4 @@ data class RouteCsv(@param:Position(1) var num: String, @param:Position(4) var t
                     @param:Position(12) var weekDays: String, @param:Position(13) var id: Int, @param:Position(15) var stops: String)
 data class TimeCsv(val routeId: Int, val intervalCount: Int, val timeTable: List<Long>, val workDay: List<WorkDay>)
 data class WorkDay(val weekDay: String, val countInterval: Int)
+data class TestModel(val route: RouteCsv, val stops: List<StopCsv>, val times: TimeCsv)

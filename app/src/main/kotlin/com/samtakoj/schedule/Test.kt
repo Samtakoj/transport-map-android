@@ -2,6 +2,7 @@ package com.samtakoj.schedule
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -50,7 +51,7 @@ class TestActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Logger.DEBUG_OPENGL = true
+        //Logger.DEBUG_OPENGL = true
 
         MainActivityUi().setContentView(this)
 
@@ -85,6 +86,9 @@ class TestActivity : AppCompatActivity(){
                         withProvider(LocationManagerProvider()).
                         build()
                 SmartLocation.with(this@TestActivity).location(provider).start { location ->
+//                    val myLocation = Location(location)
+//                    myLocation.latitude = 53.928738
+//                    myLocation.longitude = 27.587694
                     val world = World(this@TestActivity)
                     world.setLocation(location)
                     world.setDefaultImage(R.drawable.flymer)

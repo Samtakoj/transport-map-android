@@ -1,5 +1,6 @@
 package com.samtakoj.schedule.data
 
+import android.util.Log
 import com.google.common.collect.Lists
 import com.nytimes.android.external.store.base.Parser
 import com.samtakoj.schedule.model.TimeCsv
@@ -32,11 +33,13 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
 
     private fun convertToTimeCsv(t: BufferedSource?): List<TimeCsv> {
         try {
+            val start = System.currentTimeMillis()
             BufferedReader(InputStreamReader(t?.inputStream(), Charset.forName("UTF-8"))).use { reader ->
                 val parsed = Lists.newArrayList<TimeCsv>()
                 reader.lineSequence().forEach { line ->
                     parsed.add(parseToTimeCsv(line))
                 }
+                Log.i("TRANSPORT_SCHEDULE", "Parse time = ${System.currentTimeMillis() - start}")
                 return parsed
             }
         } catch (e: Exception) {
@@ -89,18 +92,17 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
     private fun getTimeTable(timesData: List<String>, intervals: String) : List<Long>/*List<List<Long>>*/ {
         val timesDataLength = timesData.count()
 
-//        val timetable = listOf(mutableListOf<Long>())
-//        val delimiterWeekDay = Lists.newArrayList<Int>()
         val timetable = Lists.newArrayList<Long>()
         var previousTime: Long = 0
         var index: Int = 0
-        for ((i, token) in timesData.withIndex()) {
-//            if (token[0] == '-') {
-//                delimiterWeekDay.add(i)
-//            }
-            previousTime += token.toInt()
-            timetable.add(previousTime)
-        }
+        timetable.addAll(timesData.map {
+            previousTime += it.toInt()
+            previousTime
+        })
+//        for (token in timesData) {
+//            previousTime += token.toInt()
+//            timetable.add(previousTime)
+//        }
 
         var j = 0
         for (intervalBlocks in intervals.split(",,")) {
@@ -112,23 +114,37 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
             var delta: Int = 0
             var left: Int = 0
             index = 0
+
+            var repeatTimes = 0
             while (index < deltas.count()) {
-                if (left <= 0) {
-                    delta = 5
-                    left = timesDataLength
-                }
 
-                delta += deltas[index++].toInt() - 5
+                delta = if(index == 0) deltas[index++].toInt() else delta + deltas[index++].toInt() - 5
 
-                val repeatTimes: Int = if (index == deltas.count()) left else delta
-                left -= repeatTimes
-
-                j = 0
-                while (j < repeatTimes) {
+                if(deltas.count() > 1)
+                    repeatTimes = if(index >= deltas.count()) timesDataLength - deltas[index - 1].toInt() else deltas[index++].toInt()
+                else
+                    repeatTimes = timesDataLength
+                for(i in 1..repeatTimes) {
                     timetable.add(timetable[timetable.count() - timesDataLength] + delta)
-                    j++
                 }
             }
+//            while (index < deltas.count()) {
+//                if (left <= 0) {
+//                    delta = 5
+//                    left = timesDataLength
+//                }
+//
+//                delta += deltas[index++].toInt() - 5
+//
+//                val repeatTimes: Int = if (index == deltas.count()) left else delta
+//                left -= repeatTimes
+//
+//                j = 0
+//                while (j < repeatTimes) {
+//                    timetable.add(timetable[timetable.count() - timesDataLength] + delta)
+//                    j++
+//                }
+//            }
         }
 
         return timetable

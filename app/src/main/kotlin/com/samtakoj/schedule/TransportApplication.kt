@@ -30,7 +30,7 @@ class TransportApplication : Application() {
     lateinit var persistedRouteStore: Store<List<RouteCsv>, BarCode>
 
     override fun onCreate() {
-        persister = SourcePersisterFactory.create(applicationContext.cacheDir)
+        persister = SourcePersisterFactory.create(applicationContext.getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS))
         persistedStopStore = providePersistedStore(StopCsv::class.java, true, ";")
         persistedRouteStore = providePersistedStore(RouteCsv::class.java, true, ";")
 

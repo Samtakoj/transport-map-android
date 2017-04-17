@@ -15,7 +15,10 @@ import android.widget.ArrayAdapter
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.AdapterView.OnItemClickListener
+import com.samtakoj.schedule.model.StopCsv
+import com.samtakoj.schedule.model.TestModel
 import com.samtakoj.schedule.model.TimeCsv
+import java.io.Serializable
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,47 +33,77 @@ class MainActivity : AppCompatActivity() {
                 id = 123
             }
         }
-        val arrStirng = ArrayList<String>()
+
+        val arrString = ArrayList<String>()
         val listView = find<ListView>(123)
         val adapter = ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
-                arrStirng)
+                arrString)
         listView.adapter = adapter
         adapter.notifyDataSetChanged()
 
-        val routes = ScheduleFetcher.routes(application as TransportApplication) //53.929018, 27.585731
-        routes.subscribe(object: Subscriber<RouteCsv>() {
+        val start = System.currentTimeMillis()
+        Log.i("TRANSPORT_SCHEDULE", "Time now")
+        ScheduleFetcher.getList(application as TransportApplication).subscribe(object: Subscriber<TestModel>() {
             override fun onCompleted() {
-                Log.i("TRANSPORT_SCHEDULE", "Routes is completed!")
+                Log.i("TRANSPORT_SCHEDULE", "Download time = ${System.currentTimeMillis() - start}")
             }
 
             override fun onError(e: Throwable) {
                 e.printStackTrace()
             }
 
-            override fun onNext(route: RouteCsv) {
-                adapter.add("${route.num}-${route.transportType}: ${route.name}")
-//                Log.i("TRANSPORT_SCHEDULE", "RouteCount: ${counter++}")
+            override fun onNext(test: TestModel) {
+                adapter.add("${test.route.num}-${test.route.transportType}: ${test.route.name}")
             }
         })
+//        val routes = ScheduleFetcher.routes(application as TransportApplication)
+//        routes.subscribe(object: Subscriber<RouteCsv>() {
+//            override fun onCompleted() {
+//                Log.i("TRANSPORT_SCHEDULE", "Routes is completed!")
+//            }
+//
+//            override fun onError(e: Throwable) {
+//                e.printStackTrace()
+//            }
+//
+//            override fun onNext(route: RouteCsv) {
+//                adapter.add("${route.num}-${route.transportType}: ${route.name}")
+//            }
+//        })
+
+        //53.929018, 27.585731
+//        val testModels = routes.flatMap { route ->
+//            ScheduleFetcher.getStops(application as TransportApplication, route)
+//        }
+//        testModels.subscribe()
 
         listView.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             Log.i("TEST", "itemClick: position = $position, id = $id")
-            routes.take(id.toInt() + 1).last().subscribe { route ->
-//                Log.i("TEST", "Route: ${route.name}")
-                val stops = ScheduleFetcher.getStops(application as TransportApplication, route.stops)
-                stops.forEach {
-                    Log.i("TEST", "Stops: $it")
-                }
+//            testModels.elementAt(id.toInt()).subscribe { test ->
+//                Log.i("TEST", "Route: ${test.route.name}")
+//                Log.i("TEST", "Stops: ${test.stops}")
+//            }
+//            Log.i("TRANSPORT_SCHEDULE", "${arrTestModel[id.toInt()]}")
+//            Log.i("TRANSPORT_SCHEDULE", "Stops: ${arrTestModel[id.toInt() + 1].stops}")
 
-                ScheduleFetcher.times(application as TransportApplication, route.id).subscribe{ time ->
-//                    var tempStr = ""
-//                    for(i in 0..time.timeTable.count() - 1) {
-//                        tempStr += " " + time.timeTable[i].toString()
-//                    }
-                    Log.i("TEST", "Time: ${time.workDay}; ${time.intervalCount}; ${time.timeTable}")
-                }
-            }
+//            startActivity<StopsActivity>("test" to arrTestModel[id.toInt() + 1])
+
+//            routes.take(id.toInt() + 1).last().subscribe { route ->
+////                Log.i("TEST", "Route: ${route.name}")
+//                val stops = ScheduleFetcher.getStops(application as TransportApplication, route.stops)
+//                stops.forEach {
+//                    Log.i("TEST", "Stops: $it")
+//                }
+//
+//                ScheduleFetcher.times(application as TransportApplication, route.id).subscribe{ time ->
+////                    var tempStr = ""
+////                    for(i in 0..time.timeTable.count() - 1) {
+////                        tempStr += " " + time.timeTable[i].toString()
+////                    }
+//                    Log.i("TEST", "Time: ${time.workDay}; ${time.intervalCount}; ${time.timeTable}")
+//                }
+//            }
         }
 
         listView.onItemSelectedListener = object : OnItemSelectedListener {
@@ -83,23 +116,6 @@ class MainActivity : AppCompatActivity() {
                 Log.d("TEST", "itemSelect: nothing")
             }
         }
-
-//        val route = routes.filter { route -> route.id == 123456 }.first().to { route -> route.toBlocking().first() }
-//        location?.latitude = 53.929018
-//        location?.longitude = 27.585731  2758469;5392808
-        ScheduleFetcher.getAllTimes(application as TransportApplication).subscribe(object: Subscriber<TimeCsv>() {
-            override fun onCompleted() {
-                Log.i("TRANSPORT_SCHEDULE", "Times is completed!")
-            }
-
-            override fun onError(e: Throwable) {
-                e.printStackTrace()
-            }
-
-            override fun onNext(time: TimeCsv) {
-//                Log.i("TRANSPORT_SCHEDULE", "Time: ${route.id}; ${route.name}; ${route.num}; ${route.weekDays}; ${route.transportType}; ${route.stops}")
-            }
-        })
 
         SmartLocation.with(this).location().oneFix().start { location ->
             toast("Lat: ${location.latitude}, Long: ${location.longitude}")
