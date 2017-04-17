@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.nytimes.android.external.store.base.impl.BarCode
-import com.samtakoj.shedule.model.StopCsv
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
@@ -34,8 +33,6 @@ class SplashActivity: AppCompatActivity() {
                 }
 
         ApplicationPermissions.requestBasicOrStart(this, Intent(this, TestActivity::class.java))
-
-        //SplashActivityUi().setContentView(this)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
