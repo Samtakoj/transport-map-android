@@ -15,9 +15,8 @@ import android.view.ViewGroup
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.*
 import android.widget.TextView
+import android.widget.Toast
 import com.beyondar.android.fragment.BeyondarFragmentSupport
-import com.beyondar.android.opengl.util.LowPassFilter
-import com.beyondar.android.util.Logger
 import com.beyondar.android.view.BeyondarViewAdapter
 import com.beyondar.android.view.OnClickBeyondarObjectListener
 import com.beyondar.android.world.BeyondarObject
@@ -26,7 +25,7 @@ import com.beyondar.android.world.World
 import io.nlopez.smartlocation.SmartLocation
 import com.google.android.gms.location.DetectedActivity
 import com.nytimes.android.external.store.base.impl.BarCode
-import com.samtakoj.schedule.model.StopCsv
+import com.samtakoj.shedule.model.StopCsv_
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider
 import io.nlopez.smartlocation.location.providers.LocationManagerProvider
@@ -45,7 +44,7 @@ class TestActivity : AppCompatActivity(){
 
     companion object {
         lateinit var textView1: TextView
-        var previous = StopCsv(1, "", 1, 1)
+        var previous = com.samtakoj.shedule.model.StopCsv(1, "", 1, 1)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +62,11 @@ class TestActivity : AppCompatActivity(){
                 .withSavedState(savedInstanceState)
                 .withMenuLayout(R.layout.activity_main)
                 .inject()
+
+        val startTime = System.currentTimeMillis()
+        val stopBox = (application as TransportApplication).boxStore.boxFor(com.samtakoj.shedule.model.StopCsv::class.java)
+        val list = stopBox.query().order(StopCsv_.id).build().find()
+        Toast.makeText(this, "Count: ${list.size}, time: ${System.currentTimeMillis() - startTime}", Toast.LENGTH_LONG).show()
 
         val lat = find<TextView>(R.id.lat)
         val lng = find<TextView>(R.id.lng)
@@ -98,16 +102,16 @@ class TestActivity : AppCompatActivity(){
                             .flatMap { Observable.from(it) }
                             .map({ stop ->
                                 stop.name = if (stop.name != "") stop.name else previous.name
-                                stop.id = if (stop.id != 0) stop.id else previous.id
-                                stop.lng = if (stop.lng != 0.toLong()) stop.lng else previous.lng
-                                stop.ltd = if (stop.ltd != 0.toLong()) stop.ltd else previous.ltd
+                                stop.id = if (stop.id != 0L) stop.id else previous.id
+                                stop.lng = if (stop.lng != 0L) stop.lng else previous.lng
+                                stop.ltd = if (stop.ltd != 0L) stop.ltd else previous.ltd
                                 previous = stop
                                 return@map stop
-                            }).map { (id, name, lng1, ltd) ->
-                        val obj = GeoObject(id.toLong())
-                        obj.setGeoPosition(ltd * 0.00001, lng1 * 0.00001)
+                            }).map { stop ->
+                        val obj = GeoObject(stop.id.toLong())
+                        obj.setGeoPosition(stop.ltd * 0.00001, stop.lng * 0.00001)
                         obj.setImageResource(R.drawable.goal)
-                        obj.name = name
+                        obj.name = stop.name
                         return@map obj
                     }.subscribe(object: Subscriber<GeoObject>() {
                         override fun onCompleted() {

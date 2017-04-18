@@ -2,6 +2,7 @@ package com.samtakoj.schedule.data;
 
 import com.google.common.collect.Lists;
 import com.nytimes.android.external.store.base.Parser;
+import com.samtakoj.schedule.common.data.Position;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,10 +42,6 @@ import retrofit2.Retrofit;
  */
 public final class RetrofitCsv {
     private RetrofitCsv() {}
-
-    public @interface Position {
-        int value() default  0;
-    }
 
     public static <Parsed> Parser<BufferedSource, List<Parsed>> createSourceParser(final Class<Parsed> clazz, final boolean skipHeaders, final String regex) {
         return new Parser<BufferedSource, List<Parsed>>() {
@@ -87,7 +84,7 @@ public final class RetrofitCsv {
     }
 
     private static <Parsed> Parsed createObject(Class<Parsed> clazz, String...data) throws IllegalAccessException, InvocationTargetException, InstantiationException {
-        final Constructor<?> first = clazz.getConstructors()[0];
+        final Constructor<?> first = findNonDefaultConstructor(clazz);
         final Annotation[][] an = first.getParameterAnnotations();
         final Class[] parameterTypes = first.getParameterTypes();
         final Object[] castedParams = new Object[parameterTypes.length];
@@ -102,6 +99,15 @@ public final class RetrofitCsv {
         }
 
         return (Parsed) first.newInstance(castedParams);
+    }
+
+    private static Constructor<?> findNonDefaultConstructor(Class<?> clazz) {
+        for (Constructor<?> constructor : clazz.getConstructors()) {
+            if (constructor.getParameterTypes().length > 0) {
+                return constructor;
+            }
+        }
+        return clazz.getConstructors()[0];
     }
 
     private interface TypeAdjuster<Type> {

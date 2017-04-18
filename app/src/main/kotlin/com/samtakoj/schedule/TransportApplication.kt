@@ -12,8 +12,9 @@ import com.samtakoj.schedule.api.Api
 import com.samtakoj.schedule.data.RetrofitCsv
 import com.samtakoj.schedule.data.TimeCsvParser
 import com.samtakoj.schedule.model.RouteCsv
-import com.samtakoj.schedule.model.StopCsv
 import com.samtakoj.schedule.model.TimeCsv
+import com.samtakoj.shedule.model.MyObjectBox
+import io.objectbox.BoxStore
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.RxJavaCallAdapterFactory
@@ -25,13 +26,16 @@ import retrofit2.RxJavaCallAdapterFactory
 class TransportApplication : Application() {
 
     private lateinit var persister: Persister<BufferedSource, BarCode>
-    lateinit var persistedStopStore: Store<List<StopCsv>, BarCode>
+    lateinit var persistedStopStore: Store<List<com.samtakoj.shedule.model.StopCsv>, BarCode>
     lateinit var persistedTimeStore: Store<List<TimeCsv>, BarCode>
     lateinit var persistedRouteStore: Store<List<RouteCsv>, BarCode>
 
+    lateinit var boxStore: BoxStore
+
     override fun onCreate() {
+        boxStore = MyObjectBox.builder().androidContext(this).build()
         persister = SourcePersisterFactory.create(applicationContext.getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS))
-        persistedStopStore = providePersistedStore(StopCsv::class.java, true, ";")
+        persistedStopStore = providePersistedStore(com.samtakoj.shedule.model.StopCsv::class.java, true, ";")
         persistedRouteStore = providePersistedStore(RouteCsv::class.java, true, ";")
 
         val parser = TimeCsvParser()
