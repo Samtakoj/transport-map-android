@@ -15,6 +15,7 @@ class SplashActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+/* object-box-integration
         val stopBox = (application as TransportApplication).boxStore.boxFor(com.samtakoj.shedule.model.StopCsv::class.java)
         var previous = com.samtakoj.shedule.model.StopCsv(1, "", 1, 1)
         (application as TransportApplication).persistedStopStore.get(BarCode("Stop", "stops"))
@@ -33,13 +34,15 @@ class SplashActivity: AppCompatActivity() {
                 }
 
         ApplicationPermissions.requestBasicOrStart(this, Intent(this, TestActivity::class.java))
+*/
+        ApplicationPermissions.requestBasicOrStart(this, Intent(this, MainActivity::class.java))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             ApplicationPermissions.INITIAL_REQUEST -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity(Intent(this, TestActivity::class.java))
+                    startActivity(Intent(this, MainActivity::class.java))
                 }
                 finish()
             }

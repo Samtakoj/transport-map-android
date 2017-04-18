@@ -2,17 +2,22 @@ package com.samtakoj.schedule.api
 
 import android.location.Location
 import android.util.Log
+import com.nytimes.android.external.store.base.InternalStore
 import com.nytimes.android.external.store.base.impl.BarCode
+import com.nytimes.android.external.store.base.impl.RealStore
 import com.samtakoj.schedule.TransportApplication
 import com.samtakoj.schedule.model.RouteCsv
 import com.samtakoj.schedule.model.StopCsv
+import com.samtakoj.schedule.model.TestModel
 import com.samtakoj.schedule.model.TimeCsv
 import okhttp3.Route
+import okio.BufferedSource
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Func1
+import rx.functions.Func2
 import rx.observables.GroupedObservable
 import rx.schedulers.Schedulers
 import java.sql.BatchUpdateException
@@ -26,10 +31,8 @@ object ScheduleFetcher {
     lateinit private var stops: Observable<StopCsv>
     lateinit private var routes: Observable<RouteCsv>
     lateinit private var times: Observable<TimeCsv>
-    //        val csvStops = app.persistedStopStore.get(BarCode("Stop", "stops"))
-    //        val csvRoutes = app.persistedRouteStore.get(BarCode("Route", "routes"))
-    //        val csvTimes = app.persistedTimeStore.get(BarCode("Time", "times"))
-    fun stops (app: TransportApplication/*, subscriber: Subscriber<StopCsv>, latitude: Double, longitude: Double*/): Observable<StopCsv>  {
+
+    fun stops (app: TransportApplication): Observable<StopCsv>  {
         var previous = StopCsv(1, "", 1, 1)
         return app.persistedStopStore.get(BarCode("Stop", "stops"))
                 .subscribeOn(Schedulers.io())
@@ -43,14 +46,6 @@ object ScheduleFetcher {
                     previous = stop
                     return@map stop
                 })
-//                .filter { (id, name, lng, ltd) ->
-//                    val dx = Math.abs(lng * 0.00001 - longitude) * 67.138
-//                    val dy = Math.abs(ltd * 0.00001 - latitude) * 111.321
-//                    return@filter Math.sqrt(dx * dx + dy * dy) <= 0.25
-////                    ((Math.abs(lng * 0.00001 - longitude) <= 0.001) &&
-////                            (Math.abs(ltd * 0.00001 - latitude) <= 0.001))
-//                }
-//                .subscribe(subscriber)
     }
 
     fun routes (app: TransportApplication): Observable<RouteCsv> {
@@ -75,12 +70,11 @@ object ScheduleFetcher {
                 }
                 .flatMap { grouped ->
                     counter = 0
-//                    Log.i("SCHEDULE", "new group: ${grouped.key}")
                     return@flatMap grouped
                 }
                 .filter {
                     counter++
-                    counter <= 3
+                    counter <= 2
                 }
     }
 
@@ -101,20 +95,10 @@ object ScheduleFetcher {
                 .flatMap { Observable.from(it) }
     }
 
-//    fun getStopById(app: TransportApplication, stopId: String): Observable<StopCsv> {
-//        return app.persistedStopStore.get(BarCode("Stop", "stops"))
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .flatMap { Observable.from(it) }
-//                .filter { stop ->
-//                    stop.id == stopId.trim().toInt()
-//                }
-//                .first()
-//    }
-
-    fun getStops(app: TransportApplication, stopsString: String): Observable<List<StopCsv>> {
-        val stopArr = stopsString.split(",")
-        return stops(app)
+    fun getStops(app: TransportApplication, route: RouteCsv): Observable<TestModel> {
+        val stopArr = route.stops.split(",")
+        val times = getAllTimes(app).filter { time -> time.routeId == route.id }
+        return Observable.zip(stops(app)
                 .filter { stop ->
                      stopArr.contains(stop.id.toString())
                 }
@@ -126,19 +110,17 @@ object ScheduleFetcher {
                         index1 > index2 -> return@toSortedList 1
                         else -> return@toSortedList 0
                     }
-                }
+                }, times, Func2 { stops, times -> TestModel(route, stops, times) })
     }
 
-    fun getFirstStop(): StopCsv {
-        return stops.toBlocking().first()
-    }
-
-    fun getRoutes(): Observable<RouteCsv> {
-        return routes
-    }
-
-    fun getTimes(): Observable<TimeCsv> {
-        return times
+    fun getList(app: TransportApplication): Observable<TestModel> {
+        return routes(app).flatMap { route ->
+            getStops(app, route)
+        }.groupBy { testModel ->
+            return@groupBy "${testModel.route.num}-${testModel.route.transportType}"
+        }.flatMap { grouped ->
+            return@flatMap grouped
+        }
     }
 
 }
