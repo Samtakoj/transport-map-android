@@ -5,6 +5,7 @@ import com.samtakoj.schedule.common.data.Position;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Keep;
+import io.objectbox.annotation.Generated;
 
 /**
  * Created by artsiom.chuiko on 17/04/2017.
@@ -28,6 +29,10 @@ public class RouteCsv {
         this.weekDays = weekDays;
         this.id = id;
         this.stops = stops;
+    }
+
+    @Generated(hash = 1269110557)
+    public RouteCsv() {
     }
 
     public String getNum() {

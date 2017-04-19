@@ -9,6 +9,7 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Keep;
+import io.objectbox.annotation.Generated;
 
 /**
  * Created by artsiom.chuiko on 17/04/2017.
@@ -29,6 +30,15 @@ public class TimeCsv {
 
     @Keep
     public TimeCsv(Long routeId, Integer intervalCount, List<Long> timeTable, List<WorkDay> workDay) {
+        this.routeId = routeId;
+        this.intervalCount = intervalCount;
+        this.timeTable = timeTable;
+        this.workDay = workDay;
+    }
+
+    @Generated(hash = 422421214)
+    public TimeCsv(Long id, Long routeId, Integer intervalCount, List<Long> timeTable, List<WorkDay> workDay) {
+        this.id = id;
         this.routeId = routeId;
         this.intervalCount = intervalCount;
         this.timeTable = timeTable;
