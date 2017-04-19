@@ -56,5 +56,6 @@ dependencies {
     compile 'io.nlopez.smartlocation:library:3.3.1'
     compile 'com.yarolegovich:sliding-root-nav:1.0.2'
     compile 'io.objectbox:objectbox-android:0.9.10'
+    compile 'com.google.android.gms:play-services-gcm:10.2.0'
     testCompile 'junit:junit:4.12'
 }
