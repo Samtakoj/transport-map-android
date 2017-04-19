@@ -1,27 +1,15 @@
 package com.samtakoj.schedule.api
 
-import android.location.Location
-import android.util.Log
-import com.nytimes.android.external.store.base.InternalStore
 import com.nytimes.android.external.store.base.impl.BarCode
-import com.nytimes.android.external.store.base.impl.RealStore
 import com.samtakoj.schedule.TransportApplication
-import com.samtakoj.schedule.model.RouteCsv
-import com.samtakoj.schedule.model.StopCsv
 import com.samtakoj.schedule.model.TestModel
-import com.samtakoj.schedule.model.TimeCsv
-import okhttp3.Route
-import okio.BufferedSource
+import com.samtakoj.shedule.model.RouteCsv
+import com.samtakoj.shedule.model.StopCsv
+import com.samtakoj.shedule.model.TimeCsv
 import rx.Observable
-import rx.Subscriber
-import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Func1
 import rx.functions.Func2
-import rx.observables.GroupedObservable
 import rx.schedulers.Schedulers
-import java.sql.BatchUpdateException
-import kotlin.coroutines.experimental.EmptyCoroutineContext.plus
 
 /**
  * Created by Александр on 18.03.2017.
@@ -40,9 +28,9 @@ object ScheduleFetcher {
                 .flatMap { Observable.from(it) }
                 .map({ stop ->
                     stop.name = if (stop.name.trim() != "") stop.name else previous.name
-                    stop.id = if (stop.id != 0) stop.id else previous.id
-                    stop.lng = if (stop.lng != 0.toLong()) stop.lng else previous.lng
-                    stop.ltd = if (stop.ltd != 0.toLong()) stop.ltd else previous.ltd
+                    stop.id = if (stop.id != 0L) stop.id else previous.id
+                    stop.lng = if (stop.lng != 0L) stop.lng else previous.lng
+                    stop.ltd = if (stop.ltd != 0L) stop.ltd else previous.ltd
                     previous = stop
                     return@map stop
                 })
@@ -56,7 +44,7 @@ object ScheduleFetcher {
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap { Observable.from(it) }
                 .map({ route ->
-                    route.id = if (route.id != 0) route.id else previous.id
+                    route.id = if (route.id != 0L) route.id else previous.id
                     route.name = if (route.name.trim() != "") route.name else previous.name
                     route.num = if (route.num.trim() != "") route.num else previous.num
                     route.stops = if (route.stops.trim() != "") route.stops else previous.stops
@@ -78,7 +66,7 @@ object ScheduleFetcher {
                 }
     }
 
-    fun times (app: TransportApplication, routeId: Int): Observable<TimeCsv> {
+    fun times (app: TransportApplication, routeId: Long): Observable<TimeCsv> {
         return app.persistedTimeStore.get(BarCode("Time", "times"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

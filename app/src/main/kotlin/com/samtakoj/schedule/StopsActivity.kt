@@ -2,11 +2,9 @@ package com.samtakoj.schedule
 
 import android.R
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.v7.app.AppCompatActivity
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import com.samtakoj.schedule.model.StopCsv
 import com.samtakoj.schedule.model.TestModel
 import org.jetbrains.anko.*
 

@@ -6,19 +6,14 @@ import com.samtakoj.schedule.api.ScheduleFetcher
 import android.util.Log
 import android.view.View
 import android.widget.ListView
-import com.samtakoj.schedule.model.RouteCsv
 import io.nlopez.smartlocation.SmartLocation
 import org.jetbrains.anko.*
 import rx.Subscriber
-import rx.Subscription
 import android.widget.ArrayAdapter
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.AdapterView.OnItemClickListener
-import com.samtakoj.schedule.model.StopCsv
 import com.samtakoj.schedule.model.TestModel
-import com.samtakoj.schedule.model.TimeCsv
-import java.io.Serializable
 
 
 class MainActivity : AppCompatActivity() {

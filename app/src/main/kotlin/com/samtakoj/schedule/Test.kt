@@ -1,8 +1,5 @@
 package com.samtakoj.schedule
 
-import android.content.Context
-import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -17,14 +14,12 @@ import org.jetbrains.anko.support.v4.*
 import android.widget.TextView
 import android.widget.Toast
 import com.beyondar.android.fragment.BeyondarFragmentSupport
-import com.beyondar.android.view.BeyondarViewAdapter
-import com.beyondar.android.view.OnClickBeyondarObjectListener
-import com.beyondar.android.world.BeyondarObject
 import com.beyondar.android.world.GeoObject
 import com.beyondar.android.world.World
 import io.nlopez.smartlocation.SmartLocation
 import com.google.android.gms.location.DetectedActivity
 import com.nytimes.android.external.store.base.impl.BarCode
+import com.samtakoj.shedule.model.StopCsv
 import com.samtakoj.shedule.model.StopCsv_
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider
@@ -34,7 +29,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.util.ArrayList
 
 /**
  * Created by Александр on 11.03.2017.
@@ -44,13 +38,11 @@ class TestActivity : AppCompatActivity(){
 
     companion object {
         lateinit var textView1: TextView
-        var previous = com.samtakoj.shedule.model.StopCsv(1, "", 1, 1)
+        var previous = StopCsv(1, "", 1, 1)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //Logger.DEBUG_OPENGL = true
 
         MainActivityUi().setContentView(this)
 
@@ -64,7 +56,7 @@ class TestActivity : AppCompatActivity(){
                 .inject()
 
         val startTime = System.currentTimeMillis()
-        val stopBox = (application as TransportApplication).boxStore.boxFor(com.samtakoj.shedule.model.StopCsv::class.java)
+        val stopBox = (application as TransportApplication).boxStore.boxFor(StopCsv::class.java)
         val list = stopBox.query().order(StopCsv_.id).build().find()
         Toast.makeText(this, "Count: ${list.size}, time: ${System.currentTimeMillis() - startTime}", Toast.LENGTH_LONG).show()
 
@@ -138,73 +130,11 @@ class TestActivity : AppCompatActivity(){
         }, true)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            ApplicationPermissions.INITIAL_REQUEST -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    val playServicesProvider = LocationGooglePlayServicesProvider()
-                    playServicesProvider.setCheckLocationSettings(true)
-                    playServicesProvider.setLocationSettingsAlwaysShow(true)
-                    val provider = MultiFallbackProvider.Builder().
-                            withProvider(playServicesProvider).
-                            withProvider(LocationManagerProvider()).
-                            build()
-
-
-                    SmartLocation.with(this).
-                            location(provider).
-                            start { location ->
-                                //textView1.text = "Lat: ${location?.latitude}, Lng: ${location?.longitude}"
-                            }
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return
-            }
-        }
-    }
-
     override fun onDestroy() {
         SmartLocation.with(this).location().stop()
         SmartLocation.with(this).activity().stop()
         super.onDestroy()
     }
-
-    class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context), OnClickBeyondarObjectListener {
-        val showViewOn = ArrayList<BeyondarObject>()
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
-        override fun onClickBeyondarObject(beyondarObjects: ArrayList<BeyondarObject>?) {
-            if (beyondarObjects?.size == 0) return
-            val beyondarObject = beyondarObjects?.get(0)
-            if (showViewOn.contains(beyondarObject)) {
-                showViewOn.remove(beyondarObject)
-            } else {
-                showViewOn.add(beyondarObject as BeyondarObject)
-            }
-        }
-
-        override fun getView(beyondarObject: BeyondarObject?, recycledView: View?, parent: ViewGroup?): View? {
-            if (!showViewOn.contains(beyondarObject)) {
-                return Util.nullHack()
-            }
-
-            var view = recycledView
-            if (recycledView == null) {
-                view = inflater.inflate(R.layout.object_view, null)
-            }
-
-            val textView = view?.findViewById(R.id.info) as TextView
-            textView.text = "${beyondarObject?.name} -> ${"%.0f".format(beyondarObject?.distanceFromUser)}m"
-
-            setPosition(beyondarObject?.screenPositionTopRight)
-
-            return view
-        }
-	}
-
 
     class TestFragment : Fragment() {
         override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {

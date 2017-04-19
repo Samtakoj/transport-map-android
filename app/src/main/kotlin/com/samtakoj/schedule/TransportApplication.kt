@@ -11,9 +11,9 @@ import com.nytimes.android.external.store.base.Persister
 import com.samtakoj.schedule.api.Api
 import com.samtakoj.schedule.data.RetrofitCsv
 import com.samtakoj.schedule.data.TimeCsvParser
-import com.samtakoj.schedule.model.RouteCsv
-import com.samtakoj.schedule.model.TimeCsv
 import com.samtakoj.shedule.model.MyObjectBox
+import com.samtakoj.shedule.model.RouteCsv
+import com.samtakoj.shedule.model.TimeCsv
 import io.objectbox.BoxStore
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
