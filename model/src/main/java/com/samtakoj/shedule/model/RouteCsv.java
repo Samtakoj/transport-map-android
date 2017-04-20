@@ -12,17 +12,23 @@ import io.objectbox.annotation.Generated;
  */
 @Entity
 public class RouteCsv {
+    @Position(1)
     private String num;
+    @Position(4)
     private String transportType;
+    @Position(11)
     private String name;
+    @Position(12)
     private String weekDays;
     @Id(assignable = true)
+    @Position(13)
     private Long id;
+    @Position(15)
     private String stops;
 
     @Keep
-    public RouteCsv(@Position(1) String num, @Position(4) String transportType, @Position(11) String name,
-                    @Position(12) String weekDays, @Position(13) Long id, @Position(15) String stops) {
+    public RouteCsv(String num, String transportType, String name,
+                    String weekDays, Long id, String stops) {
         this.num = num;
         this.transportType = transportType;
         this.name = name;

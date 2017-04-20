@@ -13,13 +13,17 @@ import io.objectbox.annotation.Keep;
 @Entity
 public class StopCsv {
     @Id(assignable = true)
+    @Position(1)
     private Long id;
+    @Position(5)
     private String name;
+    @Position(7)
     private Long lng;
+    @Position(8)
     private Long ltd;
 
     @Keep
-    public StopCsv(@Position(1) Long id, @Position(5) String name, @Position(7) Long lng, @Position(8) Long ltd) {
+    public StopCsv(Long id, String name, Long lng, Long ltd) {
         this.id = id;
         this.name = name;
         this.lng = lng;

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -84,30 +85,16 @@ public final class RetrofitCsv {
     }
 
     private static <Parsed> Parsed createObject(Class<Parsed> clazz, String...data) throws IllegalAccessException, InvocationTargetException, InstantiationException {
-        final Constructor<?> first = findNonDefaultConstructor(clazz);
-        final Annotation[][] an = first.getParameterAnnotations();
-        final Class[] parameterTypes = first.getParameterTypes();
-        final Object[] castedParams = new Object[parameterTypes.length];
-        for (int i = 0; i < an.length; i++) {
-            final Class parameterType = parameterTypes[i];
-            for (Annotation annotation : an[i]) {
-                if (annotation instanceof Position) {
-                    final int position = ((Position) annotation).value();
-                    castedParams[i] = typeAdjusters.get(parameterType).adjust(data[position - 1]);
-                }
+        final Object object = clazz.newInstance();
+        final Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(Position.class)) {
+                final int position = field.getAnnotation(Position.class).value();
+                field.set(object, typeAdjusters.get(field.getType()).adjust(data[position - 1]));
             }
         }
-
-        return (Parsed) first.newInstance(castedParams);
-    }
-
-    private static Constructor<?> findNonDefaultConstructor(Class<?> clazz) {
-        for (Constructor<?> constructor : clazz.getConstructors()) {
-            if (constructor.getParameterTypes().length > 0) {
-                return constructor;
-            }
-        }
-        return clazz.getConstructors()[0];
+        return (Parsed) object;
     }
 
     private interface TypeAdjuster<Type> {
