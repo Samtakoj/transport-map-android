@@ -12,23 +12,18 @@ import android.view.ViewGroup
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.*
 import android.widget.TextView
-import android.widget.Toast
 import com.beyondar.android.fragment.BeyondarFragmentSupport
 import com.beyondar.android.world.GeoObject
 import com.beyondar.android.world.World
 import io.nlopez.smartlocation.SmartLocation
 import com.google.android.gms.location.DetectedActivity
-import com.nytimes.android.external.store.base.impl.BarCode
+import com.samtakoj.schedule.view.CustomBeyondarViewAdapter
 import com.samtakoj.shedule.model.StopCsv
 import com.samtakoj.shedule.model.StopCsv_
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider
 import io.nlopez.smartlocation.location.providers.LocationManagerProvider
 import io.nlopez.smartlocation.location.providers.MultiFallbackProvider
-import rx.Observable
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 /**
  * Created by Александр on 11.03.2017.

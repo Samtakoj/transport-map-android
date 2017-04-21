@@ -1,4 +1,4 @@
-package com.samtakoj.schedule
+package com.samtakoj.schedule.view
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.TextView
 import com.beyondar.android.view.BeyondarViewAdapter
 import com.beyondar.android.view.OnClickBeyondarObjectListener
 import com.beyondar.android.world.BeyondarObject
+import com.samtakoj.schedule.R
 import java.util.ArrayList
 
 /**
@@ -29,7 +30,7 @@ class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context),
 
     override fun getView(beyondarObject: BeyondarObject?, recycledView: View?, parent: ViewGroup?): View? {
         if (!showViewOn.contains(beyondarObject)) {
-            return Util.nullHack()
+            return null
         }
 
         var view = recycledView
@@ -40,7 +41,7 @@ class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context),
         val textView = view?.findViewById(R.id.info) as TextView
         textView.text = "${beyondarObject?.name} -> ${"%.0f".format(beyondarObject?.distanceFromUser)}m"
 
-        setPosition(beyondarObject?.screenPositionTopRight)
+        setPosition(beyondarObject?.screenPositionBottomLeft)
 
         return view
     }
