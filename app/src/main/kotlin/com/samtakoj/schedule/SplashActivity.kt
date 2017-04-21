@@ -4,10 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.nytimes.android.external.store.base.impl.BarCode
 import com.samtakoj.schedule.api.ScheduleFetcher
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 /**
  * Created by artsiom.chuiko on 14/04/2017.
@@ -19,7 +16,7 @@ class SplashActivity: AppCompatActivity(), RequestPermissionCallback {
 
         ScheduleFetcher.loadIfEmpty(application as TransportApplication)
 
-        ApplicationPermissions.requestBasicOrStart(this, Intent(this, MainActivity::class.java))
+        ApplicationPermissions.requestBasic(this, this)
 
     }
 
