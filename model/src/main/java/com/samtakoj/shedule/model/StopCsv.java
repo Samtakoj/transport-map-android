@@ -4,16 +4,16 @@ import com.samtakoj.schedule.common.data.Position;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Generated;
 import io.objectbox.annotation.Keep;
+import io.objectbox.annotation.Generated;
 
 /**
  * Created by artsiom.chuiko on 17/04/2017.
  */
-@Entity
+@Entity(generateConstructors = false)
 public class StopCsv {
-    @Id(assignable = true)
     @Position(1)
+    @Id(assignable = true)
     private Long id;
     @Position(5)
     private String name;
@@ -30,7 +30,6 @@ public class StopCsv {
         this.ltd = ltd;
     }
 
-    @Generated(hash = 132338458)
     public StopCsv() {
     }
 
