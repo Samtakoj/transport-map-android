@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/textColorPrimary">
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="24dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp"
+        android:id="@+id/hourTextView" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/hourTextView"
+        android:layout_marginStart="33dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp"
+        android:id="@+id/minutesTextView" />
+</RelativeLayout>

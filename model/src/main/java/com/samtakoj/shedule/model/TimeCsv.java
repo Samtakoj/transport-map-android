@@ -3,6 +3,7 @@ package com.samtakoj.shedule.model;
 import com.samtakoj.shedule.model.converter.LongListConverter;
 import com.samtakoj.shedule.model.converter.WorkDayConverter;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.objectbox.annotation.Convert;
@@ -15,7 +16,7 @@ import io.objectbox.annotation.Generated;
  * Created by artsiom.chuiko on 17/04/2017.
  */
 @Entity
-public class TimeCsv {
+public class TimeCsv implements Serializable {
 
     @Id
     private Long id;
@@ -25,6 +26,8 @@ public class TimeCsv {
     private List<Long> timeTable;
     @Convert(converter = WorkDayConverter.class, dbType = String.class)
     private List<WorkDay> workDay;
+
+    static final long serialVersionUID = 536871008;
 
     public TimeCsv() {}
 

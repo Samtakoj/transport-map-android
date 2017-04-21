@@ -3,8 +3,8 @@ package com.samtakoj.schedule.data
 import android.util.Log
 import com.google.common.collect.Lists
 import com.nytimes.android.external.store.base.Parser
-import com.samtakoj.schedule.model.TimeCsv
-import com.samtakoj.schedule.model.WorkDay
+import com.samtakoj.shedule.model.TimeCsv
+import com.samtakoj.shedule.model.WorkDay
 import okhttp3.ResponseBody
 import okio.BufferedSource
 import retrofit2.Converter
@@ -52,12 +52,12 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
 
         val firstCommaIndex: Int = line.indexOf(",")
         var routeIdString: String = line.substring(0, firstCommaIndex)
-        var routeId: Int
+        var routeId: Long
         try {
-            routeId = routeIdString.toInt()
+            routeId = routeIdString.toLong()
         } catch (e: Exception) {
             routeIdString = line.substring(1, firstCommaIndex)
-            routeId = routeIdString.toInt()
+            routeId = routeIdString.toLong()
         }
 
         val dataString: String = line.substring(firstCommaIndex + 1)
@@ -74,37 +74,20 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
 
         val timeTable = getTimeTable(timesData, blocks[4])
         val workDays = getWorkDay(blocks[3], maxIndex)
-//        val parsedBlock = blocks[3].split(delimiters = ",")
-//        val countIntervalInWeekDays = Lists.newArrayList<Int>()
-//        val weekDays = Lists.newArrayList<String>()
-//        parsedBlock.withIndex().forEach { (i, str) ->
-//            if (i % 2 == 0) {
-//                weekDays.add(str)
-//            } else {
-//                countIntervalInWeekDays.add(str.toInt())
-//            }
-//        }
-
 
         return TimeCsv(routeId, maxIndex,timeTable, workDays)
     }
 
-    private fun getTimeTable(timesData: List<String>, intervals: String) : List<Long>/*List<List<Long>>*/ {
+    private fun getTimeTable(timesData: List<String>, intervals: String) : List<Long> {
         val timesDataLength = timesData.count()
 
         val timetable = Lists.newArrayList<Long>()
         var previousTime: Long = 0
-        var index: Int = 0
         timetable.addAll(timesData.map {
             previousTime += it.toInt()
             previousTime
         })
-//        for (token in timesData) {
-//            previousTime += token.toInt()
-//            timetable.add(previousTime)
-//        }
 
-        var j = 0
         for (intervalBlocks in intervals.split(",,")) {
             if (intervalBlocks.isEmpty()) {
                 continue
@@ -112,39 +95,23 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
 
             val deltas = intervalBlocks.split(",")
             var delta: Int = 0
-            var left: Int = 0
-            index = 0
+            var index: Int = 0
 
             var repeatTimes = 0
+            var skipCount = 0
             while (index < deltas.count()) {
 
                 delta = if(index == 0) deltas[index++].toInt() else delta + deltas[index++].toInt() - 5
 
                 if(deltas.count() > 1)
-                    repeatTimes = if(index >= deltas.count()) timesDataLength - deltas[index - 1].toInt() else deltas[index++].toInt()
+                    repeatTimes = if(index >= deltas.count()) timesDataLength - skipCount else deltas[index++].toInt()
                 else
                     repeatTimes = timesDataLength
                 for(i in 1..repeatTimes) {
                     timetable.add(timetable[timetable.count() - timesDataLength] + delta)
                 }
+                skipCount += repeatTimes
             }
-//            while (index < deltas.count()) {
-//                if (left <= 0) {
-//                    delta = 5
-//                    left = timesDataLength
-//                }
-//
-//                delta += deltas[index++].toInt() - 5
-//
-//                val repeatTimes: Int = if (index == deltas.count()) left else delta
-//                left -= repeatTimes
-//
-//                j = 0
-//                while (j < repeatTimes) {
-//                    timetable.add(timetable[timetable.count() - timesDataLength] + delta)
-//                    j++
-//                }
-//            }
         }
 
         return timetable
@@ -158,7 +125,6 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
         var sum = 0
         for ((index, token) in tokens.withIndex()) {
             if (index % 2 == 0) {
-//                countInterval = if (index == tokens.count() - 1) totalCount - sum else countInterval
                 result.add(WorkDay(token, if (index == tokens.count() - 1) totalCount - sum else countInterval))
             } else {
                 countInterval = token.toInt()

@@ -24,6 +24,8 @@ public class StopCsv implements Serializable {
     @Position(8)
     private Long ltd;
 
+    static final long serialVersionUID = 536871008;
+
     @Keep
     public StopCsv(Long id, String name, Long lng, Long ltd) {
         this.id = id;

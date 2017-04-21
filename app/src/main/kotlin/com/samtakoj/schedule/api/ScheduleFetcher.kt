@@ -20,6 +20,58 @@ object ScheduleFetcher {
     lateinit private var routes: Observable<RouteCsv>
     lateinit private var times: Observable<TimeCsv>
 
+    fun loadIfEmpty(app: TransportApplication) {
+        val stopBox = app.boxStore.boxFor(StopCsv::class.java)
+        val routeBox = app.boxStore.boxFor(RouteCsv::class.java)
+        val timeBox = app.boxStore.boxFor(TimeCsv::class.java)
+
+        val isEmpty = stopBox.count() < 100L || routeBox.count() < 100L || timeBox.count() < 100L
+        if(isEmpty) {
+            var previousStop = StopCsv(1, "", 1, 1)
+            app.persistedStopStore.get(BarCode("Stop", "stops"))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { stops ->
+                        val newStops = stops.map { stop ->
+                            stop.name = if (stop.name != "") stop.name else previousStop.name
+                            stop.id = if (stop.id != 0L) stop.id else previousStop.id
+                            stop.lng = if (stop.lng != 0L) stop.lng else previousStop.lng
+                            stop.ltd = if (stop.ltd != 0L) stop.ltd else previousStop.ltd
+                            previousStop = stop
+                            stop
+                        }
+                        stopBox.put(newStops)
+                    }
+
+            var previousRoute = RouteCsv("", "", "", "", 1, "")
+            app.persistedRouteStore.get(BarCode("Route", "routes"))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { routes ->
+                        val newRoutes = routes.map { route ->
+                            route.id = if (route.id != 0L) route.id else previousRoute.id
+                            route.name = if (route.name != null && route.name.trim() != "") route.name else previousRoute.name
+                            route.num = if (route.num != null && route.num.trim() != "") route.num else previousRoute.num
+                            route.stops = if (route.stops != null && route.stops.trim() != "") route.stops else previousRoute.stops
+                            route.transportType = if (route.transportType != null && route.transportType.trim() != "") route.transportType else previousRoute.transportType
+                            route.weekDays = if (route.weekDays != null && route.weekDays.trim() != "") route.weekDays else previousRoute.weekDays
+                            previousRoute = route
+                            route
+                        }.groupBy { route ->
+                            "${route.num}-${route.transportType}"
+                        }.flatMap { grouped ->
+                            grouped.value.take(2)
+                        }
+                        routeBox.put(newRoutes)
+                    }
+
+            app.persistedTimeStore.get(BarCode("Time", "times"))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(timeBox::put)
+        }
+    }
+
     fun stops (app: TransportApplication): Observable<StopCsv>  {
         var previous = StopCsv(1, "", 1, 1)
         return app.persistedStopStore.get(BarCode("Stop", "stops"))
