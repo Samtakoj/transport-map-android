@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Created by artsiom.chuiko on 17/04/2017.
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 public @interface Position {
     int value() default  0;
