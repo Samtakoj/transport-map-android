@@ -19,15 +19,20 @@ object ApplicationPermissions {
             Manifest.permission.CAMERA
     )
 
-    fun requestBasicOrStart(activity: Activity, intent: Intent) {
+    fun requestBasic(activity: Activity, callback: RequestPermissionCallback?): Unit {
         when {
             !INITIAL.map { ContextCompat.checkSelfPermission(activity, it) == PackageManager.PERMISSION_GRANTED }.fold(true) { init, res ->
                 init && res
-            } -> ActivityCompat.requestPermissions(activity, INITIAL, INITIAL_REQUEST)
+            } -> {
+                ActivityCompat.requestPermissions(activity, INITIAL, INITIAL_REQUEST)
+            }
             else -> {
-                activity.startActivity(intent)
-                activity.finish()
+                callback?.permissionsWereGranted()
             }
         }
     }
+}
+
+interface RequestPermissionCallback {
+    fun permissionsWereGranted(): Unit
 }

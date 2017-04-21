@@ -12,13 +12,15 @@ import android.view.ViewGroup
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.*
 import android.widget.TextView
-import android.widget.Toast
 import com.beyondar.android.fragment.BeyondarFragmentSupport
 import com.beyondar.android.world.GeoObject
 import com.beyondar.android.world.World
 import io.nlopez.smartlocation.SmartLocation
 import com.google.android.gms.location.DetectedActivity
+<<<<<<< HEAD
+=======
 import com.nytimes.android.external.store.base.impl.BarCode
+>>>>>>> origin/master
 import com.samtakoj.schedule.view.CustomBeyondarViewAdapter
 import com.samtakoj.shedule.model.StopCsv
 import com.samtakoj.shedule.model.StopCsv_
@@ -26,10 +28,6 @@ import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider
 import io.nlopez.smartlocation.location.providers.LocationManagerProvider
 import io.nlopez.smartlocation.location.providers.MultiFallbackProvider
-import rx.Observable
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 /**
  * Created by Александр on 11.03.2017.
@@ -56,11 +54,6 @@ class TestActivity : AppCompatActivity(){
                 .withMenuLayout(R.layout.activity_main)
                 .inject()
 
-        val startTime = System.currentTimeMillis()
-        val stopBox = (application as TransportApplication).boxStore.boxFor(StopCsv::class.java)
-        val list = stopBox.query().order(StopCsv_.id).build().find()
-        Toast.makeText(this, "Count: ${list.size}, time: ${System.currentTimeMillis() - startTime}", Toast.LENGTH_LONG).show()
-
         val lat = find<TextView>(R.id.lat)
         val lng = find<TextView>(R.id.lng)
 
@@ -71,62 +64,42 @@ class TestActivity : AppCompatActivity(){
         val fragment = supportFragmentManager.findFragmentByTag("TestFragment") ?: BeyondarFragmentSupport()
         supportFragmentManager.beginTransaction().replace(MainActivityUi.ContainerID, fragment, "TestFragment").commit()
 
+        val playServicesProvider = LocationGooglePlayServicesProvider()
+        playServicesProvider.setCheckLocationSettings(true)
+        playServicesProvider.setLocationSettingsAlwaysShow(true)
+        val provider = MultiFallbackProvider.Builder().
+                withProvider(playServicesProvider).
+                withProvider(LocationManagerProvider()).
+                build()
+
+        val world = World(this@TestActivity)
+        SmartLocation.with(this@TestActivity).location(provider).start { location ->
+            world.setLocation(location)
+            //fragment.showFPS(true)
+        }
+
+        if (location?.latitude != null) world.setLocation(location)
+        world.setDefaultImage(R.drawable.flymer)
+        val stops = (application as TransportApplication).boxStore.boxFor(StopCsv::class.java).query().order(StopCsv_.id).build().find()
+        Log.i("TEST", "$stops")
+        stops.map { stop ->
+            val obj = GeoObject(stop.id.toLong())
+            obj.setGeoPosition(stop.ltd * 0.00001, stop.lng * 0.00001)
+            obj.setImageResource(R.drawable.goal)
+            obj.name = stop.name
+            obj
+        }.forEach { world.addBeyondarObject(it) }
+
         supportFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
             override fun onFragmentViewCreated(fm: FragmentManager?, f: Fragment?, v: View?, savedInstanceState: Bundle?) {
                 super.onFragmentViewCreated(fm, f, v, savedInstanceState)
 
-                val playServicesProvider = LocationGooglePlayServicesProvider()
-                playServicesProvider.setCheckLocationSettings(true)
-                playServicesProvider.setLocationSettingsAlwaysShow(true)
-                val provider = MultiFallbackProvider.Builder().
-                        withProvider(playServicesProvider).
-                        withProvider(LocationManagerProvider()).
-                        build()
-                SmartLocation.with(this@TestActivity).location(provider).start { location ->
-//                    val myLocation = Location(location)
-//                    myLocation.latitude = 53.928738
-//                    myLocation.longitude = 27.587694
-                    val world = World(this@TestActivity)
-                    world.setLocation(location)
-                    world.setDefaultImage(R.drawable.flymer)
-                    (application as TransportApplication).persistedStopStore.get(BarCode("Stop", "stops"))
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .flatMap { Observable.from(it) }
-                            .map({ stop ->
-                                stop.name = if (stop.name != "") stop.name else previous.name
-                                stop.id = if (stop.id != 0L) stop.id else previous.id
-                                stop.lng = if (stop.lng != 0L) stop.lng else previous.lng
-                                stop.ltd = if (stop.ltd != 0L) stop.ltd else previous.ltd
-                                previous = stop
-                                return@map stop
-                            }).map { stop ->
-                        val obj = GeoObject(stop.id.toLong())
-                        obj.setGeoPosition(stop.ltd * 0.00001, stop.lng * 0.00001)
-                        obj.setImageResource(R.drawable.goal)
-                        obj.name = stop.name
-                        return@map obj
-                    }.subscribe(object: Subscriber<GeoObject>() {
-                        override fun onCompleted() {
-                            (fragment as BeyondarFragmentSupport).world = world
-                            fragment.showFPS(true)
-                            val customBeyondarViewAdapter = CustomBeyondarViewAdapter(this@TestActivity)
-                            fragment.setOnClickBeyondarObjectListener(customBeyondarViewAdapter)
-                            fragment.setBeyondarViewAdapter(customBeyondarViewAdapter)
-                            fragment.maxDistanceToRender = 800f
-                            fragment.distanceFactor = 30f
-//                            fragment.pushAwayDistance = 80f
-//                            LowPassFilter.ALPHA = 0.1f
-                            Log.i("SCHEDULE", "World size: ${world.beyondarObjectLists[0].size()}")
-                        }
-                        override fun onNext(t: GeoObject?) {
-                            world.addBeyondarObject(t)
-                        }
-                        override fun onError(e: Throwable?) {
-                            e?.printStackTrace()
-                        }
-                    })
-                }
+                (fragment as BeyondarFragmentSupport).world = world
+                val customBeyondarViewAdapter = CustomBeyondarViewAdapter(this@TestActivity)
+                fragment.setOnClickBeyondarObjectListener(customBeyondarViewAdapter)
+                fragment.setBeyondarViewAdapter(customBeyondarViewAdapter)
+                fragment.maxDistanceToRender = 500f
+                fragment.distanceFactor = 30f
             }
         }, true)
     }

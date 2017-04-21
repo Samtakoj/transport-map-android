@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.nytimes.android.external.store.base.impl.BarCode
 import com.samtakoj.schedule.api.ScheduleFetcher
-import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
 /**
  * Created by artsiom.chuiko on 14/04/2017.
  */
-class SplashActivity: AppCompatActivity() {
+class SplashActivity: AppCompatActivity(), RequestPermissionCallback {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,5 +32,10 @@ class SplashActivity: AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    override fun permissionsWereGranted() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }
