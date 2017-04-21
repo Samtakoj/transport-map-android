@@ -83,13 +83,11 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
 
         val timetable = Lists.newArrayList<Long>()
         var previousTime: Long = 0
-        var index: Int = 0
         timetable.addAll(timesData.map {
             previousTime += it.toInt()
             previousTime
         })
 
-        var j = 0
         for (intervalBlocks in intervals.split(",,")) {
             if (intervalBlocks.isEmpty()) {
                 continue
@@ -97,20 +95,22 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
 
             val deltas = intervalBlocks.split(",")
             var delta: Int = 0
-            index = 0
+            var index: Int = 0
 
             var repeatTimes = 0
+            var skipCount = 0
             while (index < deltas.count()) {
 
                 delta = if(index == 0) deltas[index++].toInt() else delta + deltas[index++].toInt() - 5
 
                 if(deltas.count() > 1)
-                    repeatTimes = if(index >= deltas.count()) timesDataLength - deltas[index - 1].toInt() else deltas[index++].toInt()
+                    repeatTimes = if(index >= deltas.count()) timesDataLength - skipCount else deltas[index++].toInt()
                 else
                     repeatTimes = timesDataLength
                 for(i in 1..repeatTimes) {
                     timetable.add(timetable[timetable.count() - timesDataLength] + delta)
                 }
+                skipCount += repeatTimes
             }
         }
 

@@ -10,6 +10,7 @@ import com.samtakoj.schedule.view.StopListViewAdapter
 import com.samtakoj.shedule.model.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
+import java.io.Serializable
 
 /**
  * Created by Александр on 11.04.2017.
@@ -48,25 +49,12 @@ class StopsActivity : AppCompatActivity() {
         listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             Log.i("STOPS_SCHEDULE", "itemClick: position = $position, id = $id")
 
-            val test = ArrayList<MyTestModel>()
             Log.i("STOPS_SCHEDULE", "Stop: ${time.timeTable.count()}")
 
-            var skipCount = 0
-            time.workDay.forEach {
-                test.add(MyTestModel(it, time.timeTable.subList(skipCount + position * time.intervalCount, position * time.intervalCount + it.countInterval)))
-                skipCount += it.countInterval
-            }
-
             val stop = stops[position]
-            Log.i("STOPS_SCHEDULE", "Stop: ${stop.name}")
+//            Log.i("STOPS_SCHEDULE", "Stop: ${stop.name}")
 
-            test.forEach {
-                var timeString = ""
-                it.timeTable.forEach {
-                    timeString += getTimeString(it) + "; "
-                }
-                Log.i("STOPS_SCHEDULE", "Stop TIME: ${it.workDay} ---- $timeString")
-            }
+            startActivity<TimeActivity>("time" to time, "stopPosition" to position, "stopName" to stop.name)
 
         }
 
@@ -74,7 +62,8 @@ class StopsActivity : AppCompatActivity() {
 
     fun getTimeString(time: Long): String {
         val minute = time % 60
-        return "${time / 60}:${if(minute < 10) '0' + minute.toString() else minute}"
+        val hours = time / 60
+        return "${if(hours >= 24) '0' + (hours % 24).toString() else hours}:${if(minute < 10) '0' + minute.toString() else minute}"
     }
 
     override fun onDestroy() {
