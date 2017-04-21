@@ -1,4 +1,4 @@
-package com.samtakoj.schedule
+package com.samtakoj.schedule.view
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,8 @@ import android.widget.TextView
 import com.beyondar.android.view.BeyondarViewAdapter
 import com.beyondar.android.view.OnClickBeyondarObjectListener
 import com.beyondar.android.world.BeyondarObject
+import com.samtakoj.schedule.R
+import com.samtakoj.schedule.Util
 import java.util.ArrayList
 
 /**

@@ -2,6 +2,8 @@ package com.samtakoj.shedule.model;
 
 import com.samtakoj.schedule.common.data.Position;
 
+import java.io.Serializable;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Generated;
@@ -11,7 +13,7 @@ import io.objectbox.annotation.Keep;
  * Created by artsiom.chuiko on 17/04/2017.
  */
 @Entity
-public class StopCsv {
+public class StopCsv implements Serializable {
     @Id(assignable = true)
     @Position(1)
     private Long id;
@@ -21,6 +23,8 @@ public class StopCsv {
     private Long lng;
     @Position(8)
     private Long ltd;
+
+    static final long serialVersionUID = 536871008;
 
     @Keep
     public StopCsv(Long id, String name, Long lng, Long ltd) {

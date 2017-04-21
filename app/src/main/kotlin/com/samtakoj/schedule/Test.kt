@@ -19,6 +19,7 @@ import com.beyondar.android.world.World
 import io.nlopez.smartlocation.SmartLocation
 import com.google.android.gms.location.DetectedActivity
 import com.nytimes.android.external.store.base.impl.BarCode
+import com.samtakoj.schedule.view.CustomBeyondarViewAdapter
 import com.samtakoj.shedule.model.StopCsv
 import com.samtakoj.shedule.model.StopCsv_
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder

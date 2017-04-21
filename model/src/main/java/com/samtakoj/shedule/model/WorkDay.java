@@ -1,13 +1,16 @@
 package com.samtakoj.shedule.model;
 
+import java.io.Serializable;
+
 /**
  * Created by artsiom.chuiko on 17/04/2017.
  */
 
-public class WorkDay {
+public class WorkDay implements Serializable {
 
     private String weekDay;
     private Integer countInterval;
+    static final long serialVersionUID = 536871008;
 
     public WorkDay() {}
 

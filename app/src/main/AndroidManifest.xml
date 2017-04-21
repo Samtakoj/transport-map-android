@@ -27,6 +27,10 @@
             android:name=".TestActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".StopsActivity"
+            android:screenOrientation="portrait">
+        </activity>
         <activity android:name=".SplashActivity" android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
