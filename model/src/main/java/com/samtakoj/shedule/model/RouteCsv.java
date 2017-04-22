@@ -2,6 +2,8 @@ package com.samtakoj.shedule.model;
 
 import com.samtakoj.schedule.common.data.Position;
 
+import java.io.Serializable;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Keep;
@@ -11,7 +13,7 @@ import io.objectbox.annotation.Generated;
  * Created by artsiom.chuiko on 17/04/2017.
  */
 @Entity
-public class RouteCsv {
+public class RouteCsv implements Serializable {
     @Position(1)
     private String num;
     @Position(4)
@@ -26,6 +28,8 @@ public class RouteCsv {
     @Position(15)
     private String stops;
 
+    static final long serialVersionUID = 536871008;
+
     @Keep
     public RouteCsv(String num, String transportType, String name,
                     String weekDays, Long id, String stops) {
@@ -37,7 +41,6 @@ public class RouteCsv {
         this.stops = stops;
     }
 
-    @Generated(hash = 1269110557)
     public RouteCsv() {
     }
 

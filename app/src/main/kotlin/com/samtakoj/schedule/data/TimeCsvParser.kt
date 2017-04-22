@@ -125,9 +125,8 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
         var sum = 0
         for ((index, token) in tokens.withIndex()) {
             if (index % 2 == 0) {
+                countInterval = if(index != tokens.count() - 1) tokens[index + 1].toInt() else 0
                 result.add(WorkDay(token, if (index == tokens.count() - 1) totalCount - sum else countInterval))
-            } else {
-                countInterval = token.toInt()
                 sum += countInterval
             }
         }

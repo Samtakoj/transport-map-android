@@ -35,6 +35,9 @@ allprojects {
             url "http://objectbox.net/beta-repo/"
         }
         maven {
+            url 'https://jitpack.io'
+        }
+        maven {
             url 'https://dl.bintray.com/wangyuwei/maven'
         }
         mavenCentral()
