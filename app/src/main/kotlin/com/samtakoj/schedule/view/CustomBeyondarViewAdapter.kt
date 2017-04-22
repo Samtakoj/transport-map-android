@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import android.widget.TextView
 import com.beyondar.android.view.BeyondarViewAdapter
 import com.beyondar.android.view.OnClickBeyondarObjectListener
@@ -38,6 +40,11 @@ class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context),
             view = inflater.inflate(R.layout.object_view, null)
         }
 
+        val arrString = arrayListOf<String>("test","test","test","test","test","test","test","test","test","test","test","test")
+        val listView = view?.findViewById(R.id.testListView) as ListView
+        val adapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, arrString)
+        listView.adapter = adapter
+        adapter.notifyDataSetChanged()
         val textView = view?.findViewById(R.id.info) as TextView
         textView.text = "${beyondarObject?.name} -> ${"%.0f".format(beyondarObject?.distanceFromUser)}m"
 
