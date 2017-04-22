@@ -1,9 +1,13 @@
 package com.samtakoj.schedule
 
+import android.app.Activity
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.view.ViewManager
+import me.wangyuwei.particleview.ParticleView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
+import org.jetbrains.anko.custom.ankoView
 
 /**
  * Created by artsiom.chuiko on 30/03/2017.
@@ -36,8 +40,16 @@ class MainActivityUi: AnkoComponent<TestActivity> {
     }
 }
 
+inline fun ViewManager.particleView(theme: Int = 0) = particleView(theme) {}
+inline fun ViewManager.particleView(theme: Int = 0, init: ParticleView.() -> Unit) = ankoView({ ParticleView(it, null) }, theme, init)
+
 class SplashActivityUi: AnkoComponent<SplashActivity> {
-    override fun createView(ui: AnkoContext<SplashActivity>): View {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun createView(ui: AnkoContext<SplashActivity>) = with(ui) {
+        verticalLayout {
+            lparams(width = matchParent, height = matchParent)
+            particleView {
+
+            }
+        }
     }
 }
