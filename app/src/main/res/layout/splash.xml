@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pv="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <me.wangyuwei.particleview.ParticleView
+        android:id="@+id/splash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#63c4cf"
+        pv:pv_background_color="#ffffff"
+        pv:pv_host_text="Transport"
+        pv:pv_particle_text="MINSK"
+        pv:pv_particle_text_size="27sp"
+        pv:pv_text_color="#08707e" />
+
+</LinearLayout>
