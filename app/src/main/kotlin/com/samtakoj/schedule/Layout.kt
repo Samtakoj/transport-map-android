@@ -1,10 +1,10 @@
 package com.samtakoj.schedule
 
-import android.app.Activity
+import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.ViewManager
-import me.wangyuwei.particleview.ParticleView
+import com.samtakoj.schedule.view.particle.ParticleView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.custom.ankoView
@@ -40,15 +40,25 @@ class MainActivityUi: AnkoComponent<TestActivity> {
     }
 }
 
-inline fun ViewManager.particleView(theme: Int = 0) = particleView(theme) {}
-inline fun ViewManager.particleView(theme: Int = 0, init: ParticleView.() -> Unit) = ankoView({ ParticleView(it, null) }, theme, init)
+inline fun ViewManager.particleView(theme: Int = 0, init: ParticleView.() -> Unit) = ankoView(::ParticleView, theme, init)
 
 class SplashActivityUi: AnkoComponent<SplashActivity> {
     override fun createView(ui: AnkoContext<SplashActivity>) = with(ui) {
         verticalLayout {
             lparams(width = matchParent, height = matchParent)
             particleView {
-
+                lparams(width = matchParent, height = matchParent)
+                backgroundColor = Color.argb(255, 99, 196, 207)
+                particleTextSize = sp(27)
+                bgColor = Color.argb(255, 255, 255, 255)
+                hostText = "Transport"
+                particleText = "MINSK"
+                particleColor = Color.argb(255, 8, 112, 126)
+            }.let {
+                it.startAnim()
+                it.setOnParticleAnimListener {
+                    ApplicationPermissions.requestBasic(ui.ctx  as SplashActivity, ui.ctx as SplashActivity)
+                }
             }
         }
     }
