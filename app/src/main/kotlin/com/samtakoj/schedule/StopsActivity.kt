@@ -1,16 +1,18 @@
 package com.samtakoj.schedule
 
-import android.R
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Gravity
 import android.widget.AdapterView
 import android.widget.ListView
-import com.samtakoj.schedule.view.StopListViewAdapter
+import android.widget.TextView
 import com.samtakoj.shedule.model.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
-import java.io.Serializable
+import org.qap.ctimelineview.TimelineRow
+import org.qap.ctimelineview.TimelineViewAdapter
 
 /**
  * Created by Александр on 11.04.2017.
@@ -18,19 +20,39 @@ import java.io.Serializable
 
 class StopsActivity : AppCompatActivity() {
 
+    var isChange: Boolean = false
+    lateinit  var stops: List<StopCsv>
+    lateinit var route: RouteCsv
+    lateinit var adapter: TimelineViewAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val stops = intent.extras.getSerializable("stops") as List<StopCsv>
-        val routeId = intent.extras.getLong("routeId")
-
-        val routeBox = (application as TransportApplication).boxStore.boxFor(RouteCsv::class.java)
-        val route = routeBox.query().equal(RouteCsv_.id, routeId).build().findFirst()
+        val stopsTo = intent.extras.getSerializable("stopsTo") as List<StopCsv>
+        stops = stopsTo
+        val stopsFrom = intent.extras.getSerializable("stopsFrom") as List<StopCsv>
+        val routeTo = intent.extras.getSerializable("routeTo") as RouteCsv
+        route = routeTo
+        val routeFrom = intent.extras.getSerializable("routeFrom") as RouteCsv
 
         verticalLayout {
             toolbar {
                 textView {
-                    text = "${route.num}-${route.transportType}: ${route.name}"
+                    id = 1
+                    text = route.name
+                }
+                imageView {
+                    lparams { gravity = Gravity.RIGHT }
+                    imageResource = R.drawable.change_route
+                    onClick {
+                        if(isChange) {
+                            changeStopList(stopsTo, routeTo)
+                            isChange = false
+                        } else {
+                            changeStopList(stopsFrom, routeFrom)
+                            isChange = true
+                        }
+                    }
                 }
             }
             listView {
@@ -38,16 +60,18 @@ class StopsActivity : AppCompatActivity() {
             }
         }
 
-        val timeBox = (application as TransportApplication).boxStore.boxFor(TimeCsv::class.java)
-        val time = timeBox.query().equal(TimeCsv_.routeId, routeId).build().findFirst()
-
         val listView = find<ListView>(321)
-        val adapter = StopListViewAdapter(this, stops as ArrayList<StopCsv>)
+        adapter = TimelineViewAdapter(this, 0, ArrayList(stops.map(this::convertToRow)), false)
+
         listView.adapter = adapter
         adapter.notifyDataSetChanged()
 
+        val timeBox = (application as TransportApplication).boxStore.boxFor(TimeCsv::class.java)
+
         listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             Log.i("STOPS_SCHEDULE", "itemClick: position = $position, id = $id")
+
+            val time = timeBox.query().equal(TimeCsv_.routeId, route.id).build().findFirst()
 
             Log.i("STOPS_SCHEDULE", "Stop: ${time.timeTable.count()}")
 
@@ -60,10 +84,23 @@ class StopsActivity : AppCompatActivity() {
 
     }
 
-    fun getTimeString(time: Long): String {
-        val minute = time % 60
-        val hours = time / 60
-        return "${if(hours >= 24) '0' + (hours % 24).toString() else hours}:${if(minute < 10) '0' + minute.toString() else minute}"
+    private fun convertToRow(stop: StopCsv): TimelineRow {
+        val row = TimelineRow(stop.id.toInt(), null, stop.name, "")
+        row.bellowLineColor = Color.argb(255, 66, 244, 122)
+        row.bellowLineSize = 8
+        row.backgroundSize = 30
+        row.backgroundColor = Color.argb(255, 66, 244, 122)
+        return row
+    }
+
+    private fun changeStopList(newStops: List<StopCsv>, newRoute: RouteCsv) {
+        stops = newStops
+        route = newRoute
+        val textView = find<TextView>(1)
+        textView.text = route.name
+
+        adapter.clear()
+        adapter.addAll(ArrayList(stops.map(this::convertToRow)))
     }
 
     override fun onDestroy() {

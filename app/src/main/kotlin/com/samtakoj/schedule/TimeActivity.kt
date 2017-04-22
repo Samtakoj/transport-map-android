@@ -23,7 +23,7 @@ class TimeActivity : AppCompatActivity() {
         val stopPosition = intent.extras.getInt("stopPosition")
         val stopName = intent.extras.getString("stopName")
 
-        Log.i("TIMES_SCHEDULE", "Stop TIME: $stopName")
+        Log.i("TIMES_SCHEDULE", "Stop TIME: ${time.workDay}")
 
         val test = ArrayList<StopsActivity.MyTestModel>()
         var skipCount = time.intervalCount * stopPosition

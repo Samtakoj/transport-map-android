@@ -57,5 +57,6 @@ dependencies {
     compile 'com.yarolegovich:sliding-root-nav:1.0.2'
     compile 'io.objectbox:objectbox-android:0.9.10'
     compile 'com.google.android.gms:play-services-gcm:10.2.0'
+    compile 'com.github.qapqap:TimelineView:v1.5'
     testCompile 'junit:junit:4.12'
 }
