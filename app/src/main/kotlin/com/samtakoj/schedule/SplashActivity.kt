@@ -24,7 +24,7 @@ class SplashActivity: AppCompatActivity(), RequestPermissionCallback {
         when (requestCode) {
             ApplicationPermissions.INITIAL_REQUEST -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity(Intent(this, TestActivity::class.java))
+                    startActivity(Intent(this, MainActivity::class.java))
                 }
                 finish()
             }
@@ -32,7 +32,7 @@ class SplashActivity: AppCompatActivity(), RequestPermissionCallback {
     }
 
     override fun permissionsWereGranted() {
-        startActivity(Intent(this, TestActivity::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 }

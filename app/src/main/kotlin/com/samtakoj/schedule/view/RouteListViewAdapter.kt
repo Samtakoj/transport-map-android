@@ -4,12 +4,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.samtakoj.schedule.R
 import com.samtakoj.shedule.model.RouteCsv
 
-class RouteListViewAdapter(val context: Context , val routes: ArrayList<RouteCsv>): BaseAdapter() {
+class RouteListViewAdapter(context: Context , val routes: ArrayList<RouteCsv>): ArrayAdapter<RouteCsv>(context, 0) {
 
     class ViewHolder(val textView: TextView)
 
@@ -30,7 +31,7 @@ class RouteListViewAdapter(val context: Context , val routes: ArrayList<RouteCsv
         }
 
         val item = getItem(position)
-        viewHolder.textView.text = "${item.num}-${item.transportType}: ${item.name}"
+        viewHolder.textView.text = "${item.num}:\t${item.name}"
 
         return tempConvertView
     }
@@ -47,7 +48,14 @@ class RouteListViewAdapter(val context: Context , val routes: ArrayList<RouteCsv
         return routes.count()
     }
 
-    fun addAll(collection: Collection<RouteCsv>) {
+    override fun clear() {
+        synchronized(mLock) {
+            this.routes.clear()
+        }
+        notifyDataSetChanged()
+    }
+
+    override fun addAll(collection: Collection<RouteCsv>) {
         synchronized(mLock) {
             routes.addAll(collection)
         }

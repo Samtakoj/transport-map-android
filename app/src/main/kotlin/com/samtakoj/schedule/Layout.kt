@@ -49,11 +49,11 @@ class SplashActivityUi: AnkoComponent<SplashActivity> {
             particleView {
                 lparams(width = matchParent, height = matchParent)
                 backgroundColor = Color.argb(255, 99, 196, 207)
+                bgColor = Color.argb(255, 99, 196, 207)
+                particleColor = Color.argb(255, 255, 255, 255)
                 particleTextSize = sp(27)
-                bgColor = Color.argb(255, 255, 255, 255)
                 hostText = "Transport"
                 particleText = "MINSK"
-                particleColor = Color.argb(255, 8, 112, 126)
             }.let {
                 it.startAnim()
                 it.setOnParticleAnimListener {

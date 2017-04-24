@@ -97,7 +97,7 @@ class ParticleView(context: Context) : View(context) {
         circlePaint.textSize = particleTextSize.toFloat()
 
         particleTextPaint.color = bgColor
-        hostTextPaint.color = bgColor
+        hostTextPaint.color = Color.argb(255, 99, 196, 207)
         circlePaint.color = particleColor
         hostBgPaint.color = particleColor
     }
