@@ -32,7 +32,7 @@ class TimeListViewAdapter(val context: Context , val time: Map<Long, List<Long>>
         val hour = getItemId(position)
         val item = getItem(hour.toInt())
         viewHolder.hourTextView.text = hour.toString()
-        viewHolder.minutesTextView.text = item.toString()
+        viewHolder.minutesTextView.text = item.toString().replace(Regex.fromLiteral("[,]"), "")
 
         return tempConvertView
     }

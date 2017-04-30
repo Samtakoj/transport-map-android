@@ -1,31 +1,35 @@
 package com.samtakoj.schedule
 
 import android.app.ActionBar
+import android.app.Fragment
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.v4.app.FragmentManager
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ListView
 import io.nlopez.smartlocation.SmartLocation
 import org.jetbrains.anko.*
 import android.widget.AdapterView.OnItemClickListener
+import com.beyondar.android.fragment.BeyondarFragmentSupport
+import com.samtakoj.schedule.view.CustomBeyondarViewAdapter
 import com.samtakoj.schedule.view.RouteListViewAdapter
 import com.samtakoj.schedule.view.TypeTransportAdapter
+import com.samtakoj.schedule.view.tab.RouteListFragment
 import com.samtakoj.shedule.model.*
 import io.objectbox.Box
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.onTabSelectedListener
 import org.jetbrains.anko.design.tabLayout
-import org.jetbrains.anko.support.v4.onPageChangeListener
 import org.jetbrains.anko.support.v4.viewPager
-import java.lang.Long.parseLong
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -60,8 +64,8 @@ class MainActivity : AppCompatActivity() {
 
                 tabLayout {
                     id = R.id.lunch_tabs
-                    setTabTextColors(Color.WHITE, Color.GREEN)
-                    setSelectedTabIndicatorColor(Color.GREEN)
+                    setTabTextColors(Color.LTGRAY, Color.WHITE)
+                    setSelectedTabIndicatorColor(Color.WHITE)
                 }
             }
             viewPager {
@@ -76,27 +80,41 @@ class MainActivity : AppCompatActivity() {
             "${route.num}-${route.transportType}"
         }.flatMap { grouped ->
             grouped.value.take(1)
-        }.groupBy { it.transportType }
+        }.groupBy { it.transportType }.mapValues {
+            val transportType = it.key
+            it.value.sortedBy {
+                if(transportType != "metro") {
+                    var char = it.num.last()
+                    var counter = 0
+                    while (!"0123456789".contains(char)) {
+                        counter++
+                        char = it.num.substring(0, it.num.length - counter).last()
+                    }
+                    it.num.substring(0, it.num.length - counter).toInt()
+                } else {
+                    it.num.substring(1).toInt()
+                }
+            }
+        }
+
 
 //        setSupportActionBar(find<Toolbar>(R.id.lunch_toolbar))
         viewPager = find<ViewPager>(R.id.lunch_pager_container)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(find<TabLayout>(R.id.lunch_tabs)))
 
         val listAdapter = RouteListViewAdapter(this, ArrayList<RouteCsv>())
+
         listAdapter.clear()
-        listAdapter.addAll(routeList.getValue(type).sortedBy {
-            if(type != "metro") {
-                var char = it.num.last()
-                var counter = 0
-                while (!"0123456789".contains(char)) {
-                    counter++
-                    char = it.num.substring(0, it.num.length - counter).last()
-                }
-                it.num.substring(0, it.num.length - counter).toInt()
-            } else {
-                it.num.substring(1).toInt()
+        listAdapter.addAll(routeList.getValue(type))
+
+        supportFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentViewCreated(fm: FragmentManager?, f: android.support.v4.app.Fragment?, v: View?, savedInstanceState: Bundle?) {
+                super.onFragmentViewCreated(fm, f, v, savedInstanceState)
+                if((f as RouteListFragment).name == "bus")
+                    selectAdapterForActiveType(0)
             }
-        })
+        }, false)
+
         typesAdapter = TypeTransportAdapter(supportFragmentManager, listAdapter)
         viewPager.adapter = typesAdapter
         setupTabs(viewPager)
@@ -105,11 +123,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
+                Log.i("Unselected", "${tab?.position}")
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                Log.i("LOL", "${tab?.position}")
+                Log.i("Selected", "${tab?.position}")
                 selectAdapterForActiveType(tab!!.position)
+                find<Toolbar>(R.id.lunch_toolbar).backgroundColor = getColorByPosition(tab.position)
+                find<TabLayout>(R.id.lunch_tabs).backgroundColor = getColorByPosition(tab.position)
             }
 
         })
@@ -122,6 +143,9 @@ class MainActivity : AppCompatActivity() {
     private fun setupTabs(viewPager: ViewPager?) {
         val tabLayout = find<TabLayout>(R.id.lunch_tabs)
         tabLayout.setupWithViewPager(viewPager)
+        for (i in 0..tabLayout.tabCount - 1) {
+            tabLayout.getTabAt(i)!!.setIcon(getPageIcon(i))
+        }
     }
 
     private fun getRouteStops(route: RouteCsv): List<StopCsv> {
@@ -134,24 +158,11 @@ class MainActivity : AppCompatActivity() {
         return stops
     }
 
-    fun selectAdapterForActiveType(typeIndex: Int) {
-        type = getPageTitle(typeIndex.toLong())
+    private fun selectAdapterForActiveType(typeIndex: Int) {
+        type = getTransportType(typeIndex.toLong())
         typesAdapter.listAdapter.clear()
 
-        typesAdapter.listAdapter.addAll(routeList.getValue(type).sortedBy {
-            if(type != "metro") {
-                var char = it.num.last()
-                var counter = 0
-                while (!"0123456789".contains(char)) {
-                    counter++
-                    char = it.num.substring(0, it.num.length - counter).last()
-                }
-                it.num.substring(0, it.num.length - counter).toInt()
-            } else {
-                it.num.substring(1).toInt()
-            }
-        })
-
+        typesAdapter.listAdapter.addAll(routeList.getValue(type))
 
         listView = typesAdapter.getRegisteredFragment(typeIndex).view as ListView
 
@@ -175,20 +186,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onNothingSelected(parent: AdapterView<*>?) {
-//        selectAdapterForActiveType(0)
-//    }
-//
-//    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//        Log.i("LOL", "test")
-//    }
-
-    override fun onDestroy() {
-        SmartLocation.with(this).location().stop()
-        super.onDestroy()
+    private fun getPageIcon(position: Int): Int {
+        when (position) {
+            0 -> return R.drawable.bus_icon
+            1 -> return R.drawable.troll_icon
+            2 -> return R.drawable.tram_icon
+            3 -> return R.drawable.under_icon
+            else -> return 1
+        }
     }
 
-    fun getPageTitle(position: Long): String {
+    private fun getColorByPosition(position: Int): Int {
+        when(position) {
+            0 -> return Color.argb(255, 11, 191, 214)
+            1 -> return Color.argb(255, 43, 206, 81)
+            3 -> return Color.argb(255, 39, 59, 122)
+            2 -> return Color.argb(255, 244, 75, 63)
+            else -> return -1
+        }
+    }
+
+    private fun getTransportType(position: Long): String {
         when (position) {
             0L -> return "bus"
             1L -> return "trol"
@@ -196,5 +214,10 @@ class MainActivity : AppCompatActivity() {
             3L -> return "metro"
             else -> return ""
         }
+    }
+
+    override fun onDestroy() {
+        SmartLocation.with(this).location().stop()
+        super.onDestroy()
     }
 }

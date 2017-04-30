@@ -12,4 +12,5 @@
     <item name="week_name" type="id" />
     <item name="week_toolbar_name" type="id" />
     <item name="route_list_view" type="id" />
+    <item name="route_name_text_view" type="id" />
 </resources>

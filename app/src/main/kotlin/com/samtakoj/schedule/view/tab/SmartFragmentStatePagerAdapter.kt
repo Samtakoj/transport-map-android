@@ -23,10 +23,15 @@ abstract class SmartFragmentStatePagerAdapter(fragmentManager: FragmentManager) 
         return fragment
     }
 
+    fun pushFragments(fragment: Fragment, position: Int): Fragment {
+        registeredFragments.put(position, fragment)
+        return fragment
+    }
+
     // Unregister when the item is inactive
     override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any) {
-        //registeredFragments.remove(position)
-        //super.destroyItem(container, position, `object`)
+//        registeredFragments.remove(position)
+//        super.destroyItem(container, position, `object`)
     }
 
     // Returns the fragment for the position (if instantiated)

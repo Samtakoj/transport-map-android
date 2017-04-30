@@ -1,5 +1,6 @@
 package com.samtakoj.schedule
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -7,11 +8,8 @@ import android.widget.ListView
 import com.samtakoj.schedule.view.TimeListViewAdapter
 import com.samtakoj.shedule.model.TimeCsv
 import com.samtakoj.shedule.model.TimeCsv_
+import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
-import org.jetbrains.anko.find
-import org.jetbrains.anko.listView
-import org.jetbrains.anko.textView
-import org.jetbrains.anko.verticalLayout
 
 
 class TimeActivity : AppCompatActivity() {
@@ -34,7 +32,9 @@ class TimeActivity : AppCompatActivity() {
 
         verticalLayout {
             toolbar {
+                backgroundColor = Color.argb(255, 99, 196, 207)
                 textView {
+                    textColor = Color.WHITE
                     text = stopName
                 }
             }

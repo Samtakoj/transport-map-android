@@ -24,6 +24,7 @@ class StopsActivity : AppCompatActivity() {
     lateinit  var stops: List<StopCsv>
     lateinit var route: RouteCsv
     lateinit var adapter: TimelineViewAdapter
+    var color: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +36,14 @@ class StopsActivity : AppCompatActivity() {
         route = routeTo
         val routeFrom = intent.extras.getSerializable("routeFrom") as RouteCsv
 
+        color = getColorByTransportType(route.transportType)
+
         verticalLayout {
             toolbar {
+                backgroundColor = color
                 textView {
-                    id = 1
+                    id = R.id.route_name_text_view
+                    textColor = Color.WHITE
                     text = route.name
                 }
                 imageView {
@@ -57,6 +62,7 @@ class StopsActivity : AppCompatActivity() {
             }
             listView {
                 id = 321
+                divider = null
             }
         }
 
@@ -84,19 +90,29 @@ class StopsActivity : AppCompatActivity() {
 
     }
 
+    private fun getColorByTransportType(transportType: String): Int {
+        when(transportType) {
+            "bus" -> return Color.argb(255, 11, 191, 214)
+            "trol" -> return Color.argb(255, 43, 206, 81)//91, 232, 48)
+            "metro" -> return Color.argb(255, 39, 59, 122)
+            "tram" -> return Color.argb(255, 244, 75, 63)
+            else -> return -1
+        }
+    }
+
     private fun convertToRow(stop: StopCsv): TimelineRow {
         val row = TimelineRow(stop.id.toInt(), null, stop.name, "")
-        row.bellowLineColor = Color.argb(255, 66, 244, 122)
-        row.bellowLineSize = 8
-        row.backgroundSize = 30
-        row.backgroundColor = Color.argb(255, 66, 244, 122)
+        row.bellowLineColor = color
+        row.bellowLineSize = 5
+        row.backgroundSize = 25
+        row.backgroundColor = color
         return row
     }
 
     private fun changeStopList(newStops: List<StopCsv>, newRoute: RouteCsv) {
         stops = newStops
         route = newRoute
-        val textView = find<TextView>(1)
+        val textView = find<TextView>(R.id.route_name_text_view)
         textView.text = route.name
 
         adapter.clear()

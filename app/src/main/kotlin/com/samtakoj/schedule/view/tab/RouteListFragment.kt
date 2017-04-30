@@ -13,11 +13,11 @@ import org.jetbrains.anko.support.v4.ctx
 /**
  * Created by Александр on 23.04.2017.
  */
-class RouteListFragment(val listAdapter: RouteListViewAdapter): Fragment(), AnkoLogger {
+class RouteListFragment(val listAdapter: RouteListViewAdapter, val name: String): Fragment(), AnkoLogger {
 
     companion object {
-        fun newInstance(listAdapter: RouteListViewAdapter): RouteListFragment {
-            val fragment: RouteListFragment = RouteListFragment(listAdapter)
+        fun newInstance(listAdapter: RouteListViewAdapter, name: String): RouteListFragment {
+            val fragment: RouteListFragment = RouteListFragment(listAdapter, name)
             return fragment
         }
     }
