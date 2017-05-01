@@ -60,6 +60,13 @@ class MainActivity : AppCompatActivity() {
                         text = "Transport MINSK"
                         textColor = Color.argb(255, 255, 255, 255)
                     }
+                    imageView {
+                        lparams { gravity = Gravity.RIGHT }
+                        imageResource = R.drawable.ar_icon
+                        onClick {
+                            startActivity<TestActivity>()
+                        }
+                    }
                 }
 
                 tabLayout {
@@ -182,7 +189,7 @@ class MainActivity : AppCompatActivity() {
             val stopsTo = getRouteStops(routeTo)
             val stopsFrom = getRouteStops(routeFrom)
 
-            startActivity<StopsActivity>("stopsTo" to stopsTo, "routeTo" to routeTo, "routeFrom" to routeFrom, "stopsFrom" to stopsFrom)
+            startActivity<StopsActivity>("stopsTo" to stopsTo, "routeTo" to routeTo, "routeFrom" to routeFrom, "stopsFrom" to stopsFrom, "isChange" to true)
         }
     }
 

@@ -35,6 +35,7 @@ class StopsActivity : AppCompatActivity() {
         val routeTo = intent.extras.getSerializable("routeTo") as RouteCsv
         route = routeTo
         val routeFrom = intent.extras.getSerializable("routeFrom") as RouteCsv
+        val isSwitch = intent.extras.getBoolean("isChange")
 
         color = getColorByTransportType(route.transportType)
 
@@ -46,16 +47,18 @@ class StopsActivity : AppCompatActivity() {
                     textColor = Color.WHITE
                     text = route.name
                 }
-                imageView {
-                    lparams { gravity = Gravity.RIGHT }
-                    imageResource = R.drawable.change_route
-                    onClick {
-                        if(isChange) {
-                            changeStopList(stopsTo, routeTo)
-                            isChange = false
-                        } else {
-                            changeStopList(stopsFrom, routeFrom)
-                            isChange = true
+                if(isSwitch) {
+                    imageView {
+                        lparams { gravity = Gravity.RIGHT }
+                        imageResource = R.drawable.change_route
+                        onClick {
+                            if (isChange) {
+                                changeStopList(stopsTo, routeTo)
+                                isChange = false
+                            } else {
+                                changeStopList(stopsFrom, routeFrom)
+                                isChange = true
+                            }
                         }
                     }
                 }
@@ -79,12 +82,11 @@ class StopsActivity : AppCompatActivity() {
 
             val time = timeBox.query().equal(TimeCsv_.routeId, route.id).build().findFirst()
 
-            Log.i("STOPS_SCHEDULE", "Stop: ${time.timeTable.count()}")
-
             val stop = stops[position]
 //            Log.i("STOPS_SCHEDULE", "Stop: ${stop.name}")
 
-            startActivity<TimeActivity>("time" to time, "stopPosition" to position, "stopName" to stop.name)
+            if(time != null)
+                startActivity<TimeActivity>("time" to time, "stopPosition" to position, "stopName" to stop.name)
 
         }
 
@@ -93,7 +95,7 @@ class StopsActivity : AppCompatActivity() {
     private fun getColorByTransportType(transportType: String): Int {
         when(transportType) {
             "bus" -> return Color.argb(255, 11, 191, 214)
-            "trol" -> return Color.argb(255, 43, 206, 81)//91, 232, 48)
+            "trol" -> return Color.argb(255, 91, 232, 48)
             "metro" -> return Color.argb(255, 39, 59, 122)
             "tram" -> return Color.argb(255, 244, 75, 63)
             else -> return -1

@@ -45,7 +45,7 @@ class TestActivity : AppCompatActivity(){
 
         SlidingRootNavBuilder(this)
                 .withToolbarMenuToggle(toolbar)
-                .withMenuOpened(true)
+                .withMenuOpened(false)
                 .withSavedState(savedInstanceState)
                 .withMenuLayout(R.layout.activity_main)
                 .inject()

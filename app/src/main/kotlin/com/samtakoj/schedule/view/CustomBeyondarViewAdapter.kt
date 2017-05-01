@@ -1,17 +1,25 @@
 package com.samtakoj.schedule.view
 
 import android.content.Context
+import android.support.v4.content.ContextCompat.startActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
+import com.beyondar.android.util.ImageUtils
 import com.beyondar.android.view.BeyondarViewAdapter
 import com.beyondar.android.view.OnClickBeyondarObjectListener
 import com.beyondar.android.world.BeyondarObject
-import com.samtakoj.schedule.R
-import java.util.ArrayList
+import com.samtakoj.schedule.*
+import com.samtakoj.shedule.model.RouteCsv
+import com.samtakoj.shedule.model.RouteCsv_
+import org.jetbrains.anko.*
+import java.io.File
+import kotlin.collections.ArrayList
 
 /**
  * Created by artsiom.chuiko on 19/04/2017.
@@ -28,6 +36,11 @@ class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context),
         } else {
             showViewOn.add(beyondarObject as BeyondarObject)
         }
+
+        val routeBox = (context.applicationContext as TransportApplication).boxStore.boxFor(RouteCsv::class.java)
+        val routeList = routeBox.query().contains(RouteCsv_.stops, beyondarObject!!.id.toString()).order(RouteCsv_.num).build().find()
+
+        context.startActivity<RouteActivity>("routes" to routeList, "stopName" to beyondarObject.name)
     }
 
     override fun getView(beyondarObject: BeyondarObject?, recycledView: View?, parent: ViewGroup?): View? {
@@ -40,14 +53,20 @@ class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context),
             view = inflater.inflate(R.layout.object_view, null)
         }
 
-        val arrString = arrayListOf<String>("test","test","test","test","test","test","test","test","test","test","test","test")
-        val listView = view?.findViewById(R.id.testListView) as ListView
-        val adapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, arrString)
-        listView.adapter = adapter
-        adapter.notifyDataSetChanged()
-        val textView = view?.findViewById(R.id.info) as TextView
-        textView.text = "${beyondarObject?.name} -> ${"%.0f".format(beyondarObject?.distanceFromUser)}m"
+//        val listView = view?.findViewById(R.id.testListView) as ListView
+//        val adapter = RouteListViewAdapter(context, routeList as ArrayList<RouteCsv>)
+//        listView.adapter = adapter
+//        adapter.notifyDataSetChanged()
+//
+//        listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+//            Log.i("TEST", "itemClick: position = $position, id = $id")
+//
+//            context.startActivity<MainActivity>()
+//        }
 
+//        val textView = view?.findViewById(R.id.info) as TextView
+//        textView.text = "${beyondarObject?.name} -> ${"%.0f".format(beyondarObject?.distanceFromUser)}m"
+//
         setPosition(beyondarObject?.screenPositionBottomLeft)
 
         return view

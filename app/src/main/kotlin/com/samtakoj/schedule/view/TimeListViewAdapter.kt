@@ -1,15 +1,17 @@
 package com.samtakoj.schedule.view
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.samtakoj.schedule.R
+import com.samtakoj.shedule.model.RouteCsv
 import com.samtakoj.shedule.model.StopCsv
 
-class TimeListViewAdapter(val context: Context , val time: Map<Long, List<Long>>): BaseAdapter() {
+class TimeListViewAdapter(val context: Context , val time: MutableMap<Long, List<Long>>): BaseAdapter() {
 
     class ViewHolder(val hourTextView: TextView, val minutesTextView: TextView)
 
@@ -31,7 +33,7 @@ class TimeListViewAdapter(val context: Context , val time: Map<Long, List<Long>>
 
         val hour = getItemId(position)
         val item = getItem(hour.toInt())
-        viewHolder.hourTextView.text = hour.toString()
+        viewHolder.hourTextView.text = (hour % 24).toString()
         viewHolder.minutesTextView.text = item.toString().replace(Regex.fromLiteral("[,]"), "")
 
         return tempConvertView
@@ -47,6 +49,20 @@ class TimeListViewAdapter(val context: Context , val time: Map<Long, List<Long>>
 
     override fun getCount(): Int {
         return time.count()
+    }
+
+    fun clear() {
+        synchronized(mLock) {
+            this.time.clear()
+        }
+        notifyDataSetChanged()
+    }
+
+    fun addAll(collection: MutableMap<Long, List<Long>>) {
+        synchronized(mLock) {
+            time.putAll(collection)
+        }
+        notifyDataSetChanged()
     }
 
 //    fun addAll(collection: Map<Long, List<Long>>) {

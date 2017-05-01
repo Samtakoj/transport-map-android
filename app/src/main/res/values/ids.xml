@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="lunch_menu_list" type="id" />
-    <item name="lunch_menu_name" type="id" />
-    <item name="lunch_menu_count" type="id" />
-    <item name="lunch_meal_type" type="id" />
     <item name="lunch_toolbar" type="id" />
     <item name="lunch_appbar" type="id" />
     <item name="lunch_tabs" type="id" />
     <item name="lunch_pager_container" type="id" />
-    <item name="login_main_container" type="id" />
     <item name="week_name" type="id" />
     <item name="week_toolbar_name" type="id" />
+    <item name="time_list_view" type="id" />
     <item name="route_list_view" type="id" />
     <item name="route_name_text_view" type="id" />
 </resources>
