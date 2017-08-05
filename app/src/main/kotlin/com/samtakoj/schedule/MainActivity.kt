@@ -114,15 +114,32 @@ class MainActivity : AppCompatActivity() {
         listAdapter.clear()
         listAdapter.addAll(routeList.getValue(type))
 
+        typesAdapter = TypeTransportAdapter(supportFragmentManager, listAdapter)
+
         supportFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
             override fun onFragmentViewCreated(fm: FragmentManager?, f: android.support.v4.app.Fragment?, v: View?, savedInstanceState: Bundle?) {
                 super.onFragmentViewCreated(fm, f, v, savedInstanceState)
-                if((f as RouteListFragment).name == "bus")
-                    selectAdapterForActiveType(0)
+
+                when ((f as RouteListFragment).name) {
+                    "bus" -> {
+                        typesAdapter.pushFragments(f, 0)
+                    }
+                    "troll" -> {
+                        typesAdapter.pushFragments(f, 1)
+                    }
+                    "tram" -> {
+                        typesAdapter.pushFragments(f, 2)
+                    }
+                    "metro" -> {
+                        typesAdapter.pushFragments(f, 3)
+                    }
+                }
+
+//                if((f as RouteListFragment).name == "bus")
+//                    selectAdapterForActiveType(0)
             }
         }, false)
 
-        typesAdapter = TypeTransportAdapter(supportFragmentManager, listAdapter)
         viewPager.adapter = typesAdapter
         setupTabs(viewPager)
         find<TabLayout>(R.id.lunch_tabs).addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -142,9 +159,9 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        SmartLocation.with(this).location().oneFix().start { location ->
-            toast("Lat: ${location.latitude}, Long: ${location.longitude}")
-        }
+//        SmartLocation.with(this).location().oneFix().start { location ->
+//            toast("Lat: ${location.latitude}, Long: ${location.longitude}")
+//        }
     }
 
     private fun setupTabs(viewPager: ViewPager?) {

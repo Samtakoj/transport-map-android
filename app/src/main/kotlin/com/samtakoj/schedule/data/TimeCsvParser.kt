@@ -48,8 +48,6 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
     }
 
     private fun parseToTimeCsv(line: String): TimeCsv {
-        //TODO: parse line to TimeCsv object
-
         val firstCommaIndex: Int = line.indexOf(",")
         var routeIdString: String = line.substring(0, firstCommaIndex)
         var routeId: Long
@@ -61,17 +59,9 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
         }
 
         val dataString: String = line.substring(firstCommaIndex + 1)
-
-        // splitting data to 5 blocks:
-        // 1 - times data
-        // 2 - valid from
-        // 3 - valid to
-        // 4 - days of week
-        // 5 - intervals
         val blocks: List<String> = dataString.split(delimiters = ",,", ignoreCase = false, limit =  5)
         val timesData: List<String> = blocks[0].split(delimiters = ",")
         val maxIndex: Int = timesData.count()
-
         val timeTable = getTimeTable(timesData, blocks[4])
         val workDays = getWorkDay(blocks[3], maxIndex)
 

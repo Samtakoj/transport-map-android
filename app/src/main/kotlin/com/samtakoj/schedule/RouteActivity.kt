@@ -44,12 +44,6 @@ class RouteActivity: AppCompatActivity() {
 
             val routeTo = routes[position]
             val routeFrom = RouteCsv()
-//                    routeBox.query()
-//                    .equal(RouteCsv_.num, routeTo.num)
-//                    .and()
-//                    .equal(RouteCsv_.transportType, routeTo.transportType)
-//                    .and()
-//                    .notEqual(RouteCsv_.id, routeTo.id).build().findFirst()
 
             Log.i("TRANSPORT_SCHEDULE", "RouteName: ${routeTo.name}")
 

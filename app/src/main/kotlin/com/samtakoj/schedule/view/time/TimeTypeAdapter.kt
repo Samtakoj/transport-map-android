@@ -23,6 +23,12 @@ class TimeTypeAdapter(fm: FragmentManager, val workDays: List<WorkDay>, val list
             "67" -> return "Выходные дни"
             "2345" -> return "Вторник - пятница"
             "1" -> return "Понедельник"
+            "2" -> return "Вторник"
+            "3" -> return "Среда"
+            "4" -> return "Четверг"
+            "5" -> return "Пятница"
+            "6" -> return "Суббота"
+            "7" -> return "Воскресенье"
             else -> return ""
         }
     }

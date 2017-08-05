@@ -96,6 +96,8 @@ class TestActivity : AppCompatActivity(){
                 fragment.setBeyondarViewAdapter(customBeyondarViewAdapter)
                 fragment.maxDistanceToRender = 500f
                 fragment.distanceFactor = 30f
+//                fragment.pullCloserDistance = 100f
+                fragment.pushAwayDistance = 100f
             }
         }, true)
     }

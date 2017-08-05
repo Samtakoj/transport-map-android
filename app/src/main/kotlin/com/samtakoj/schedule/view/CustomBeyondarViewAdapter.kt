@@ -41,17 +41,19 @@ class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context),
         val routeList = routeBox.query().contains(RouteCsv_.stops, beyondarObject!!.id.toString()).order(RouteCsv_.num).build().find()
 
         context.startActivity<RouteActivity>("routes" to routeList, "stopName" to beyondarObject.name)
+
     }
 
     override fun getView(beyondarObject: BeyondarObject?, recycledView: View?, parent: ViewGroup?): View? {
-        if (!showViewOn.contains(beyondarObject)) {
-            return null
-        }
+//        if (!showViewOn.contains(beyondarObject)) {
+//            return null
+//        }
 
-        var view = recycledView
-        if (recycledView == null) {
-            view = inflater.inflate(R.layout.object_view, null)
-        }
+//        var view = recycledView
+//        if (recycledView == null) {
+//        }
+        var view = inflater.inflate(R.layout.object_view, null)
+
 
 //        val listView = view?.findViewById(R.id.testListView) as ListView
 //        val adapter = RouteListViewAdapter(context, routeList as ArrayList<RouteCsv>)
@@ -64,9 +66,9 @@ class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context),
 //            context.startActivity<MainActivity>()
 //        }
 
-//        val textView = view?.findViewById(R.id.info) as TextView
-//        textView.text = "${beyondarObject?.name} -> ${"%.0f".format(beyondarObject?.distanceFromUser)}m"
-//
+        val textView = view?.findViewById(R.id.info) as TextView
+        textView.text = "${beyondarObject?.name} -> ${"%.0f".format(beyondarObject?.distanceFromUser)}m"
+
         setPosition(beyondarObject?.screenPositionBottomLeft)
 
         return view
