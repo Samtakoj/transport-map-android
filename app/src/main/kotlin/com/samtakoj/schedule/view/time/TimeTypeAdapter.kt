@@ -6,14 +6,14 @@ import com.samtakoj.schedule.view.TimeListViewAdapter
 import com.samtakoj.schedule.view.tab.SmartFragmentStatePagerAdapter
 import com.samtakoj.shedule.model.WorkDay
 
-class TimeTypeAdapter(fm: FragmentManager, val workDays: List<WorkDay>, val listAdapter: TimeListViewAdapter): SmartFragmentStatePagerAdapter(fm) {
+class TimeTypeAdapter(fm: FragmentManager, val workDays: List<WorkDay>, val fragments: ArrayList<TimeListFragment>): SmartFragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
-        return TimeListFragment.newInstance(listAdapter)
+        return fragments[position]
     }
 
     override fun getCount(): Int {
-        return workDays.size
+        return fragments.size
     }
 
     override fun getPageTitle(position: Int): String {

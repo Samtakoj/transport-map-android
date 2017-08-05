@@ -5,14 +5,14 @@ import android.support.v4.app.FragmentManager
 import com.samtakoj.schedule.view.tab.RouteListFragment
 import com.samtakoj.schedule.view.tab.SmartFragmentStatePagerAdapter
 
-class TypeTransportAdapter(fm: FragmentManager, val listAdapter: RouteListViewAdapter): SmartFragmentStatePagerAdapter(fm) {
+class TypeTransportAdapter(fm: FragmentManager, val fragments: ArrayList<RouteListFragment>): SmartFragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
-        return RouteListFragment.newInstance(listAdapter, getPageTitle(position))
+        return fragments[position]
     }
 
     override fun getCount(): Int {
-        return 4
+        return fragments.size
     }
 
     override fun getPageTitle(position: Int): String {

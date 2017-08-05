@@ -15,6 +15,7 @@ import com.samtakoj.schedule.view.RouteListViewAdapter
 import com.samtakoj.schedule.view.TimeListViewAdapter
 import com.samtakoj.schedule.view.TypeTransportAdapter
 import com.samtakoj.schedule.view.tab.RouteListFragment
+import com.samtakoj.schedule.view.time.TimeListFragment
 import com.samtakoj.schedule.view.time.TimeTypeAdapter
 import com.samtakoj.shedule.model.*
 import io.objectbox.Box
@@ -64,9 +65,6 @@ class TimeActivity : AppCompatActivity() {
                 id = R.id.lunch_pager_container
                 backgroundColor = Color.WHITE
             }
-//            listView {
-//                id = 312
-//            }
         }
 
         times = test.map {
@@ -76,39 +74,27 @@ class TimeActivity : AppCompatActivity() {
         viewPager = find<ViewPager>(R.id.lunch_pager_container)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(find<TabLayout>(R.id.lunch_tabs)))
 
-        val listAdapter = TimeListViewAdapter(this, emptyMap<Long, List<Long>>().toMutableMap())
-        listAdapter.clear()
-        listAdapter.addAll(times[0])
-
-        typesAdapter = TimeTypeAdapter(supportFragmentManager, time.workDay, listAdapter)
+        typesAdapter = createAdapter(time)
         viewPager.adapter = typesAdapter
         setupTabs(viewPager)
-        find<TabLayout>(R.id.lunch_tabs).addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-                Log.i("Unselected", "${tab?.position}")
-            }
+    }
 
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                Log.i("Selected", "${tab?.position}")
-                selectAdapterForActiveType(tab!!.position)
-            }
+    private fun createAdapter(time: TimeCsv) : TimeTypeAdapter {
+        val fragments = arrayListOf<TimeListFragment>()
+        for(i in 0..time.workDay.size - 1) {
+            val listAdapter = TimeListViewAdapter(this, emptyMap<Long, List<Long>>().toMutableMap())
+            listAdapter.clear()
+            listAdapter.addAll(times[i])
+            fragments.add(TimeListFragment.newInstance(listAdapter))
+        }
 
-        })
-
+        return TimeTypeAdapter(supportFragmentManager, time.workDay, fragments)
     }
 
     private fun setupTabs(viewPager: ViewPager?) {
         val tabLayout = find<TabLayout>(R.id.lunch_tabs)
         tabLayout.setupWithViewPager(viewPager)
-    }
-
-    private fun selectAdapterForActiveType(index: Int) {
-        typesAdapter.listAdapter.clear()
-
-        typesAdapter.listAdapter.addAll(times[index])
     }
 
     override fun onDestroy() {
