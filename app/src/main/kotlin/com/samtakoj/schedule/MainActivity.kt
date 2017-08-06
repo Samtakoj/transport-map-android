@@ -141,6 +141,7 @@ class MainActivity : AppCompatActivity() {
             }
             fragments.add(RouteListFragment.newInstance(listAdapter, getPageTitle(i), listener))
         }
+        type = getTransportType(0)
 
         return TypeTransportAdapter(supportFragmentManager, fragments)
     }

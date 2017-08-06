@@ -34,7 +34,7 @@ class TimeListViewAdapter(val context: Context , val time: MutableMap<Long, List
         val hour = getItemId(position)
         val item = getItem(hour.toInt())
         viewHolder.hourTextView.text = (hour % 24).toString()
-        viewHolder.minutesTextView.text = item.toString().replace(Regex.fromLiteral("[,]"), "")
+        viewHolder.minutesTextView.text = item.toString().replace(Regex.fromLiteral("["), "").replace(Regex.fromLiteral("]"), "")
 
         return tempConvertView
     }
