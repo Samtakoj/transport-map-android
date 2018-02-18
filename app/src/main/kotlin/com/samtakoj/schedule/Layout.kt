@@ -34,8 +34,7 @@ class MainActivityUi: AnkoComponent<TestActivity> {
 
             frameLayout {
                 id = ContainerID
-                lparams(width = matchParent, height = matchParent, weight = 1f)
-            }
+            }.lparams(width = matchParent, height = matchParent, weight = 1f)
         }
     }
 }

@@ -15,7 +15,9 @@ import io.nlopez.smartlocation.SmartLocation
 import org.jetbrains.anko.*
 import android.widget.AdapterView.OnItemClickListener
 import com.samtakoj.schedule.model.RouteCsv
+import com.samtakoj.schedule.model.RouteCsv_
 import com.samtakoj.schedule.model.StopCsv
+import com.samtakoj.schedule.model.StopCsv_
 import com.samtakoj.schedule.view.RouteListViewAdapter
 import com.samtakoj.schedule.view.TypeTransportAdapter
 import com.samtakoj.schedule.view.tab.RouteListFragment
@@ -164,9 +166,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getRouteStops(route: RouteCsv): List<StopCsv> {
+    private fun getRouteStops(route: RouteCsv): List<StopCsv?> {
         val stopBox = (application as TransportApplication).boxStore.boxFor(StopCsv::class.java)
-        val stops = ArrayList<StopCsv>()
+        val stops = ArrayList<StopCsv?>()
         route.stops.split(",").forEach { stopId ->
             stops.add(stopBox.query().equal(StopCsv_.id, stopId.toLong()).build().findFirst())
         }
@@ -196,7 +198,7 @@ class MainActivity : AppCompatActivity() {
             Log.i("TRANSPORT_SCHEDULE", "RouteName: ${routeTo.name}")
 
             val stopsTo = getRouteStops(routeTo)
-            val stopsFrom = getRouteStops(routeFrom)
+            val stopsFrom = getRouteStops(routeFrom!!)
 
             startActivity<StopsActivity>("stopsTo" to stopsTo, "routeTo" to routeTo, "routeFrom" to routeFrom, "stopsFrom" to stopsFrom, "isChange" to true)
         }

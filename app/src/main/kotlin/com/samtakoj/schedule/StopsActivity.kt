@@ -9,9 +9,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.TextView
-import com.samtakoj.schedule.model.RouteCsv
-import com.samtakoj.schedule.model.StopCsv
-import com.samtakoj.schedule.model.TimeCsv
+import com.samtakoj.schedule.model.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -131,4 +129,6 @@ class StopsActivity : AppCompatActivity() {
     companion object {
         val LIST_ID = View.generateViewId()
     }
+
+    data class MyTestModel(val workDay: WorkDay, val timeTable: List<Long>)
 }

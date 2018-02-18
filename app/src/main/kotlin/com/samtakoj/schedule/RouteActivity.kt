@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.ListView
 import com.samtakoj.schedule.model.RouteCsv
 import com.samtakoj.schedule.model.StopCsv
+import com.samtakoj.schedule.model.StopCsv_
 import com.samtakoj.schedule.view.RouteListViewAdapter
 import org.jetbrains.anko.appcompat.v7.toolbar
 
@@ -45,7 +46,7 @@ class RouteActivity: AppCompatActivity() {
             Log.i("TEST", "itemClick: position = $position, id = $id")
 
             val routeTo = routes[position]
-            val routeFrom = RouteCsv()
+            val routeFrom = RouteCsv(num = "", transportType = "", name = "", weekDays = "", stops = "")
 
             Log.i("TRANSPORT_SCHEDULE", "RouteName: ${routeTo.name}")
 
@@ -57,9 +58,9 @@ class RouteActivity: AppCompatActivity() {
 
     }
 
-    private fun getRouteStops(route: RouteCsv): List<StopCsv> {
+    private fun getRouteStops(route: RouteCsv): List<StopCsv?> {
         val stopBox = (application as TransportApplication).boxStore.boxFor(StopCsv::class.java)
-        val stops = ArrayList<StopCsv>()
+        val stops = ArrayList<StopCsv?>()
         route.stops.split(",").forEach { stopId ->
             stops.add(stopBox.query().equal(StopCsv_.id, stopId.toLong()).build().findFirst())
         }
