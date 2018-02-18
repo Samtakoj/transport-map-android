@@ -17,9 +17,8 @@ import com.beyondar.android.world.GeoObject
 import com.beyondar.android.world.World
 import io.nlopez.smartlocation.SmartLocation
 import com.google.android.gms.location.DetectedActivity
+import com.samtakoj.schedule.model.StopCsv
 import com.samtakoj.schedule.view.CustomBeyondarViewAdapter
-import com.samtakoj.shedule.model.StopCsv
-import com.samtakoj.shedule.model.StopCsv_
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider
 import io.nlopez.smartlocation.location.providers.LocationManagerProvider
