@@ -5,12 +5,16 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.TextView
-import com.samtakoj.shedule.model.*
+import com.samtakoj.schedule.model.RouteCsv
+import com.samtakoj.schedule.model.StopCsv
+import com.samtakoj.schedule.model.TimeCsv
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.qap.ctimelineview.TimelineRow
 import org.qap.ctimelineview.TimelineViewAdapter
 
@@ -49,7 +53,6 @@ class StopsActivity : AppCompatActivity() {
                 }
                 if(isSwitch) {
                     imageView {
-                        lparams { gravity = Gravity.RIGHT }
                         imageResource = R.drawable.change_route
                         onClick {
                             if (isChange) {
@@ -60,16 +63,16 @@ class StopsActivity : AppCompatActivity() {
                                 isChange = true
                             }
                         }
-                    }
+                    }.lparams { gravity = Gravity.RIGHT }
                 }
             }
             listView {
-                id = 321
+                id = LIST_ID
                 divider = null
             }
         }
 
-        val listView = find<ListView>(321)
+        val listView = find<ListView>(LIST_ID)
         adapter = TimelineViewAdapter(this, 0, ArrayList(stops.map(this::convertToRow)), false)
 
         listView.adapter = adapter
@@ -125,5 +128,7 @@ class StopsActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    class MyTestModel(val workDay: WorkDay, val timeTable: List<Long>)
+    companion object {
+        val LIST_ID = View.generateViewId()
+    }
 }

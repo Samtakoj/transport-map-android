@@ -5,10 +5,12 @@ import android.os.Bundle
 import org.jetbrains.anko.*
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
+import com.samtakoj.schedule.model.RouteCsv
+import com.samtakoj.schedule.model.StopCsv
 import com.samtakoj.schedule.view.RouteListViewAdapter
-import com.samtakoj.shedule.model.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 
 class RouteActivity: AppCompatActivity() {
@@ -29,11 +31,11 @@ class RouteActivity: AppCompatActivity() {
                 }
             }
             listView {
-                id = 321
+                id = LIST_ID
             }
         }
 
-        val listView = find<ListView>(321)
+        val listView = find<ListView>(LIST_ID)
         val adapter = RouteListViewAdapter(this, routes as ArrayList<RouteCsv>)
 
         listView.adapter = adapter
@@ -77,5 +79,9 @@ class RouteActivity: AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    companion object {
+        val LIST_ID = View.generateViewId()
     }
 }
