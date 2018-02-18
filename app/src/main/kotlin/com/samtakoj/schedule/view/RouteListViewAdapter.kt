@@ -2,15 +2,13 @@ package com.samtakoj.schedule.view
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
 import android.widget.TextView
 import com.samtakoj.schedule.R
-import com.samtakoj.shedule.model.RouteCsv
+import com.samtakoj.schedule.model.RouteCsv
 import org.jetbrains.anko.backgroundColor
 
 class RouteListViewAdapter(context: Context , val routes: ArrayList<RouteCsv>): ArrayAdapter<RouteCsv>(context, 0) {

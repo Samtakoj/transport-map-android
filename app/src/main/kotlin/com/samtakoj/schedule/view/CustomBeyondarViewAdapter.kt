@@ -1,24 +1,16 @@
 package com.samtakoj.schedule.view
 
 import android.content.Context
-import android.support.v4.content.ContextCompat.startActivity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
 import android.widget.TextView
-import com.beyondar.android.util.ImageUtils
 import com.beyondar.android.view.BeyondarViewAdapter
 import com.beyondar.android.view.OnClickBeyondarObjectListener
 import com.beyondar.android.world.BeyondarObject
 import com.samtakoj.schedule.*
-import com.samtakoj.shedule.model.RouteCsv
-import com.samtakoj.shedule.model.RouteCsv_
+import com.samtakoj.schedule.model.RouteCsv
 import org.jetbrains.anko.*
-import java.io.File
 import kotlin.collections.ArrayList
 
 /**

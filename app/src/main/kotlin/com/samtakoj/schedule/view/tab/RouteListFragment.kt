@@ -1,5 +1,6 @@
 package com.samtakoj.schedule.view.tab
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import com.samtakoj.schedule.view.RouteListViewAdapter
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.ctx
 
+@SuppressLint("ValidFragment")
 /**
  * Created by Александр on 23.04.2017.
  */

@@ -5,11 +5,10 @@ import com.google.android.gms.gcm.GcmTaskService
 import com.google.android.gms.gcm.TaskParams
 import com.nytimes.android.external.store.base.impl.BarCode
 import com.samtakoj.schedule.TransportApplication
-import com.samtakoj.shedule.model.RouteCsv
-import com.samtakoj.shedule.model.StopCsv
-import com.samtakoj.shedule.model.TimeCsv
-import rx.Observer
-import rx.android.schedulers.AndroidSchedulers
+import com.samtakoj.schedule.model.RouteCsv
+import com.samtakoj.schedule.model.StopCsv
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by artsiom.chuiko on 19/04/2017.
@@ -23,7 +22,7 @@ class ScheduleUpdateService: GcmTaskService() {
         val timeBox = app.boxStore.boxFor(RouteCsv::class.java)
 
         app.persistedStopStore.get(BarCode("Stop", "stops"))
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { stops ->
                     if (stops.size > 0) {

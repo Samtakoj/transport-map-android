@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.samtakoj.schedule.R
-import com.samtakoj.shedule.model.StopCsv
+import com.samtakoj.schedule.model.StopCsv
 
 class StopListViewAdapter(val context: Context , val stops: ArrayList<StopCsv>): BaseAdapter() {
 

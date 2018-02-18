@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.samtakoj.schedule.R
-import com.samtakoj.shedule.model.RouteCsv
-import com.samtakoj.shedule.model.StopCsv
 
 class TimeListViewAdapter(val context: Context , val time: MutableMap<Long, List<Long>>): BaseAdapter() {
 

@@ -2,9 +2,9 @@ package com.samtakoj.schedule.view.time
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import com.samtakoj.schedule.model.WorkDay
 import com.samtakoj.schedule.view.TimeListViewAdapter
 import com.samtakoj.schedule.view.tab.SmartFragmentStatePagerAdapter
-import com.samtakoj.shedule.model.WorkDay
 
 class TimeTypeAdapter(fm: FragmentManager, val workDays: List<WorkDay>, val listAdapter: TimeListViewAdapter): SmartFragmentStatePagerAdapter(fm) {
 

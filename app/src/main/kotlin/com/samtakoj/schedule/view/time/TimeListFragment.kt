@@ -1,6 +1,6 @@
 package com.samtakoj.schedule.view.time
 
-import android.graphics.Color
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import com.samtakoj.schedule.view.TimeListViewAdapter
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.ctx
 
+@SuppressLint("ValidFragment")
 class TimeListFragment(val listAdapter: TimeListViewAdapter): Fragment(), AnkoLogger {
 
     companion object {
