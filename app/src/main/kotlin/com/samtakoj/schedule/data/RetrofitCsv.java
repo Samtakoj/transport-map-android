@@ -1,14 +1,13 @@
 package com.samtakoj.schedule.data;
 
 import com.google.common.collect.Lists;
-import com.nytimes.android.external.store.base.Parser;
+import com.nytimes.android.external.store3.base.Parser;
 import com.samtakoj.schedule.common.data.Position;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
