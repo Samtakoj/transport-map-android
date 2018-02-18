@@ -1,0 +1,102 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:2666739471055896949",
+      "lastPropertyId": "6:3804077164497723686",
+      "name": "RouteCsv",
+      "properties": [
+        {
+          "id": "1:8598022950630026624",
+          "name": "id"
+        },
+        {
+          "id": "2:8654014319653074414",
+          "name": "num"
+        },
+        {
+          "id": "3:807732722805226405",
+          "name": "transportType"
+        },
+        {
+          "id": "4:738910744296153686",
+          "name": "name"
+        },
+        {
+          "id": "5:5676000315470737600",
+          "name": "weekDays"
+        },
+        {
+          "id": "6:3804077164497723686",
+          "name": "stops"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:6711191194277407592",
+      "lastPropertyId": "5:5908818248499526242",
+      "name": "TimeCsv",
+      "properties": [
+        {
+          "id": "1:3668374697802247820",
+          "name": "id"
+        },
+        {
+          "id": "2:6589264746265696261",
+          "name": "routeId"
+        },
+        {
+          "id": "3:344378934367512246",
+          "name": "intervalCount"
+        },
+        {
+          "id": "4:3747849568491532166",
+          "name": "timeTable"
+        },
+        {
+          "id": "5:5908818248499526242",
+          "name": "workDay"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:128103560801604917",
+      "lastPropertyId": "4:761228523349120446",
+      "name": "StopCsv",
+      "properties": [
+        {
+          "id": "1:8167263772364859736",
+          "name": "id"
+        },
+        {
+          "id": "2:5449738862276560002",
+          "name": "name"
+        },
+        {
+          "id": "3:8175500750024400439",
+          "name": "lng"
+        },
+        {
+          "id": "4:761228523349120446",
+          "name": "ltd"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:128103560801604917",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
