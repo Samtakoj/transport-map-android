@@ -1,7 +1,5 @@
 package com.samtakoj.schedule
 
-import android.app.ActionBar
-import android.app.Fragment
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -16,21 +14,17 @@ import android.widget.ListView
 import io.nlopez.smartlocation.SmartLocation
 import org.jetbrains.anko.*
 import android.widget.AdapterView.OnItemClickListener
-import com.beyondar.android.fragment.BeyondarFragmentSupport
-import com.samtakoj.schedule.view.CustomBeyondarViewAdapter
+import com.samtakoj.schedule.model.RouteCsv
+import com.samtakoj.schedule.model.StopCsv
 import com.samtakoj.schedule.view.RouteListViewAdapter
 import com.samtakoj.schedule.view.TypeTransportAdapter
 import com.samtakoj.schedule.view.tab.RouteListFragment
-import com.samtakoj.shedule.model.*
 import io.objectbox.Box
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.design.appBarLayout
-import org.jetbrains.anko.design.onTabSelectedListener
 import org.jetbrains.anko.design.tabLayout
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.viewPager
-
-
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,20 +47,18 @@ class MainActivity : AppCompatActivity() {
                 toolbar {
                     id = R.id.lunch_toolbar
                     textView {
-                        lparams {
-                            gravity = Gravity.CENTER_HORIZONTAL
-                        }
                         textSize = sp(12).toFloat()
                         text = "Transport MINSK"
                         textColor = Color.argb(255, 255, 255, 255)
+                    }.lparams {
+                        gravity = Gravity.CENTER_HORIZONTAL
                     }
                     imageView {
-                        lparams { gravity = Gravity.RIGHT }
                         imageResource = R.drawable.ar_icon
                         onClick {
                             startActivity<TestActivity>()
                         }
-                    }
+                    }.lparams { gravity = Gravity.RIGHT }
                 }
 
                 tabLayout {
