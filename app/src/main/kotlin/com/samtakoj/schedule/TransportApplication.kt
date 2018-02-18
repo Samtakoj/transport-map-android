@@ -6,15 +6,16 @@ import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.Store
 import okio.BufferedSource
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
-import rx.Observable
 import com.nytimes.android.external.store3.base.Persister
 import com.samtakoj.schedule.api.Api
 import com.samtakoj.schedule.data.RetrofitCsv
 import com.samtakoj.schedule.data.TimeCsvParser
+import com.samtakoj.schedule.model.MyObjectBox
 import com.samtakoj.schedule.model.RouteCsv
 import com.samtakoj.schedule.model.StopCsv
 import com.samtakoj.schedule.model.TimeCsv
 import io.objectbox.BoxStore
+import io.reactivex.Single
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -33,6 +34,7 @@ class TransportApplication : Application() {
     lateinit var boxStore: BoxStore
 
     override fun onCreate() {
+        super.onCreate()
         boxStore = MyObjectBox.builder().androidContext(this).build()
         persister = SourcePersisterFactory.create(applicationContext.getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS))
         persistedStopStore = providePersistedStore(StopCsv::class.java, true, ";")
@@ -57,7 +59,7 @@ class TransportApplication : Application() {
 
     private fun <T> providePersistedStore(clazz: Class<T>, skipHeader: Boolean, delimiter: String): Store<List<T>, BarCode> {
         return StoreBuilder.parsedWithKey<BarCode, BufferedSource, List<T>>()
-                .fetcher({barCode -> fetcher(barCode, clazz, skipHeader, delimiter)})
+                .fetcher({ barCode -> fetcher(barCode, clazz, skipHeader, delimiter) })
                 .persister(persister)
                 .parser(RetrofitCsv.createSourceParser(clazz, skipHeader,  delimiter))
                 .open()
@@ -65,7 +67,7 @@ class TransportApplication : Application() {
 
     companion object {
 
-        private fun <T> fetcher(barCode: BarCode, clazz: Class<T>, skipHeader: Boolean, delimiter: String): Observable<BufferedSource> {
+        private fun <T> fetcher(barCode: BarCode, clazz: Class<T>, skipHeader: Boolean, delimiter: String): Single<BufferedSource> {
             return provideRetrofit(clazz, skipHeader, delimiter).fetchData(barCode.key).map(ResponseBody::source)
         }
 
