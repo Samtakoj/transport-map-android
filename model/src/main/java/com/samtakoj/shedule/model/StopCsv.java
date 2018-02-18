@@ -4,18 +4,13 @@ import com.samtakoj.schedule.common.data.Position;
 
 import java.io.Serializable;
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Keep;
-import io.objectbox.annotation.Generated;
-
 /**
  * Created by artsiom.chuiko on 17/04/2017.
  */
-@Entity(generateConstructors = false)
+//@Entity(generateConstructors = false)
 public class StopCsv implements Serializable {
     @Position(1)
-    @Id(assignable = true)
+    //@Id(assignable = true)
     private Long id;
     @Position(5)
     private String name;
@@ -26,7 +21,7 @@ public class StopCsv implements Serializable {
 
     static final long serialVersionUID = 536871008;
 
-    @Keep
+    //@Keep
     public StopCsv(Long id, String name, Long lng, Long ltd) {
         this.id = id;
         this.name = name;

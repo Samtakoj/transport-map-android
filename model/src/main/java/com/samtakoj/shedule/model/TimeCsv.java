@@ -1,37 +1,29 @@
 package com.samtakoj.shedule.model;
 
-import com.samtakoj.shedule.model.converter.LongListConverter;
-import com.samtakoj.shedule.model.converter.WorkDayConverter;
-
 import java.io.Serializable;
 import java.util.List;
 
-import io.objectbox.annotation.Convert;
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Keep;
-import io.objectbox.annotation.Generated;
 
 /**
  * Created by artsiom.chuiko on 17/04/2017.
  */
-@Entity
+//@Entity
 public class TimeCsv implements Serializable {
 
-    @Id
+    //@Id
     private Long id;
     private Long routeId;
     private Integer intervalCount;
-    @Convert(converter = LongListConverter.class, dbType = String.class)
+    //@Convert(converter = LongListConverter.class, dbType = String.class)
     private List<Long> timeTable;
-    @Convert(converter = WorkDayConverter.class, dbType = String.class)
+    //@Convert(converter = WorkDayConverter.class, dbType = String.class)
     private List<WorkDay> workDay;
 
     static final long serialVersionUID = 536871008;
 
     public TimeCsv() {}
 
-    @Keep
+    //@Keep
     public TimeCsv(Long routeId, Integer intervalCount, List<Long> timeTable, List<WorkDay> workDay) {
         this.routeId = routeId;
         this.intervalCount = intervalCount;
@@ -39,7 +31,7 @@ public class TimeCsv implements Serializable {
         this.workDay = workDay;
     }
 
-    @Generated(hash = 422421214)
+    //@Generated(hash = 422421214)
     public TimeCsv(Long id, Long routeId, Integer intervalCount, List<Long> timeTable, List<WorkDay> workDay) {
         this.id = id;
         this.routeId = routeId;

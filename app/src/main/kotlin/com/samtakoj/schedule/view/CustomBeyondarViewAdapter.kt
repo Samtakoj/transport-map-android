@@ -10,6 +10,7 @@ import com.beyondar.android.view.OnClickBeyondarObjectListener
 import com.beyondar.android.world.BeyondarObject
 import com.samtakoj.schedule.*
 import com.samtakoj.schedule.model.RouteCsv
+import com.samtakoj.schedule.model.RouteCsv_
 import org.jetbrains.anko.*
 import kotlin.collections.ArrayList
 

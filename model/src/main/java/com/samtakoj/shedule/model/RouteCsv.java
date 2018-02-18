@@ -4,15 +4,10 @@ import com.samtakoj.schedule.common.data.Position;
 
 import java.io.Serializable;
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Keep;
-import io.objectbox.annotation.Generated;
-
 /**
  * Created by artsiom.chuiko on 17/04/2017.
  */
-@Entity
+//@Entity
 public class RouteCsv implements Serializable {
     @Position(1)
     private String num;
@@ -22,7 +17,7 @@ public class RouteCsv implements Serializable {
     private String name;
     @Position(12)
     private String weekDays;
-    @Id(assignable = true)
+    //@Id(assignable = true)
     @Position(13)
     private Long id;
     @Position(15)
@@ -30,7 +25,7 @@ public class RouteCsv implements Serializable {
 
     static final long serialVersionUID = 536871008;
 
-    @Keep
+    //@Keep
     public RouteCsv(String num, String transportType, String name,
                     String weekDays, Long id, String stops) {
         this.num = num;
