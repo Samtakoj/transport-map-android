@@ -15,7 +15,7 @@ data class TestModel(val route: RouteCsv, val stops: List<StopCsv>, val times: T
 
 data class WorkDay(val weekDay: String, val countInterval: Int)
 @Entity
-data class TimeCsv(@Id var id: Long = 0, val routeId: Int, val intervalCount: Int,
+data class TimeCsv(@Id var id: Long = 0, val routeId: Long, val intervalCount: Int,
                    @Convert(converter = LongListConverter::class, dbType = String::class) val timeTable: List<Long> = listOf(),
                    @Convert(converter = WorkDayConverter::class, dbType = String::class) val workDay: List<WorkDay> = listOf())
 @Entity

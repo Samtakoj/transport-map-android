@@ -2,9 +2,9 @@ package com.samtakoj.schedule.data
 
 import android.util.Log
 import com.google.common.collect.Lists
-import com.nytimes.android.external.store.base.Parser
-import com.samtakoj.shedule.model.TimeCsv
-import com.samtakoj.shedule.model.WorkDay
+import com.nytimes.android.external.store3.base.Parser
+import com.samtakoj.schedule.model.TimeCsv
+import com.samtakoj.schedule.model.WorkDay
 import okhttp3.ResponseBody
 import okio.BufferedSource
 import retrofit2.Converter
@@ -18,9 +18,8 @@ import java.nio.charset.Charset
  * Created by Александр on 25.03.2017.
  */
 class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(), Converter<ResponseBody, List<TimeCsv>> {
-
-    override fun call(t: BufferedSource?): List<TimeCsv> {
-        return convertToTimeCsv(t)
+    override fun apply(raw: BufferedSource): List<TimeCsv> {
+        return convertToTimeCsv(raw)
     }
 
     override fun responseBodyConverter(type: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): Converter<ResponseBody, *> {
@@ -65,7 +64,7 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
         val timeTable = getTimeTable(timesData, blocks[4])
         val workDays = getWorkDay(blocks[3], maxIndex)
 
-        return TimeCsv(routeId, maxIndex,timeTable, workDays)
+        return TimeCsv(0, routeId, maxIndex, timeTable, workDays)
     }
 
     private fun getTimeTable(timesData: List<String>, intervals: String) : List<Long> {
