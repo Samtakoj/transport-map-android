@@ -3,7 +3,7 @@ package com.samtakoj.schedule.service
 import com.google.android.gms.gcm.GcmNetworkManager
 import com.google.android.gms.gcm.GcmTaskService
 import com.google.android.gms.gcm.TaskParams
-import com.nytimes.android.external.store.base.impl.BarCode
+import com.nytimes.android.external.store3.base.impl.BarCode
 import com.samtakoj.schedule.TransportApplication
 import com.samtakoj.schedule.model.RouteCsv
 import com.samtakoj.schedule.model.StopCsv

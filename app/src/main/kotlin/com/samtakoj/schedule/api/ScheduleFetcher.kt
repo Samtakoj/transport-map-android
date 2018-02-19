@@ -1,15 +1,15 @@
 package com.samtakoj.schedule.api
 
-import com.nytimes.android.external.store.base.impl.BarCode
+import com.nytimes.android.external.store3.base.impl.BarCode
 import com.samtakoj.schedule.TransportApplication
+import com.samtakoj.schedule.model.RouteCsv
+import com.samtakoj.schedule.model.StopCsv
 import com.samtakoj.schedule.model.TestModel
-import com.samtakoj.shedule.model.RouteCsv
-import com.samtakoj.shedule.model.StopCsv
-import com.samtakoj.shedule.model.TimeCsv
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Func2
-import rx.schedulers.Schedulers
+import com.samtakoj.schedule.model.TimeCsv
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by Александр on 18.03.2017.
@@ -43,7 +43,7 @@ object ScheduleFetcher {
                         stopBox.put(newStops)
                     }
 
-            var previousRoute = RouteCsv("", "", "", "", 1, "")
+            var previousRoute = RouteCsv(0, "", "", "", "", "")
             app.persistedRouteStore.get(BarCode("Route", "routes"))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -66,18 +66,20 @@ object ScheduleFetcher {
                     }
 
             app.persistedTimeStore.get(BarCode("Time", "times"))
+                    .toObservable()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(timeBox::put)
         }
     }
 
-    fun stops (app: TransportApplication): Observable<StopCsv>  {
+    fun stops (app: TransportApplication): Observable<StopCsv> {
         var previous = StopCsv(1, "", 1, 1)
         return app.persistedStopStore.get(BarCode("Stop", "stops"))
+                .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap { Observable.from(it) }
+                .flatMap { Observable.fromIterable(it) }
                 .map({ stop ->
                     stop.name = if (stop.name.trim() != "") stop.name else previous.name
                     stop.id = if (stop.id != 0L) stop.id else previous.id
@@ -89,12 +91,13 @@ object ScheduleFetcher {
     }
 
     fun routes (app: TransportApplication): Observable<RouteCsv> {
-        var previous = RouteCsv("", "", "", "", 1, "")
+        var previous = RouteCsv(0, "", "", "", "", "")
         var counter = 0
         return app.persistedRouteStore.get(BarCode("Route", "routes"))
+                .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap { Observable.from(it) }
+                .flatMap { Observable.fromIterable(it) }
                 .map({ route ->
                     route.id = if (route.id != 0L) route.id else previous.id
                     route.name = if (route.name.trim() != "") route.name else previous.name
@@ -120,9 +123,10 @@ object ScheduleFetcher {
 
     fun times (app: TransportApplication, routeId: Long): Observable<TimeCsv> {
         return app.persistedTimeStore.get(BarCode("Time", "times"))
+                .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap { Observable.from(it) }
+                .flatMap { Observable.fromIterable(it) }
                 .filter { time ->
                     time.routeId == routeId
                 }
@@ -130,9 +134,10 @@ object ScheduleFetcher {
 
     fun getAllTimes (app: TransportApplication): Observable<TimeCsv> {
         return app.persistedTimeStore.get(BarCode("Time", "times"))
+                .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap { Observable.from(it) }
+                .flatMap { Observable.fromIterable(it) }
     }
 
     fun getStops(app: TransportApplication, route: RouteCsv): Observable<TestModel> {
@@ -150,7 +155,7 @@ object ScheduleFetcher {
                         index1 > index2 -> return@toSortedList 1
                         else -> return@toSortedList 0
                     }
-                }, times, Func2 { stops, times -> TestModel(route, stops, times) })
+                }.toObservable(), times, BiFunction { stops, times -> TestModel(route, stops, times) })
     }
 
     fun getList(app: TransportApplication): Observable<TestModel> {

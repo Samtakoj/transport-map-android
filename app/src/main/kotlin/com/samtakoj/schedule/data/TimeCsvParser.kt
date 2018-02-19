@@ -1,7 +1,6 @@
 package com.samtakoj.schedule.data
 
 import android.util.Log
-import com.google.common.collect.Lists
 import com.nytimes.android.external.store3.base.Parser
 import com.samtakoj.schedule.model.TimeCsv
 import com.samtakoj.schedule.model.WorkDay
@@ -34,7 +33,7 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
         try {
             val start = System.currentTimeMillis()
             BufferedReader(InputStreamReader(t?.inputStream(), Charset.forName("UTF-8"))).use { reader ->
-                val parsed = Lists.newArrayList<TimeCsv>()
+                val parsed = mutableListOf<TimeCsv>()
                 reader.lineSequence().forEach { line ->
                     parsed.add(parseToTimeCsv(line))
                 }
@@ -70,7 +69,7 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
     private fun getTimeTable(timesData: List<String>, intervals: String) : List<Long> {
         val timesDataLength = timesData.count()
 
-        val timetable = Lists.newArrayList<Long>()
+        val timetable = mutableListOf<Long>()
         var previousTime: Long = 0
         timetable.addAll(timesData.map {
             previousTime += it.toInt()
@@ -109,7 +108,7 @@ class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(),
     private fun getWorkDay(dataString: String, totalCount: Int): List<WorkDay> {
         val tokens = dataString.split(",")
 
-        val result = Lists.newArrayList<WorkDay>()
+        val result = mutableListOf<WorkDay>()
         var countInterval = if(tokens.count() > 2) tokens[1].toInt() else 0
         var sum = 0
         for ((index, token) in tokens.withIndex()) {

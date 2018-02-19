@@ -1,6 +1,5 @@
 package com.samtakoj.schedule.data;
 
-import com.google.common.collect.Lists;
 import com.nytimes.android.external.store3.base.Parser;
 import com.samtakoj.schedule.common.data.Position;
 
@@ -12,6 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,7 @@ public final class RetrofitCsv {
     public static <Parsed> Parser<BufferedSource, List<Parsed>> createSourceParser(final Class<Parsed> clazz, final boolean skipHeaders, final String regex) {
         return new Parser<BufferedSource, List<Parsed>>() {
             @Override
-            public List<Parsed> call(BufferedSource source) {
+            public List<Parsed> apply(BufferedSource source) {
                 return convertSourceToList(source, clazz, skipHeaders, regex);
             }
         };
@@ -70,7 +70,7 @@ public final class RetrofitCsv {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(source.inputStream(), Charset.forName("UTF-8")))) {
             String line;
             boolean skip = skipHeaders;
-            final List<T> parsed = Lists.newArrayList();
+            final List<T> parsed = Collections.emptyList();
             while ((line = reader.readLine()) != null) {
                 if (skip) skip = false;
                 else {

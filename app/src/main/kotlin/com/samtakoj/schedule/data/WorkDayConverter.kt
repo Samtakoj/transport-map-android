@@ -1,6 +1,6 @@
 package com.samtakoj.schedule.data
 
-import com.samtakoj.shedule.model.WorkDay
+import com.samtakoj.schedule.model.WorkDay
 import io.objectbox.converter.PropertyConverter
 import java.util.*
 

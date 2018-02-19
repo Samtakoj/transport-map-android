@@ -53,12 +53,12 @@ class StopsActivity : AppCompatActivity() {
                     imageView {
                         imageResource = R.drawable.change_route
                         onClick {
-                            if (isChange) {
+                            isChange = if (isChange) {
                                 changeStopList(stopsTo, routeTo)
-                                isChange = false
+                                false
                             } else {
                                 changeStopList(stopsFrom, routeFrom)
-                                isChange = true
+                                true
                             }
                         }
                     }.lparams { gravity = Gravity.RIGHT }
@@ -94,12 +94,12 @@ class StopsActivity : AppCompatActivity() {
     }
 
     private fun getColorByTransportType(transportType: String): Int {
-        when(transportType) {
-            "bus" -> return Color.argb(255, 11, 191, 214)
-            "trol" -> return Color.argb(255, 91, 232, 48)
-            "metro" -> return Color.argb(255, 39, 59, 122)
-            "tram" -> return Color.argb(255, 244, 75, 63)
-            else -> return -1
+        return when(transportType) {
+            "bus" -> Color.argb(255, 11, 191, 214)
+            "trol" -> Color.argb(255, 91, 232, 48)
+            "metro" -> Color.argb(255, 39, 59, 122)
+            "tram" -> Color.argb(255, 244, 75, 63)
+            else -> -1
         }
     }
 

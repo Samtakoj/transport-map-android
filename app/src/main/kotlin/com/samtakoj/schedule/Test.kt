@@ -18,11 +18,13 @@ import com.beyondar.android.world.World
 import io.nlopez.smartlocation.SmartLocation
 import com.google.android.gms.location.DetectedActivity
 import com.samtakoj.schedule.model.StopCsv
+import com.samtakoj.schedule.model.StopCsv_
 import com.samtakoj.schedule.view.CustomBeyondarViewAdapter
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider
 import io.nlopez.smartlocation.location.providers.LocationManagerProvider
 import io.nlopez.smartlocation.location.providers.MultiFallbackProvider
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 /**
  * Created by Александр on 11.03.2017.

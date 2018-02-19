@@ -1,7 +1,7 @@
 package com.samtakoj.schedule
 
 import android.app.Application
-import com.nytimes.android.external.fs3.SourcePersisterFactory
+//import com.nytimes.android.external.fs3.SourcePersisterFactory
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.Store
 import okio.BufferedSource
@@ -26,7 +26,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
  */
 class TransportApplication : Application() {
 
-    private lateinit var persister: Persister<BufferedSource, BarCode>
+//    private lateinit var persister: Persister<BufferedSource, BarCode>
     lateinit var persistedStopStore: Store<List<StopCsv>, BarCode>
     lateinit var persistedTimeStore: Store<List<TimeCsv>, BarCode>
     lateinit var persistedRouteStore: Store<List<RouteCsv>, BarCode>
@@ -36,7 +36,7 @@ class TransportApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         boxStore = MyObjectBox.builder().androidContext(this).build()
-        persister = SourcePersisterFactory.create(applicationContext.getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS))
+//        persister = SourcePersisterFactory.create(applicationContext.getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS))
         persistedStopStore = providePersistedStore(StopCsv::class.java, true, ";")
         persistedRouteStore = providePersistedStore(RouteCsv::class.java, true, ";")
 
@@ -52,16 +52,8 @@ class TransportApplication : Application() {
                         .create(Api::class.java)
                         .fetchData(barCode.key).map(ResponseBody::source)
                 })
-                .persister(persister)
+//                .persister(persister)
                 .parser(parser)
-                .open()
-    }
-
-    private fun <T> providePersistedStore(clazz: Class<T>, skipHeader: Boolean, delimiter: String): Store<List<T>, BarCode> {
-        return StoreBuilder.parsedWithKey<BarCode, BufferedSource, List<T>>()
-                .fetcher({ barCode -> fetcher(barCode, clazz, skipHeader, delimiter) })
-                .persister(persister)
-                .parser(RetrofitCsv.createSourceParser(clazz, skipHeader,  delimiter))
                 .open()
     }
 
@@ -79,6 +71,14 @@ class TransportApplication : Application() {
                     .validateEagerly(BuildConfig.DEBUG)
                     .build()
                     .create(Api::class.java)
+        }
+
+        private fun <T> providePersistedStore(clazz: Class<T>, skipHeader: Boolean, delimiter: String): Store<List<T>, BarCode> {
+            return StoreBuilder.parsedWithKey<BarCode, BufferedSource, List<T>>()
+                    .fetcher({ barCode -> fetcher(barCode, clazz, skipHeader, delimiter) })
+//                .persister(persister)
+                    .parser(RetrofitCsv.createSourceParser(clazz, skipHeader,  delimiter))
+                    .open()
         }
     }
 }
