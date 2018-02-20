@@ -1,47 +1,40 @@
 package com.samtakoj.schedule.data
 
 import android.util.Log
-import com.nytimes.android.external.store3.base.Parser
 import com.samtakoj.schedule.model.TimeCsv
 import com.samtakoj.schedule.model.WorkDay
+import io.objectbox.BoxStore
 import okhttp3.ResponseBody
 import okio.BufferedSource
-import retrofit2.Converter
-import retrofit2.Retrofit
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.lang.reflect.Type
 import java.nio.charset.Charset
 
 /**
  * Created by Александр on 25.03.2017.
  */
-class TimeCsvParser: Parser<BufferedSource, List<TimeCsv>>, Converter.Factory(), Converter<ResponseBody, List<TimeCsv>> {
-    override fun apply(raw: BufferedSource): List<TimeCsv> {
-        return convertToTimeCsv(raw)
-    }
+class TimeCsvParser(private val store: BoxStore) : CsvParser<TimeCsv>(false, "") {
+    override fun defaultObject(): TimeCsv = TODO("not implemented")
+    override fun createObject(prev: TimeCsv, vararg data: String): TimeCsv = TODO("not implemented")
 
-    override fun responseBodyConverter(type: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): Converter<ResponseBody, *> {
-        return this
-    }
-
-    override fun convert(value: ResponseBody?): List<TimeCsv> {
+    override fun convert(value: ResponseBody): List<TimeCsv> {
         return convertToTimeCsv(value?.source())
     }
 
+    override fun afterParsing(parsed: List<TimeCsv>) {
+        val timeBox = store.boxFor(TimeCsv::class.java)
+        timeBox.put(parsed)
+    }
+
     private fun convertToTimeCsv(t: BufferedSource?): List<TimeCsv> {
-        try {
-            val start = System.currentTimeMillis()
-            BufferedReader(InputStreamReader(t?.inputStream(), Charset.forName("UTF-8"))).use { reader ->
-                val parsed = mutableListOf<TimeCsv>()
-                reader.lineSequence().forEach { line ->
-                    parsed.add(parseToTimeCsv(line))
-                }
-                Log.i("TRANSPORT_SCHEDULE", "Parse time = ${System.currentTimeMillis() - start}")
-                return parsed
+        val start = System.currentTimeMillis()
+        BufferedReader(InputStreamReader(t?.inputStream(), Charset.forName("UTF-8"))).use { reader ->
+            val parsed = mutableListOf<TimeCsv>()
+            reader.lineSequence().forEach { line ->
+                parsed.add(parseToTimeCsv(line))
             }
-        } catch (e: Exception) {
-            throw RuntimeException(e)
+            Log.i("TRANSPORT_SCHEDULE", "Parse time = ${System.currentTimeMillis() - start}")
+            return parsed
         }
     }
 
