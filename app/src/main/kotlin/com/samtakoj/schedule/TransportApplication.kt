@@ -26,19 +26,13 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
  */
 class TransportApplication : Application() {
 
-//    private lateinit var persister: Persister<BufferedSource, BarCode>
-    lateinit var persistedStopStore: Store<List<StopCsv>, BarCode>
-    lateinit var persistedTimeStore: Store<List<TimeCsv>, BarCode>
-    lateinit var persistedRouteStore: Store<List<RouteCsv>, BarCode>
-
     lateinit var boxStore: BoxStore
 
     override fun onCreate() {
         super.onCreate()
         boxStore = MyObjectBox.builder().androidContext(this).build()
-//        persister = SourcePersisterFactory.create(applicationContext.getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS))
-        persistedStopStore = providePersistedStore(StopCsv::class.java, true, ";")
-        persistedRouteStore = providePersistedStore(RouteCsv::class.java, true, ";")
+//        persistedStopStore = providePersistedStore(StopCsv::class.java, true, ";")
+//        persistedRouteStore = providePersistedStore(RouteCsv::class.java, true, ";")
 
         val parser = TimeCsvParser()
         persistedTimeStore = StoreBuilder.parsedWithKey<BarCode, BufferedSource, List<TimeCsv>>()
