@@ -2,6 +2,9 @@ package com.samtakoj.schedule
 
 import android.app.Application
 import com.samtakoj.schedule.api.Api
+import com.samtakoj.schedule.api.RoutesApi
+import com.samtakoj.schedule.api.StopsApi
+import com.samtakoj.schedule.api.TimeApi
 import com.samtakoj.schedule.data.RoutesParser
 import com.samtakoj.schedule.data.StopsParser
 import com.samtakoj.schedule.data.TimeCsvParser
@@ -15,9 +18,9 @@ import io.objectbox.BoxStore
 class TransportApplication : Application() {
 
     lateinit var boxStore: BoxStore
-    lateinit var timeApi: Api
-    lateinit var stopApi: Api
-    lateinit var routeApi: Api
+    lateinit var timeApi: TimeApi
+    lateinit var stopApi: StopsApi
+    lateinit var routeApi: RoutesApi
 
     override fun onCreate() {
         super.onCreate()

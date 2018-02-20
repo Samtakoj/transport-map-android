@@ -28,7 +28,7 @@ abstract class CsvParser<T>(private val skipHeaders: Boolean, private val regex:
         return parsed
     }
 
-    override fun responseBodyConverter(type: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): Converter<ResponseBody, *> {
+    override fun responseBodyConverter(type: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): Converter<ResponseBody, List<T>> {
         return this
     }
 
