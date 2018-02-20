@@ -43,8 +43,8 @@ import retrofit2.Retrofit;
 public final class RetrofitCsv {
     private RetrofitCsv() {}
 
-    public static <Parsed> Parser<BufferedSource, List<Parsed>> createSourceParser(final Class<Parsed> clazz, final boolean skipHeaders, final String regex) {
-        return new Parser<BufferedSource, List<Parsed>>() {
+    public static <Parsed> java.util.function.Function<BufferedSource, List<Parsed>> createSourceParser(final Class<Parsed> clazz, final boolean skipHeaders, final String regex) {
+        return new java.util.function.Function<BufferedSource, List<Parsed>>() {
             @Override
             public List<Parsed> apply(BufferedSource source) {
                 return convertSourceToList(source, clazz, skipHeaders, regex);
