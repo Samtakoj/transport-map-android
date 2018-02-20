@@ -1,6 +1,5 @@
 package com.samtakoj.schedule.api
 
-import com.nytimes.android.external.store3.base.impl.BarCode
 import com.samtakoj.schedule.TransportApplication
 import com.samtakoj.schedule.model.RouteCsv
 import com.samtakoj.schedule.model.StopCsv

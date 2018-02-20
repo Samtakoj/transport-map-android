@@ -1,6 +1,5 @@
 package com.samtakoj.schedule.data;
 
-import com.nytimes.android.external.store3.base.Parser;
 import com.samtakoj.schedule.common.data.Position;
 
 import java.io.BufferedReader;
