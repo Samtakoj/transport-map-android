@@ -15,7 +15,7 @@ import retrofit2.http.GET
  */
 interface Api {
     companion object {
-        inline fun <reified T : Api> provideRetrofit(noinline parserSupplier: () -> Converter.Factory) : T {
+        inline fun <reified T> provideRetrofit(noinline parserSupplier: () -> Converter.Factory) : T {
             return Retrofit.Builder()
                     .baseUrl("http://minsktrans.by/")
                     .addConverterFactory(parserSupplier())
@@ -27,19 +27,19 @@ interface Api {
     }
 }
 
-interface TimeApi : Api {
+interface TimeApi {
 
     @GET("/city/minsk/times.txt")
     fun fetch(): Observable<List<TimeCsv>>
 }
 
-interface StopsApi : Api {
+interface StopsApi {
 
     @GET("/city/minsk/stops.txt")
     fun fetch(): Observable<List<StopCsv>>
 }
 
-interface RoutesApi : Api {
+interface RoutesApi {
 
     @GET("/city/minsk/routes.txt")
     fun fetch(): Observable<List<RouteCsv>>

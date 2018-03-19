@@ -34,6 +34,7 @@ class TimeCsvParser(private val store: BoxStore) : CsvParser<TimeCsv>(false, "")
                 parsed.add(parseToTimeCsv(line))
             }
             Log.i("TRANSPORT_SCHEDULE", "Parse time = ${System.currentTimeMillis() - start}")
+            this.afterParsing(parsed)
             return parsed
         }
     }

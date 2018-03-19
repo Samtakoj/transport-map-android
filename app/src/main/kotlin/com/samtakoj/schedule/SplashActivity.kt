@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.samtakoj.schedule.extensions.transportApp
+import com.samtakoj.schedule.model.StopCsv
+import io.objectbox.kotlin.boxFor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.setContentView
@@ -17,25 +19,29 @@ class SplashActivity: AppCompatActivity(), RequestPermissionCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val isEmpty = transportApp().boxStore.boxFor<StopCsv>().count() < 100L
 
-        transportApp().stopApi.fetch()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({}, {error ->
-                    Log.e(BuildConfig.APPLICATION_ID, "Error while fetching stops: ${error.message}")
-                })
-        transportApp().timeApi.fetch()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({}, {error ->
-                    Log.e(BuildConfig.APPLICATION_ID, "Error while fetching times: ${error.message}")
-                })
-        transportApp().routeApi.fetch()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({}, {error ->
-                    Log.e(BuildConfig.APPLICATION_ID, "Error while fetching routes: ${error.message}")
-                })
+        if(isEmpty) {
+            transportApp().stopApi.fetch()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({}, { error ->
+                        Log.e(BuildConfig.APPLICATION_ID, "Error while fetching stops: ${error.message}")
+                    })
+
+            transportApp().timeApi.fetch()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({}, { error ->
+                        Log.e(BuildConfig.APPLICATION_ID, "Error while fetching times: ${error.message}")
+                    })
+            transportApp().routeApi.fetch()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({}, { error ->
+                        Log.e(BuildConfig.APPLICATION_ID, "Error while fetching routes: ${error.message}")
+                    })
+        }
 
         SplashActivityUi().setContentView(this)
     }

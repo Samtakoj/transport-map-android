@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.TextView
 import com.samtakoj.schedule.model.*
+import io.objectbox.Box
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -86,7 +87,7 @@ class StopsActivity : AppCompatActivity() {
             val stop = stops[position]
 //            Log.i("STOPS_SCHEDULE", "Stop: ${stop.name}")
 
-            if(time != null)
+            if (time != null)
                 startActivity<TimeActivity>("time" to time, "stopPosition" to position, "stopName" to stop.name)
 
         }

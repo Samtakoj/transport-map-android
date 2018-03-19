@@ -38,12 +38,12 @@ abstract class CsvParser<T>(private val skipHeaders: Boolean, private val regex:
     private fun convertSourceToList(source: BufferedSource, skipHeaders: Boolean, regex: String): List<T> {
         BufferedReader(InputStreamReader(source.inputStream(), Charset.forName("UTF-8"))).use { reader ->
             var previous = defaultObject()
-            return reader.lines().skip(if(skipHeaders) 1 else 0)
-                    .map {
-                        previous = createObject(previous, *it.split(regex).toTypedArray())
-                        previous
-                    }
-                    .collect(Collectors.toList())
+            return reader.useLines { lines ->
+                lines.drop(if(skipHeaders) 1 else 0).map {
+                    previous = createObject(previous, *it.split(regex).toTypedArray())
+                    previous
+                }.toList()
+            }
         }
     }
 }

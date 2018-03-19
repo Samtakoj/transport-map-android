@@ -29,6 +29,7 @@ class RoutesParser(private val store: BoxStore, skipHeaders: Boolean, regex: Str
 
     override fun afterParsing(parsed: List<RouteCsv>) {
         val routeBox = store.boxFor(RouteCsv::class.java)
-        routeBox.put(parsed)
+        routeBox.put(parsed.groupBy { "${it.num}-${it.transportType}" }
+                .flatMap { it.value.take(2) })
     }
 }
