@@ -1,3 +1,5 @@
+package com.samtakoj.schedule.layouts
+
 import android.view.*
 import org.jetbrains.anko.*
 import com.samtakoj.schedule.R

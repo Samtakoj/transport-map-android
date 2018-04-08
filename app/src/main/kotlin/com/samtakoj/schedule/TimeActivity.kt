@@ -61,7 +61,7 @@ class TimeActivity : AppCompatActivity() {
         viewPager = find<ViewPager>(R.id.lunch_pager_container)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(find<TabLayout>(R.id.lunch_tabs)))
 
-        val listAdapter = TimeListViewAdapter(this, emptyMap<Long, List<Long>>().toMutableMap())
+        val listAdapter = TimeListViewAdapter(emptyMap<Long, List<Long>>().toMutableMap())
         listAdapter.clear()
         listAdapter.addAll(times[0])
 

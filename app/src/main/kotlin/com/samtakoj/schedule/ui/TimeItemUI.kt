@@ -1,23 +1,29 @@
+package com.samtakoj.schedule.layouts
+
 import android.view.*
+import android.widget.TextView
 import org.jetbrains.anko.*
+import kotlin.properties.Delegates
 
 class TimeItemUI : AnkoComponent<ViewGroup> {
     override fun createView(ui: AnkoContext<ViewGroup>): View {
-        return with(ui) {
+        var hourView: TextView by Delegates.notNull()
+        var minutesView: TextView by Delegates.notNull()
+        val viewItem = with(ui) {
             relativeLayout {
                 backgroundColor = 0xfff.opaque
                 lparams(matchParent, matchParent)
 
-                textView("TextView") {
-                    id = Ids.hourTextView
+                hourView = textView("TextView") {
+                    id = hourTextView
                     textColor = 0x000.opaque
                     textSize = 24f
                 }.lparams(width = wrapContent, height = wrapContent) {
                     alignParentStart()
                     centerVertically()
                 }
-                textView("TextView") {
-                    id = Ids.minutesTextView
+                minutesView = textView("TextView") {
+                    id = minutesTextView
                     textColor = 0x000.opaque
                     textSize = 20f
                 }.lparams(width = wrapContent, height = wrapContent) {
@@ -25,10 +31,19 @@ class TimeItemUI : AnkoComponent<ViewGroup> {
                 }
             }
         }
+        viewItem.tag = TimeItemViewHolder(hourView, minutesView)
+        return viewItem
     }
 
-    private object Ids {
+    companion object {
         val hourTextView = View.generateViewId()
         val minutesTextView = View.generateViewId()
+    }
+}
+
+class TimeItemViewHolder(val hourView: TextView, val minutesView: TextView) {
+    fun bind(hour: Long, item: List<Long>?) {
+        hourView.text = (hour % 24).toString()
+        minutesView.text = item.toString().replace(Regex.fromLiteral("[,]"), "")
     }
 }
