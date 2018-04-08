@@ -6,7 +6,7 @@ import io.objectbox.BoxStore
 /**
  * Created by artsiom.chuiko on 20/02/2018.
  */
-class RoutesParser(private val store: BoxStore, skipHeaders: Boolean, regex: String)
+class RoutesPersistor(private val store: BoxStore, skipHeaders: Boolean, regex: String)
     : CsvParser<RouteCsv>(skipHeaders, regex) {
     override fun defaultObject(): RouteCsv = RouteCsv(0, "", "", "", "", "")
 

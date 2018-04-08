@@ -5,9 +5,9 @@ import com.samtakoj.schedule.api.Api
 import com.samtakoj.schedule.api.RoutesApi
 import com.samtakoj.schedule.api.StopsApi
 import com.samtakoj.schedule.api.TimeApi
-import com.samtakoj.schedule.data.RoutesParser
-import com.samtakoj.schedule.data.StopsParser
-import com.samtakoj.schedule.data.TimeCsvParser
+import com.samtakoj.schedule.data.RoutesPersistor
+import com.samtakoj.schedule.data.StopsPersistor
+import com.samtakoj.schedule.data.TimeCsvPersistor
 import com.samtakoj.schedule.model.MyObjectBox
 import io.objectbox.BoxStore
 
@@ -25,8 +25,8 @@ class TransportApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         boxStore = MyObjectBox.builder().androidContext(this).build()
-        timeApi = Api.provideRetrofit({ TimeCsvParser(boxStore) })
-        stopApi = Api.provideRetrofit({ StopsParser(boxStore, true, ";") })
-        routeApi = Api.provideRetrofit({ RoutesParser(boxStore, true, ";") })
+        timeApi = Api.provideRetrofit({ TimeCsvPersistor(boxStore) })
+        stopApi = Api.provideRetrofit({ StopsPersistor(boxStore, true, ";") })
+        routeApi = Api.provideRetrofit({ RoutesPersistor(boxStore, true, ";") })
     }
 }

@@ -6,7 +6,7 @@ import io.objectbox.BoxStore
 /**
  * Created by artsiom.chuiko on 20/02/2018.
  */
-class StopsParser(private val store: BoxStore, skipHeaders: Boolean, regex: String) : CsvParser<StopCsv>(skipHeaders, regex) {
+class StopsPersistor(private val store: BoxStore, skipHeaders: Boolean, regex: String) : CsvParser<StopCsv>(skipHeaders, regex) {
     override fun defaultObject(): StopCsv = StopCsv(0, "", 0, 0)
 
     override fun createObject(prev: StopCsv, vararg data: String): StopCsv {

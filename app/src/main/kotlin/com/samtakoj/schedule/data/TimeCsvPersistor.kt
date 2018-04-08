@@ -13,7 +13,7 @@ import java.nio.charset.Charset
 /**
  * Created by Александр on 25.03.2017.
  */
-class TimeCsvParser(private val store: BoxStore) : CsvParser<TimeCsv>(false, "") {
+class TimeCsvPersistor(private val store: BoxStore) : CsvParser<TimeCsv>(false, "") {
     override fun defaultObject(): TimeCsv = TODO("not implemented")
     override fun createObject(prev: TimeCsv, vararg data: String): TimeCsv = TODO("not implemented")
 
