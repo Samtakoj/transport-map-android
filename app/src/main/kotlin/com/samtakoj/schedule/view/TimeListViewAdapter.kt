@@ -1,38 +1,26 @@
 package com.samtakoj.schedule.view
 
-import android.content.Context
-import android.graphics.Color
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.TextView
-import com.samtakoj.schedule.R
+import com.samtakoj.schedule.ui.TimeItemUI
+import com.samtakoj.schedule.ui.TimeItemViewHolder
+import org.jetbrains.anko.AnkoContext
 
-class TimeListViewAdapter(val context: Context , val time: MutableMap<Long, List<Long>>): BaseAdapter() {
-
-    class ViewHolder(val hourTextView: TextView, val minutesTextView: TextView)
+class TimeListViewAdapter(val time: MutableMap<Long, List<Long>>): BaseAdapter() {
 
     private val mLock = Any()
 
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-        var viewHolder: ViewHolder
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
         var tempConvertView = convertView
 
         if(tempConvertView == null) {
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            tempConvertView = inflater.inflate(R.layout.time_item, parent, false)
-            viewHolder = ViewHolder(tempConvertView.findViewById(R.id.hourTextView) as TextView, tempConvertView.findViewById(R.id.minutesTextView) as TextView)
-            tempConvertView.tag = viewHolder
-        } else {
-            viewHolder = tempConvertView.tag as ViewHolder
+            tempConvertView = TimeItemUI().createView(AnkoContext.create(parent.context, parent))
         }
 
         val hour = getItemId(position)
         val item = getItem(hour.toInt())
-        viewHolder.hourTextView.text = (hour % 24).toString()
-        viewHolder.minutesTextView.text = item.toString().replace(Regex.fromLiteral("[,]"), "")
+        (tempConvertView.tag as TimeItemViewHolder).bind(hour, item)
 
         return tempConvertView
     }
