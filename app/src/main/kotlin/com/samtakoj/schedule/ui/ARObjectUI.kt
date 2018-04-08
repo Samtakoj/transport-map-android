@@ -1,4 +1,4 @@
-package com.samtakoj.schedule.layouts
+package com.samtakoj.schedule.ui
 
 import android.view.*
 import android.widget.*

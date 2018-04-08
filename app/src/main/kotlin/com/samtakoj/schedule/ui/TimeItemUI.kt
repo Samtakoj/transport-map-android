@@ -1,5 +1,6 @@
-package com.samtakoj.schedule.layouts
+package com.samtakoj.schedule.ui
 
+import android.support.v4.content.ContextCompat
 import android.view.*
 import android.widget.TextView
 import org.jetbrains.anko.*
@@ -11,7 +12,7 @@ class TimeItemUI : AnkoComponent<ViewGroup> {
         var minutesView: TextView by Delegates.notNull()
         val viewItem = with(ui) {
             relativeLayout {
-                backgroundColor = 0xfff.opaque
+                backgroundColor = ContextCompat.getColor(ctx, android.R.color.white)
                 lparams(matchParent, matchParent)
 
                 hourView = textView("TextView") {
@@ -21,6 +22,7 @@ class TimeItemUI : AnkoComponent<ViewGroup> {
                 }.lparams(width = wrapContent, height = wrapContent) {
                     alignParentStart()
                     centerVertically()
+                    marginStart = dip(24)
                 }
                 minutesView = textView("TextView") {
                     id = minutesTextView
@@ -28,6 +30,8 @@ class TimeItemUI : AnkoComponent<ViewGroup> {
                     textSize = 20f
                 }.lparams(width = wrapContent, height = wrapContent) {
                     centerVertically()
+                    endOf(hourTextView)
+                    marginStart = dip(33)
                 }
             }
         }
