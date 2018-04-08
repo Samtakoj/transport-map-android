@@ -2,13 +2,16 @@ package com.samtakoj.schedule.view
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.util.SparseArray
 import com.samtakoj.schedule.view.tab.RouteListFragment
-import com.samtakoj.schedule.view.tab.SmartFragmentStatePagerAdapter
 
-class TypeTransportAdapter(fm: FragmentManager, var listAdapter: RouteListViewAdapter): SmartFragmentStatePagerAdapter(fm) {
+class TypeTransportAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm) {
+    private val registeredFragments = SparseArray<Fragment>()
+
 
     override fun getItem(position: Int): Fragment {
-        return RouteListFragment.newInstance(listAdapter, getPageTitle(position))
+        return registeredFragments[position]
     }
 
     override fun getCount(): Int {
@@ -25,8 +28,12 @@ class TypeTransportAdapter(fm: FragmentManager, var listAdapter: RouteListViewAd
         }
     }
 
-    fun setAdapter(newAdapter: RouteListViewAdapter, position: Int): Fragment {
-        listAdapter = newAdapter
-        return RouteListFragment.newInstance(listAdapter, getPageTitle(position))
+    fun getRegisteredFragment(position: Int): Fragment {
+        return registeredFragments.get(position)
+    }
+
+    fun addFragment(listAdapter: RouteListViewAdapter, position: Int) {
+        val newFragment = RouteListFragment.newInstance(listAdapter, getPageTitle(position))
+        registeredFragments.put(position, newFragment)
     }
 }

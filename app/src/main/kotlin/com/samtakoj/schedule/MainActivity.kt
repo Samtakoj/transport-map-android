@@ -1,6 +1,5 @@
 package com.samtakoj.schedule
 
-import android.app.ProgressDialog
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -16,8 +15,6 @@ import android.widget.ListView
 import io.nlopez.smartlocation.SmartLocation
 import org.jetbrains.anko.*
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.ImageView
-import android.widget.ProgressBar
 import com.samtakoj.schedule.model.RouteCsv
 import com.samtakoj.schedule.model.RouteCsv_
 import com.samtakoj.schedule.model.StopCsv
@@ -48,7 +45,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val listAdapter = RouteListViewAdapter(this, ArrayList())
         routeBox = (application as TransportApplication).boxStore.boxFor(RouteCsv::class.java)
 
         val location = SmartLocation.with(this).location().lastLocation // 53.89 27.54
@@ -74,9 +70,9 @@ class MainActivity : AppCompatActivity() {
                         imageResource = R.drawable.star
                         onClick {
                             var imageResource = R.drawable.star
-                            routeList = allRoutes
 
                             isFavorites = if(!isFavorites) {
+                                routeList = allRoutes
                                 true
                             } else {
                                 routeList = getFavoritesRoutes()
@@ -84,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                                 false
                             }
 
-                            setListToAdapter(listAdapter, routeList.getValue(type))
+                            setListToAdapter(routeList)
                             this@imageView.imageResource = imageResource
                         }
                     }.lparams {
@@ -97,20 +93,23 @@ class MainActivity : AppCompatActivity() {
                         id = R.id.search_view
                         onQueryTextListener {
                             onQueryTextChange { newValue ->
-                                routeList = allRoutes
-                                if(isFavorites) {
-                                    routeList = getFavoritesRoutes()
+                                routeList = if(!isFavorites) {
+                                    allRoutes
+                                } else {
+                                    getFavoritesRoutes()
                                 }
-                                if (!TextUtils.isEmpty(newValue!!.trim())) {
-                                    val dialog = indeterminateProgressDialog("This a progress dialog")
-                                    dialog.show()
-                                    routeList = bg {
+                                routeList = if (!TextUtils.isEmpty(newValue!!.trim())) {
+//                                    val dialog = indeterminateProgressDialog("This a progress dialog")
+//                                    dialog.show()
+                                    bg {
                                         getRoutesByInputValue(newValue)
                                     }.await()
-                                    dialog.hide()
+//                                    dialog.hide()
+                                } else {
+                                    allRoutes
                                 }
 
-                                setListToAdapter(listAdapter, routeList.getValue(type))
+                                setListToAdapter(routeList)
 
                                 true
                             }
@@ -119,7 +118,6 @@ class MainActivity : AppCompatActivity() {
                         gravity = Gravity.RIGHT
                     }
                 }
-
                 tabLayout {
                     id = R.id.lunch_tabs
                     setTabTextColors(Color.LTGRAY, Color.WHITE)
@@ -132,7 +130,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        routeList = routeBox.query().order(RouteCsv_.num).build().find().groupBy { route ->
+        allRoutes = routeBox.query().order(RouteCsv_.num).build().find().groupBy { route ->
             "${route.num}-${route.transportType}"
         }.flatMap { grouped ->
             grouped.value.take(1)
@@ -153,69 +151,50 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        allRoutes = routeList
+        routeList = allRoutes
 
 
 //        setSupportActionBar(find<Toolbar>(R.id.lunch_toolbar))
         viewPager = find<ViewPager>(R.id.lunch_pager_container)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(find<TabLayout>(R.id.lunch_tabs)))
 
-        listAdapter.clear()
-        listAdapter.addAll(routeList.getValue(type))
-
-        typesAdapter = TypeTransportAdapter(supportFragmentManager, listAdapter)
+        typesAdapter = TypeTransportAdapter(supportFragmentManager)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
             override fun onFragmentViewCreated(fm: FragmentManager?, f: android.support.v4.app.Fragment?, v: View?, savedInstanceState: Bundle?) {
                 super.onFragmentViewCreated(fm, f, v, savedInstanceState)
 
-                when ((f as RouteListFragment).name) {
-                    "bus" -> {
-                        typesAdapter.pushFragments(f, 0)
-                    }
-                    "troll" -> {
-                        typesAdapter.pushFragments(f, 1)
-                    }
-                    "tram" -> {
-                        typesAdapter.pushFragments(f, 2)
-                    }
-                    "metro" -> {
-                        typesAdapter.pushFragments(f, 3)
-                    }
-                }
-
-//                if((f as RouteListFragment).name == "bus")
-//                    selectAdapterForActiveType(0)
+                if((f as RouteListFragment).name == "bus")
+                    selectAdapterForActiveType(0)
             }
         }, false)
 
         viewPager.adapter = typesAdapter
         setupTabs(viewPager)
+        viewPager.offscreenPageLimit = 4
+
         find<TabLayout>(R.id.lunch_tabs).addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                Log.i("Unselected", "${tab?.position}")
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                Log.i("Selected", "${tab?.position}")
                 selectAdapterForActiveType(tab!!.position)
                 find<Toolbar>(R.id.lunch_toolbar).backgroundColor = getColorByPosition(tab.position)
                 find<TabLayout>(R.id.lunch_tabs).backgroundColor = getColorByPosition(tab.position)
             }
 
         })
-
-//        SmartLocation.with(this).location().oneFix().start { location ->
-//            toast("Lat: ${location.latitude}, Long: ${location.longitude}")
-//        }
     }
 
-    private fun setListToAdapter(listAdapter: RouteListViewAdapter, routeList: List<RouteCsv>) {
-        listAdapter.clear()
-        listAdapter.addAll(routeList)
+    private fun setListToAdapter(routeList: Map<String, List<RouteCsv>>) {
+        for (index in 0 until 4) {
+            val listAdapter = (typesAdapter.getRegisteredFragment(index) as RouteListFragment).listAdapter
+            listAdapter.clear()
+            listAdapter.addAll(routeList.getValue(getTransportType(index.toLong())))
+        }
     }
 
     private fun getFavoritesRoutes(): Map<String, List<RouteCsv>> {
@@ -298,6 +277,8 @@ class MainActivity : AppCompatActivity() {
         val tabLayout = find<TabLayout>(R.id.lunch_tabs)
         tabLayout.setupWithViewPager(viewPager)
         for (i in 0 until tabLayout.tabCount) {
+            val listAdapter = RouteListViewAdapter(this, routeList.getValue(getTransportType(i.toLong())).toMutableList())
+            typesAdapter.addFragment(listAdapter, i)
             tabLayout.getTabAt(i)!!.setIcon(getPageIcon(i))
         }
     }
@@ -315,13 +296,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun selectAdapterForActiveType(typeIndex: Int) {
         type = getTransportType(typeIndex.toLong())
-        val newListAdapter = RouteListViewAdapter(this, routeList.getValue(type).toMutableList())
-//        listView = typesAdapter.setAdapter(newListAdapter, typeIndex).view as ListView
-
-        typesAdapter.listAdapter.clear()
-        typesAdapter.listAdapter.addAll(routeList.getValue(type))
 
         listView = typesAdapter.getRegisteredFragment(typeIndex).view as ListView
+        val listAdapter = listView.adapter as RouteListViewAdapter
+        listAdapter.clear()
+        listAdapter.addAll(routeList.getValue(type))
 
         listView.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             Log.i("TEST", "itemClick: position = $position, id = $id")
@@ -333,8 +312,6 @@ class MainActivity : AppCompatActivity() {
                     .equal(RouteCsv_.transportType, routeTo.transportType)
                     .and()
                     .notEqual(RouteCsv_.id, routeTo.id).build().findFirst()
-
-            Log.i("TRANSPORT_SCHEDULE", "RouteName: ${routeTo.name}")
 
             val stopsTo = getRouteStops(routeTo)
             val stopsFrom = getRouteStops(routeFrom!!)
