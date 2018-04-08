@@ -63,10 +63,7 @@ class TimeListViewAdapter(val context: Context , val time: MutableMap<Long, List
         notifyDataSetChanged()
     }
 
-//    fun addAll(collection: Map<Long, List<Long>>) {
-//        synchronized(mLock) {
-//            time.addAll(collection)
-//        }
-//        notifyDataSetChanged()
-//    }
+    fun getAll(): MutableMap<Long, List<Long>> {
+        return time
+    }
 }

@@ -53,8 +53,8 @@ import com.beyondar.android.world.World;
 public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, OnClickListener,
 		OnTouchListener {
 
-	private static final int CORE_POOL_SIZE = 1;
-	private static final int MAXIMUM_POOL_SIZE = 1;
+	private static final int CORE_POOL_SIZE = 2;
+	private static final int MAXIMUM_POOL_SIZE = 3;
 	private static final long KEEP_ALIVE_TIME = 1000; // 1000 ms
 
 	private Camera2View mBeyondarCameraView;

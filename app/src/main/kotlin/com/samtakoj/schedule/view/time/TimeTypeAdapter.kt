@@ -2,13 +2,15 @@ package com.samtakoj.schedule.view.time
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v7.app.AppCompatActivity
 import com.samtakoj.schedule.model.WorkDay
 import com.samtakoj.schedule.view.TimeListViewAdapter
 import com.samtakoj.schedule.view.tab.SmartFragmentStatePagerAdapter
 
-class TimeTypeAdapter(fm: FragmentManager, val workDays: List<WorkDay>, val listAdapter: TimeListViewAdapter): SmartFragmentStatePagerAdapter(fm) {
+class TimeTypeAdapter(fm: FragmentManager, private val workDays: List<WorkDay>, var listAdapter: TimeListViewAdapter): SmartFragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
+//        val newAdapter = TimeListViewAdapter(context, listAdapter.getAll())
         return TimeListFragment.newInstance(listAdapter)
     }
 
@@ -18,18 +20,18 @@ class TimeTypeAdapter(fm: FragmentManager, val workDays: List<WorkDay>, val list
 
     override fun getPageTitle(position: Int): String {
         val type = workDays[position].weekDay
-        when (type) {
-            "12345" -> return "Рабочие дни"
-            "67" -> return "Выходные дни"
-            "2345" -> return "Вторник - пятница"
-            "1" -> return "Понедельник"
-            "2" -> return "Вторник"
-            "3" -> return "Среда"
-            "4" -> return "Четверг"
-            "5" -> return "Пятница"
-            "6" -> return "Суббота"
-            "7" -> return "Воскресенье"
-            else -> return ""
+        return when (type) {
+            "12345" -> "Рабочие дни"
+            "67" -> "Выходные дни"
+            "2345" -> "Вторник - пятница"
+            "1" -> "Понедельник"
+            "2" -> "Вторник"
+            "3" -> "Среда"
+            "4" -> "Четверг"
+            "5" -> "Пятница"
+            "6" -> "Суббота"
+            "7" -> "Воскресенье"
+            else -> ""
         }
     }
 }

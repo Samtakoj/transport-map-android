@@ -28,6 +28,7 @@ class MainActivityUi: AnkoComponent<TestActivity> {
             toolbar {
                 id = ToolbarID
                 backgroundColor = ContextCompat.getColor(ctx, android.R.color.white)
+                title = ui.resources.getString(R.string.app_name_main)
             }.lparams(width = matchParent, height = wrapContent).let {
                 (ui.ctx  as TestActivity).setSupportActionBar(it)
             }
@@ -47,8 +48,7 @@ class SplashActivityUi: AnkoComponent<SplashActivity> {
             lparams(width = matchParent, height = matchParent)
             particleView {
                 lparams(width = matchParent, height = matchParent)
-                backgroundColor = Color.argb(255, 99, 196, 207)
-                bgColor = Color.argb(255, 99, 196, 207)
+                backgroundColor = Color.argb(255, 237, 149, 42)
                 particleColor = Color.argb(255, 255, 255, 255)
                 particleTextSize = sp(27)
                 hostText = "Transport"

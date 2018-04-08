@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.*
 import android.widget.TextView
 import com.beyondar.android.fragment.BeyondarFragmentSupport
+import com.beyondar.android.opengl.util.LowPassFilter
 import com.beyondar.android.world.GeoObject
 import com.beyondar.android.world.World
 import io.nlopez.smartlocation.SmartLocation
@@ -21,6 +23,7 @@ import com.samtakoj.schedule.model.StopCsv
 import com.samtakoj.schedule.model.StopCsv_
 import com.samtakoj.schedule.view.CustomBeyondarViewAdapter
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
+import io.nlopez.smartlocation.location.config.LocationParams
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider
 import io.nlopez.smartlocation.location.providers.LocationManagerProvider
 import io.nlopez.smartlocation.location.providers.MultiFallbackProvider
@@ -70,7 +73,8 @@ class TestActivity : AppCompatActivity(){
                 build()
 
         val world = World(this@TestActivity)
-        SmartLocation.with(this@TestActivity).location(provider).start { location ->
+        SmartLocation.with(this@TestActivity).location(provider).config(LocationParams.BEST_EFFORT)
+                .start { location ->
             world.setLocation(location)
             //fragment.showFPS(true)
         }
@@ -80,7 +84,7 @@ class TestActivity : AppCompatActivity(){
         val stops = (application as TransportApplication).boxStore.boxFor(StopCsv::class.java).query().order(StopCsv_.id).build().find()
         Log.i("TEST", "$stops")
         stops.map { stop ->
-            val obj = GeoObject(stop.id.toLong())
+            val obj = GeoObject(stop.id)
             obj.setGeoPosition(stop.ltd * 0.00001, stop.lng * 0.00001)
             obj.setImageResource(R.drawable.goal)
             obj.name = stop.name
@@ -97,7 +101,8 @@ class TestActivity : AppCompatActivity(){
                 fragment.setBeyondarViewAdapter(customBeyondarViewAdapter)
                 fragment.maxDistanceToRender = 500f
                 fragment.distanceFactor = 30f
-//                fragment.pullCloserDistance = 100f
+                // fragment.showFPS(true)
+                fragment.pullCloserDistance = 100f
                 fragment.pushAwayDistance = 100f
             }
         }, true)
@@ -146,13 +151,13 @@ class TestActivity : AppCompatActivity(){
         }
 
         private fun getNameFromType(activityType: DetectedActivity): String {
-            when (activityType.type) {
-                DetectedActivity.IN_VEHICLE -> return "in vehicle"
-                DetectedActivity.ON_BICYCLE -> return "on bicycle"
-                DetectedActivity.ON_FOOT -> return "on foot"
-                DetectedActivity.STILL -> return "still"
-                DetectedActivity.TILTING -> return "tilting"
-                else -> return "unknown"
+            return when (activityType.type) {
+                DetectedActivity.IN_VEHICLE -> "in vehicle"
+                DetectedActivity.ON_BICYCLE -> "on bicycle"
+                DetectedActivity.ON_FOOT -> "on foot"
+                DetectedActivity.STILL -> "still"
+                DetectedActivity.TILTING -> "tilting"
+                else -> "unknown"
             }
         }
     }

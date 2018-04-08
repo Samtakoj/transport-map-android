@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager
 import com.samtakoj.schedule.view.tab.RouteListFragment
 import com.samtakoj.schedule.view.tab.SmartFragmentStatePagerAdapter
 
-class TypeTransportAdapter(fm: FragmentManager, val listAdapter: RouteListViewAdapter): SmartFragmentStatePagerAdapter(fm) {
+class TypeTransportAdapter(fm: FragmentManager, var listAdapter: RouteListViewAdapter): SmartFragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         return RouteListFragment.newInstance(listAdapter, getPageTitle(position))
@@ -16,12 +16,17 @@ class TypeTransportAdapter(fm: FragmentManager, val listAdapter: RouteListViewAd
     }
 
     override fun getPageTitle(position: Int): String {
-        when (position) {
-            0 -> return "bus"
-            1 -> return "troll"
-            2 -> return "tram"
-            3 -> return "under"
-            else -> return ""
+        return when (position) {
+            0 -> "bus"
+            1 -> "troll"
+            2 -> "tram"
+            3 -> "under"
+            else -> ""
         }
+    }
+
+    fun setAdapter(newAdapter: RouteListViewAdapter, position: Int): Fragment {
+        listAdapter = newAdapter
+        return RouteListFragment.newInstance(listAdapter, getPageTitle(position))
     }
 }

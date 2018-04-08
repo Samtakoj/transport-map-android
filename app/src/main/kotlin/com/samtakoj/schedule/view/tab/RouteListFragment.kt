@@ -19,8 +19,7 @@ class RouteListFragment(val listAdapter: RouteListViewAdapter, val name: String)
 
     companion object {
         fun newInstance(listAdapter: RouteListViewAdapter, name: String): RouteListFragment {
-            val fragment: RouteListFragment = RouteListFragment(listAdapter, name)
-            return fragment
+            return RouteListFragment(listAdapter, name)
         }
     }
 

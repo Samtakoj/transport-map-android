@@ -1,5 +1,6 @@
 package com.samtakoj.schedule
 
+import android.app.ProgressDialog
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.FragmentManager
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
+import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -14,6 +16,8 @@ import android.widget.ListView
 import io.nlopez.smartlocation.SmartLocation
 import org.jetbrains.anko.*
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.ImageView
+import android.widget.ProgressBar
 import com.samtakoj.schedule.model.RouteCsv
 import com.samtakoj.schedule.model.RouteCsv_
 import com.samtakoj.schedule.model.StopCsv
@@ -23,16 +27,20 @@ import com.samtakoj.schedule.view.TypeTransportAdapter
 import com.samtakoj.schedule.view.tab.RouteListFragment
 import io.objectbox.Box
 import org.jetbrains.anko.appcompat.v7.toolbar
+import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.tabLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.sdk25.coroutines.onQueryTextListener
 import org.jetbrains.anko.support.v4.viewPager
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var viewPager: ViewPager
     lateinit var routeList: Map<String, List<RouteCsv>>
+    lateinit var allRoutes: Map<String, List<RouteCsv>>
     var type = "bus"
+    var isFavorites = false
     lateinit var typesAdapter: TypeTransportAdapter
     lateinit var listView: ListView
     lateinit var routeBox: Box<RouteCsv>
@@ -40,27 +48,76 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val location = SmartLocation.with(this).location().lastLocation
+        val listAdapter = RouteListViewAdapter(this, ArrayList())
+        routeBox = (application as TransportApplication).boxStore.boxFor(RouteCsv::class.java)
+
+        val location = SmartLocation.with(this).location().lastLocation // 53.89 27.54
         val verticalLayout = verticalLayout {
             appBarLayout {
-                backgroundColor = Color.argb(255, 99, 196, 207)
+                backgroundColor = Color.argb(255, 237, 149, 42)
                 id = R.id.lunch_appbar
 
                 toolbar {
                     id = R.id.lunch_toolbar
-                    textView {
-                        textSize = sp(12).toFloat()
-                        text = "Transport MINSK"
-                        textColor = Color.argb(255, 255, 255, 255)
-                    }.lparams {
-                        gravity = Gravity.CENTER_HORIZONTAL
-                    }
                     imageView {
                         imageResource = R.drawable.ar_icon
                         onClick {
                             startActivity<TestActivity>()
                         }
-                    }.lparams { gravity = Gravity.RIGHT }
+                    }.lparams {
+                        gravity = Gravity.RIGHT
+                        marginEnd = 10
+                        width = sp(28)
+                        height = sp(28)
+                    }
+                    imageView {
+                        imageResource = R.drawable.star
+                        onClick {
+                            var imageResource = R.drawable.star
+                            routeList = allRoutes
+
+                            isFavorites = if(!isFavorites) {
+                                true
+                            } else {
+                                routeList = getFavoritesRoutes()
+                                imageResource = R.drawable.star_filled
+                                false
+                            }
+
+                            setListToAdapter(listAdapter, routeList.getValue(type))
+                            this@imageView.imageResource = imageResource
+                        }
+                    }.lparams {
+                        gravity = Gravity.RIGHT
+                        marginEnd = 20
+                        width = sp(28)
+                        height = sp(28)
+                    }
+                    searchView {
+                        id = R.id.search_view
+                        onQueryTextListener {
+                            onQueryTextChange { newValue ->
+                                routeList = allRoutes
+                                if(isFavorites) {
+                                    routeList = getFavoritesRoutes()
+                                }
+                                if (!TextUtils.isEmpty(newValue!!.trim())) {
+                                    val dialog = indeterminateProgressDialog("This a progress dialog")
+                                    dialog.show()
+                                    routeList = bg {
+                                        getRoutesByInputValue(newValue)
+                                    }.await()
+                                    dialog.hide()
+                                }
+
+                                setListToAdapter(listAdapter, routeList.getValue(type))
+
+                                true
+                            }
+                        }
+                    }.lparams {
+                        gravity = Gravity.RIGHT
+                    }
                 }
 
                 tabLayout {
@@ -74,8 +131,6 @@ class MainActivity : AppCompatActivity() {
                 backgroundColor = Color.WHITE
             }
         }
-
-        routeBox = (application as TransportApplication).boxStore.boxFor(RouteCsv::class.java)
 
         routeList = routeBox.query().order(RouteCsv_.num).build().find().groupBy { route ->
             "${route.num}-${route.transportType}"
@@ -98,12 +153,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        allRoutes = routeList
+
 
 //        setSupportActionBar(find<Toolbar>(R.id.lunch_toolbar))
         viewPager = find<ViewPager>(R.id.lunch_pager_container)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(find<TabLayout>(R.id.lunch_tabs)))
-
-        val listAdapter = RouteListViewAdapter(this, ArrayList<RouteCsv>())
 
         listAdapter.clear()
         listAdapter.addAll(routeList.getValue(type))
@@ -158,28 +213,112 @@ class MainActivity : AppCompatActivity() {
 //        }
     }
 
+    private fun setListToAdapter(listAdapter: RouteListViewAdapter, routeList: List<RouteCsv>) {
+        listAdapter.clear()
+        listAdapter.addAll(routeList)
+    }
+
+    private fun getFavoritesRoutes(): Map<String, List<RouteCsv>> {
+        val resultMap = mutableMapOf<String, List<RouteCsv>>()
+        for (key in routeList.keys) {
+            resultMap[key] = routeList[key]!!.filter {
+                it.isFavorites
+            }
+        }
+        return resultMap
+
+//        return routeBox.query().equal(RouteCsv_.isFavorites, true).order(RouteCsv_.num).build().find().groupBy { route ->
+//            "${route.num}-${route.transportType}"
+//        }.flatMap { grouped ->
+//                    grouped.value.take(1)
+//                }.groupBy { it.transportType }.mapValues {
+//            val transportType = it.key
+//            it.value.sortedBy {
+//                if (transportType != "metro") {
+//                    var char = it.num.last()
+//                    var counter = 0
+//                    while (!"0123456789".contains(char)) {
+//                        counter++
+//                        char = it.num.substring(0, it.num.length - counter).last()
+//                    }
+//                    it.num.substring(0, it.num.length - counter).toInt()
+//                } else {
+//                    it.num.substring(1).toInt()
+//                }
+//            }
+//        }
+    }
+
+    private fun getRoutesByInputValue(value: String): Map<String, List<RouteCsv>> {
+
+        return routeBox.query().order(RouteCsv_.num).build().find().groupBy { route ->
+            "${route.num}-${route.transportType}"
+        }.flatMap { grouped ->
+            grouped.value.take(1)
+        }.groupBy { it.transportType }.mapValues {
+            val transportType = it.key
+            it.value.sortedBy {
+                if(transportType != "metro") {
+                    var char = it.num.last()
+                    var counter = 0
+                    while (!"0123456789".contains(char)) {
+                        counter++
+                        char = it.num.substring(0, it.num.length - counter).last()
+                    }
+                    it.num.substring(0, it.num.length - counter).toInt()
+                } else {
+                    it.num.substring(1).toInt()
+                }
+            }.filter {
+                        val inStops = isValueInStops(it, value)
+                        val inName = it.name.toUpperCase().contains(Regex(value.toUpperCase()))
+                        val isNumber = it.num.toUpperCase().contains(Regex(value.toUpperCase()))
+                        inName || isNumber || inStops
+            }
+        }
+    }
+
+    private fun isValueInStops(route: RouteCsv, value: String): Boolean {
+        val stopBox = (application as TransportApplication).boxStore.boxFor(StopCsv::class.java)
+        val stopIds = route.stops.split(",").map {
+            it.toLong()
+        }.toLongArray()
+
+        val stopsCount = stopBox.query()
+                .`in`(StopCsv_.id, stopIds)
+                .build()
+                .find().filter {
+                    it.name.toUpperCase().contains(Regex(value.toUpperCase()))
+                }.size
+
+        return stopsCount != 0
+    }
+
     private fun setupTabs(viewPager: ViewPager?) {
         val tabLayout = find<TabLayout>(R.id.lunch_tabs)
         tabLayout.setupWithViewPager(viewPager)
-        for (i in 0..tabLayout.tabCount - 1) {
+        for (i in 0 until tabLayout.tabCount) {
             tabLayout.getTabAt(i)!!.setIcon(getPageIcon(i))
         }
     }
 
     private fun getRouteStops(route: RouteCsv): List<StopCsv?> {
         val stopBox = (application as TransportApplication).boxStore.boxFor(StopCsv::class.java)
-        val stops = ArrayList<StopCsv?>()
-        route.stops.split(",").forEach { stopId ->
-            stops.add(stopBox.query().equal(StopCsv_.id, stopId.toLong()).build().findFirst())
-        }
+        val stopIds = route.stops.split(",").map {
+            it.toLong()
+        }.toLongArray()
 
-        return stops
+        return stopBox.query().`in`(StopCsv_.id, stopIds).sort { s1, s2 ->
+            stopIds.indexOf(s1.id) - stopIds.indexOf(s2.id)
+        }.build().find()
     }
 
     private fun selectAdapterForActiveType(typeIndex: Int) {
         type = getTransportType(typeIndex.toLong())
-        typesAdapter.listAdapter.clear()
+        val newListAdapter = RouteListViewAdapter(this, routeList.getValue(type).toMutableList())
+//        listView = typesAdapter.setAdapter(newListAdapter, typeIndex).view as ListView
 
+        typesAdapter.listAdapter.clear()
         typesAdapter.listAdapter.addAll(routeList.getValue(type))
 
         listView = typesAdapter.getRegisteredFragment(typeIndex).view as ListView
@@ -205,32 +344,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getPageIcon(position: Int): Int {
-        when (position) {
-            0 -> return R.drawable.bus_icon
-            1 -> return R.drawable.troll_icon
-            2 -> return R.drawable.tram_icon
-            3 -> return R.drawable.under_icon
-            else -> return 1
+        return when (position) {
+            0 -> R.drawable.bus_icon
+            1 -> R.drawable.troll_icon
+            2 -> R.drawable.tram_icon
+            3 -> R.drawable.under_icon
+            else -> 1
         }
     }
 
     private fun getColorByPosition(position: Int): Int {
-        when(position) {
-            0 -> return Color.argb(255, 11, 191, 214)
-            1 -> return Color.argb(255, 43, 206, 81)
-            3 -> return Color.argb(255, 39, 59, 122)
-            2 -> return Color.argb(255, 244, 75, 63)
-            else -> return -1
+        return when(position) {
+            0 -> Color.argb(255, 237, 149, 42)
+            1 -> Color.argb(255, 79, 173, 101)
+            3 -> Color.argb(255, 39, 59, 122)
+            2 -> Color.argb(255, 244, 75, 63)
+            else -> -1
         }
     }
 
     private fun getTransportType(position: Long): String {
-        when (position) {
-            0L -> return "bus"
-            1L -> return "trol"
-            2L -> return "tram"
-            3L -> return "metro"
-            else -> return ""
+        return when (position) {
+            0L -> "bus"
+            1L -> "trol"
+            2L -> "tram"
+            3L -> "metro"
+            else -> ""
         }
     }
 

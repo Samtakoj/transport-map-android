@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:2666739471055896949",
-      "lastPropertyId": "7:833318525787423522",
+      "lastPropertyId": "6:3804077164497723686",
       "name": "RouteCsv",
       "properties": [
         {
@@ -31,10 +31,6 @@
         {
           "id": "6:3804077164497723686",
           "name": "stops"
-        },
-        {
-          "id": "7:833318525787423522",
-          "name": "isFavorites"
         }
       ],
       "relations": []

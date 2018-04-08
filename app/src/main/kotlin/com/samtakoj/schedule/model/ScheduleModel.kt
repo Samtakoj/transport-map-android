@@ -23,4 +23,4 @@ data class TimeCsv(@Id var id: Long = 0, val routeId: Long = 0, val intervalCoun
 data class StopCsv(@Id(assignable = true) var id: Long = 0, val name: String, val lng: Long, val ltd: Long) : Serializable
 @Entity
 data class RouteCsv(@Id(assignable = true) var id: Long = 0, var num: String, var transportType: String,
-                    var name: String, var weekDays: String, var stops: String) : Serializable
+                    var name: String, var weekDays: String, var stops: String, var isFavorites: Boolean = false) : Serializable

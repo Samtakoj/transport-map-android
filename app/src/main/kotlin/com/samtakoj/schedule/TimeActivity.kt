@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import com.samtakoj.schedule.model.TimeCsv
 import com.samtakoj.schedule.view.TimeListViewAdapter
 import com.samtakoj.schedule.view.time.TimeTypeAdapter
@@ -28,8 +27,6 @@ class TimeActivity : AppCompatActivity() {
         val stopPosition = intent.extras.getInt("stopPosition")
         val stopName = intent.extras.getString("stopName")
 
-        Log.i("TIMES_SCHEDULE", "Stop TIME: ${time.workDay}")
-
         val test = ArrayList<StopsActivity.MyTestModel>()
         var skipCount = time.intervalCount * stopPosition
         time.workDay.forEach {
@@ -39,14 +36,14 @@ class TimeActivity : AppCompatActivity() {
 
         verticalLayout {
             toolbar {
-                backgroundColor = Color.argb(255, 99, 196, 207)
+                backgroundColor = Color.argb(255, 79, 173, 101)
                 textView {
                     textColor = Color.WHITE
                     text = stopName
                 }
             }
             tabLayout {
-                backgroundColor = Color.argb(255, 99, 196, 207)
+                backgroundColor = Color.argb(255, 79, 173, 101)
                 id = R.id.lunch_tabs
                 setTabTextColors(Color.LTGRAY, Color.WHITE)
                 setSelectedTabIndicatorColor(Color.WHITE)
@@ -55,9 +52,6 @@ class TimeActivity : AppCompatActivity() {
                 id = R.id.lunch_pager_container
                 backgroundColor = Color.WHITE
             }
-//            listView {
-//                id = 312
-//            }
         }
 
         times = test.map {
@@ -79,11 +73,9 @@ class TimeActivity : AppCompatActivity() {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                Log.i("Unselected", "${tab?.position}")
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                Log.i("Selected", "${tab?.position}")
                 selectAdapterForActiveType(tab!!.position)
             }
 

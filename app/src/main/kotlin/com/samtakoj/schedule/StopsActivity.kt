@@ -80,12 +80,9 @@ class StopsActivity : AppCompatActivity() {
         val timeBox = (application as TransportApplication).boxStore.boxFor(TimeCsv::class.java)
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            Log.i("STOPS_SCHEDULE", "itemClick: position = $position, id = $id")
-
             val time = timeBox.query().equal(TimeCsv_.routeId, route.id).build().findFirst()
 
             val stop = stops[position]
-//            Log.i("STOPS_SCHEDULE", "Stop: ${stop.name}")
 
             if (time != null)
                 startActivity<TimeActivity>("time" to time, "stopPosition" to position, "stopName" to stop.name)
@@ -96,8 +93,8 @@ class StopsActivity : AppCompatActivity() {
 
     private fun getColorByTransportType(transportType: String): Int {
         return when(transportType) {
-            "bus" -> Color.argb(255, 11, 191, 214)
-            "trol" -> Color.argb(255, 91, 232, 48)
+            "bus" -> Color.argb(255, 237, 149, 42)
+            "trol" -> Color.argb(255, 79, 173, 101)
             "metro" -> Color.argb(255, 39, 59, 122)
             "tram" -> Color.argb(255, 244, 75, 63)
             else -> -1

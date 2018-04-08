@@ -28,7 +28,7 @@ public class LowPassFilter {
 	 *      #Discrete-time_realization">Discrete time
 	 *      relization</a>
 	 */
-	public static float ALPHA = 0.28f;
+	public static float ALPHA = 0.1f;
 
     public static float DIFF = 0.99f;
 
