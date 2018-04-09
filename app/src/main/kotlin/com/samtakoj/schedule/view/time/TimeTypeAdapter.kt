@@ -2,16 +2,16 @@ package com.samtakoj.schedule.view.time
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.util.SparseArray
 import com.samtakoj.schedule.model.WorkDay
 import com.samtakoj.schedule.view.TimeListViewAdapter
-import com.samtakoj.schedule.view.tab.SmartFragmentStatePagerAdapter
 
-class TimeTypeAdapter(fm: FragmentManager, private val workDays: List<WorkDay>, var listAdapter: TimeListViewAdapter): SmartFragmentStatePagerAdapter(fm) {
+class TimeTypeAdapter(fm: FragmentManager, private val workDays: List<WorkDay>): FragmentStatePagerAdapter(fm) {
+    private val registeredFragments = SparseArray<Fragment>()
 
     override fun getItem(position: Int): Fragment {
-//        val newAdapter = TimeListViewAdapter(context, listAdapter.getAll())
-        return TimeListFragment.newInstance(listAdapter)
+        return registeredFragments[position]
     }
 
     override fun getCount(): Int {
@@ -33,5 +33,10 @@ class TimeTypeAdapter(fm: FragmentManager, private val workDays: List<WorkDay>, 
             "7" -> "Воскресенье"
             else -> ""
         }
+    }
+
+    fun addFragment(listAdapter: TimeListViewAdapter, position: Int) {
+        val newFragment = TimeListFragment.newInstance(listAdapter)
+        registeredFragments.put(position, newFragment)
     }
 }

@@ -16,8 +16,7 @@ class TimeListFragment(val listAdapter: TimeListViewAdapter): Fragment(), AnkoLo
 
     companion object {
         fun newInstance(listAdapter: TimeListViewAdapter): TimeListFragment {
-            val fragment: TimeListFragment = TimeListFragment(listAdapter)
-            return fragment
+            return TimeListFragment(listAdapter)
         }
     }
 
