@@ -28,7 +28,7 @@ class RouteActivity: AppCompatActivity() {
                 textView {
                     id = R.id.route_name_text_view
                     textColor = Color.WHITE
-                    text = "Routes for $stopName"
+                    text = "Маршруты для $stopName"
                 }
             }
             listView {

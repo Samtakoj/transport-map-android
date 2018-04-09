@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.samtakoj.schedule.R
+import com.samtakoj.schedule.RouteActivity
 import com.samtakoj.schedule.extensions.transportApp
 import com.samtakoj.schedule.model.RouteCsv
 import org.jetbrains.anko.backgroundColor
@@ -46,6 +47,9 @@ class RouteListViewAdapter(val activity: Activity , val routes: MutableList<Rout
             R.drawable.star_filled
         } else {
             R.drawable.star
+        }
+        if(activity is RouteActivity) {
+            viewHolder.isFavoritesImageView.visibility = View.INVISIBLE
         }
         viewHolder.isFavoritesImageView.setImageResource(imageResource)
         viewHolder.isFavoritesImageView.onClick {

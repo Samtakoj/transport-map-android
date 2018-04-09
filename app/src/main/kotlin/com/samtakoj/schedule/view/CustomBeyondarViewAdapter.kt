@@ -1,5 +1,6 @@
 package com.samtakoj.schedule.view
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import com.beyondar.android.view.BeyondarViewAdapter
 import com.beyondar.android.view.OnClickBeyondarObjectListener
 import com.beyondar.android.world.BeyondarObject
 import com.samtakoj.schedule.*
+import com.samtakoj.schedule.extensions.transportApp
 import com.samtakoj.schedule.model.RouteCsv
 import com.samtakoj.schedule.model.RouteCsv_
 import org.jetbrains.anko.*
@@ -17,9 +19,9 @@ import kotlin.collections.ArrayList
 /**
  * Created by artsiom.chuiko on 19/04/2017.
  */
-class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context), OnClickBeyondarObjectListener {
+class CustomBeyondarViewAdapter(val activity: Activity): BeyondarViewAdapter(activity), OnClickBeyondarObjectListener {
     val showViewOn = ArrayList<BeyondarObject>()
-    val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun onClickBeyondarObject(beyondarObjects: ArrayList<BeyondarObject>?) {
         if (beyondarObjects?.size == 0) return
@@ -30,7 +32,7 @@ class CustomBeyondarViewAdapter(context: Context): BeyondarViewAdapter(context),
             showViewOn.add(beyondarObject as BeyondarObject)
         }
 
-        val routeBox = (context.applicationContext as TransportApplication).boxStore.boxFor(RouteCsv::class.java)
+        val routeBox = activity.transportApp().boxStore.boxFor(RouteCsv::class.java)
         val routeList = routeBox.query().contains(RouteCsv_.stops, beyondarObject!!.id.toString()).order(RouteCsv_.num).build().find()
 
         context.startActivity<RouteActivity>("routes" to routeList, "stopName" to beyondarObject.name)
