@@ -9,6 +9,7 @@ class ARObjectUI : AnkoComponent<ViewGroup> {
     override fun createView(ui: AnkoContext<ViewGroup>): View {
         return with(ui) {
             linearLayout {
+                lparams(matchParent, matchParent)
                 orientation = LinearLayout.VERTICAL
                 weightSum = 1f
 
@@ -23,7 +24,7 @@ class ARObjectUI : AnkoComponent<ViewGroup> {
         }
     }
 
-    private object Ids {
+    object Ids {
         val info = View.generateViewId()
     }
 }
