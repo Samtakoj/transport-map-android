@@ -75,12 +75,14 @@ class TestActivity : AppCompatActivity(){
         val world = World(this@TestActivity)
         SmartLocation.with(this@TestActivity).location(provider).config(LocationParams.BEST_EFFORT)
                 .start { location ->
+//                    location.latitude = 53.930
+//                    location.longitude = 27.588
             world.setLocation(location)
             //fragment.showFPS(true)
         }
 
         if (location?.latitude != null) world.setLocation(location)
-        world.setDefaultImage(R.drawable.flymer)
+//        world.setDefaultImage(R.drawable.flymer)
         val stops = (application as TransportApplication).boxStore.boxFor(StopCsv::class.java).query().order(StopCsv_.id).build().find()
         Log.i("TEST", "$stops")
         stops.map { stop ->
@@ -99,11 +101,12 @@ class TestActivity : AppCompatActivity(){
                 val customBeyondarViewAdapter = CustomBeyondarViewAdapter(this@TestActivity)
                 fragment.setOnClickBeyondarObjectListener(customBeyondarViewAdapter)
                 fragment.setBeyondarViewAdapter(customBeyondarViewAdapter)
-                fragment.maxDistanceToRender = 500f
-                fragment.distanceFactor = 30f
+                fragment.maxDistanceToRender = 400f
+                fragment.distanceFactor = 25f
                 // fragment.showFPS(true)
-                fragment.pullCloserDistance = 100f
-                fragment.pushAwayDistance = 100f
+
+//                fragment.pullCloserDistance = 100f
+//                fragment.pushAwayDistance = 50f
             }
         }, true)
     }

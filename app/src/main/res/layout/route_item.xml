@@ -43,4 +43,14 @@
         android:layout_centerVertical="true"
         app:srcCompat="@drawable/star" />
 
+    <TextView
+        android:id="@+id/addTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/routeTextView"
+        android:layout_alignStart="@+id/routeTextView"
+        android:layout_below="@+id/routeTextView"
+        android:text="TextView"
+        android:textAlignment="textEnd" />
+
 </RelativeLayout>

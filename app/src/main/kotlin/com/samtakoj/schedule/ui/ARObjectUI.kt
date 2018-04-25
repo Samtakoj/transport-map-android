@@ -3,7 +3,6 @@ package com.samtakoj.schedule.ui
 import android.view.*
 import android.widget.*
 import org.jetbrains.anko.*
-import com.samtakoj.schedule.R
 
 class ARObjectUI : AnkoComponent<ViewGroup> {
     override fun createView(ui: AnkoContext<ViewGroup>): View {
@@ -16,7 +15,7 @@ class ARObjectUI : AnkoComponent<ViewGroup> {
                 textView("TextView") {
                     backgroundResource = android.R.color.black
                     id = Ids.info
-                    textColor = R.color.colorPrimary
+                    textColorResource = android.R.color.white
                 }.lparams(width = wrapContent, height = wrapContent) {
                     weight = 1f
                 }

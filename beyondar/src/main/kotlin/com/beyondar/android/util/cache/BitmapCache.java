@@ -97,8 +97,8 @@ public class BitmapCache {
 
 	public Bitmap getBitmapFromText(String text) {
         float baseline = Math.abs(paint.ascent());
-        int width = (int) (paint.measureText(text) + 0.5f);
-        int height = (int) (baseline + paint.descent() + 0.5f);
+        int width = (int) (paint.measureText(text) + 1f);
+        int height = (int) (baseline + paint.descent() + 1f);
         Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(image);
         canvas.drawText(text, 0, baseline, paint);

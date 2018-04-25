@@ -34,7 +34,7 @@ public class BeyondarSensorManager {
 	/**
 	 * Default sensor delay.
 	 */
-	public static final int SENSOR_DELAY = SensorManager.SENSOR_DELAY_GAME;
+	public static final int SENSOR_DELAY = SensorManager.SENSOR_DELAY_FASTEST;
 
 	private BeyondarSensorManager() {
 	}

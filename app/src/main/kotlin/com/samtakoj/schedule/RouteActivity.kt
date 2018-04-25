@@ -24,7 +24,7 @@ class RouteActivity: AppCompatActivity() {
 
         verticalLayout {
             toolbar {
-                backgroundColor = Color.argb(255, 11, 191, 214)
+                backgroundColor = Color.argb(255, 237, 149, 42)
                 textView {
                     id = R.id.route_name_text_view
                     textColor = Color.WHITE

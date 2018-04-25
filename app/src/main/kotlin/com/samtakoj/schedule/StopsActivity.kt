@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.TextView
+import com.samtakoj.schedule.api.ScheduleHelper
 import com.samtakoj.schedule.model.*
 import io.objectbox.Box
 import org.jetbrains.anko.*
@@ -102,10 +103,18 @@ class StopsActivity : AppCompatActivity() {
     }
 
     private fun convertToRow(stop: StopCsv): TimelineRow {
-        val row = TimelineRow(stop.id.toInt(), null, stop.name, "")
+        val stopPosition = stops.indexOf(stop)
+        val scheduleHelper = ScheduleHelper(this)
+        val description = scheduleHelper.getInfoForStop(stop, route.id, stopPosition)
+
+        val row = TimelineRow(stop.id.toInt(), null, stop.name, description)
         row.bellowLineColor = color
         row.bellowLineSize = 5
-        row.backgroundSize = 25
+        row.backgroundSize = if(description != "") {
+            40
+        } else {
+            25
+        }
         row.backgroundColor = color
         return row
     }

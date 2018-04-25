@@ -32,7 +32,7 @@ class CustomBeyondarViewAdapter(val activity: Activity): BeyondarViewAdapter(act
     }
 
     override fun getView(beyondarObject: BeyondarObject?, recycledView: View?, parent: ViewGroup): View? {
-        val view = ARObjectUI().createView(AnkoContext.create(parent?.context, parent))
+        val view = ARObjectUI().createView(AnkoContext.create(parent.context, parent))
         val textView = view.findViewById(ARObjectUI.Ids.info) as TextView
         textView.text = "${beyondarObject?.name} -> ${"%.0f".format(beyondarObject?.distanceFromUser)}m"
 

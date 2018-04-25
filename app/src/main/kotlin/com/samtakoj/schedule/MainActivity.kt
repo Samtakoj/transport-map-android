@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
         routeList = allRoutes
 
 
-//        setSupportActionBar(find<Toolbar>(R.id.lunch_toolbar))
+        setSupportActionBar(find<Toolbar>(R.id.lunch_toolbar))
         viewPager = find<ViewPager>(R.id.lunch_pager_container)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(find<TabLayout>(R.id.lunch_tabs)))
 

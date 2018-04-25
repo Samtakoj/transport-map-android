@@ -10,4 +10,5 @@
     <item name="route_list_view" type="id" />
     <item name="route_name_text_view" type="id" />
     <item name="search_view" type="id" />
+    <item name="mapFragment" type="id" />
 </resources>
