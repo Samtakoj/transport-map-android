@@ -83,7 +83,7 @@ class ScheduleHelper(private val activity: Activity) {
 
     private fun getInfoString(nearStops: List<StopCsv>, stopIds: LongArray, times: TimeCsv): String {
         var currFuture = 10000
-        var currStop = StopCsv(0, "", 0, 0)
+        var currStop = nearStops[0]
         val currentTime = getCurrentTime()
         val currentWeakDay = getWeakDay()
 
@@ -96,17 +96,24 @@ class ScheduleHelper(private val activity: Activity) {
             val stopPosition = stopIds.indexOf(it.id)
             val skipCount = times.intervalCount * stopPosition + workDayPosition * workDay.countInterval
 
-            val nearFuture = times.timeTable.subList(skipCount, skipCount + workDay.countInterval).first {
-                it >= currentTime
-            } - currentTime
+            val timeIntervals = times.timeTable.subList(skipCount, skipCount + workDay.countInterval)
 
-            if(nearFuture <= currFuture) {
-                currFuture = nearFuture.toInt()
-                currStop = it
+
+            if(timeIntervals.max()!! >= currentTime) {
+                val nearFuture = timeIntervals.first { it >= currentTime } - currentTime
+
+                if(nearFuture <= currFuture) {
+                    currFuture = nearFuture.toInt()
+                    currStop = it
+                }
             }
         }
 
-        return "~$currFuture ${currStop.name}"
+        return if(currFuture == 10000) {
+            "only tomorrow ${currStop.name}"
+        } else {
+            "~$currFuture ${currStop.name}"
+        }
     }
 
     private fun getInfoString(stopPosition: Int, times: TimeCsv): String {
@@ -119,11 +126,13 @@ class ScheduleHelper(private val activity: Activity) {
         val workDayPosition = times.workDay.indexOf(workDay)
 
         val skipCount = times.intervalCount * stopPosition + workDayPosition * workDay.countInterval
+        val timeIntervals = times.timeTable.subList(skipCount, skipCount + workDay.countInterval)
 
-        val nearFuture = times.timeTable.subList(skipCount, skipCount + workDay.countInterval).first {
-            it >= currentTime
-        } - currentTime
+        if(timeIntervals.max()!! < currentTime) {
+            return "only tomorrow"
+        }
 
+        val nearFuture = timeIntervals.first { it >= currentTime } - currentTime
         return "~$nearFuture minutes"
     }
 
