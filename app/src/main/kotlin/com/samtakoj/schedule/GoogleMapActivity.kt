@@ -22,6 +22,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.samtakoj.schedule.api.ScheduleHelper
 import com.samtakoj.schedule.extensions.transportApp
+import com.samtakoj.schedule.model.RouteCsv
+import com.samtakoj.schedule.model.RouteCsv_
+import com.samtakoj.schedule.model.StopCsv_
+import org.jetbrains.anko.startActivity
 
 
 class GoogleMapActivity : FragmentActivity(), OnMarkerClickListener, OnMapReadyCallback {
@@ -89,6 +93,17 @@ class GoogleMapActivity : FragmentActivity(), OnMarkerClickListener, OnMapReadyC
 
     override fun onMarkerClick(marker: Marker): Boolean {
         val geoObject = mGoogleMapPlugin!!.getGeoObjectOwner(marker)
+        val stopId = geoObject.id
+
+        if(stopId == 1000L) {
+            return false
+        }
+
+        val routeBox = transportApp().boxStore.boxFor(RouteCsv::class.java)
+        val routeList = routeBox.query().contains(RouteCsv_.stops, stopId.toString()).order(RouteCsv_.num).build().find()
+
+        startActivity<RouteActivity>("routes" to routeList, "stopName" to geoObject.name)
+
         return false
     }
 }
