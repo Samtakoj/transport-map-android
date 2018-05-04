@@ -47,7 +47,7 @@ class ScheduleHelper(private val activity: Activity) {
     }
 
     fun getInfoForStop(stop: StopCsv, routeId: Long, stopPosition: Int): String {
-        val distance = calculateDistanceMeters(location!!.longitude, location.latitude, stop.lng * 0.00001, stop.ltd * 0.00001)
+        val distance = calculateDistanceMeters(location!!.longitude, location!!.latitude, stop.lng * 0.00001, stop.ltd * 0.00001)
 
         if(distance > 500) {
             return ""
@@ -77,7 +77,7 @@ class ScheduleHelper(private val activity: Activity) {
         val stopBox = activity.transportApp().boxStore.boxFor(StopCsv::class.java)
 
         return stopBox.query().`in`(StopCsv_.id, stopIds).filter {
-            calculateDistanceMeters(location!!.longitude, location.latitude, it.lng * 0.00001, it.ltd * 0.00001) <= 500
+            calculateDistanceMeters(location!!.longitude, location!!.latitude, it.lng * 0.00001, it.ltd * 0.00001) <= 500
         }.build().find()
     }
 
@@ -98,8 +98,9 @@ class ScheduleHelper(private val activity: Activity) {
 
             val timeIntervals = times.timeTable.subList(skipCount, skipCount + workDay.countInterval)
 
+            val maxTime = timeIntervals.max()
 
-            if(timeIntervals.max()!! >= currentTime) {
+            if(maxTime != null && maxTime >= currentTime) {
                 val nearFuture = timeIntervals.first { it >= currentTime } - currentTime
 
                 if(nearFuture <= currFuture) {
@@ -128,7 +129,8 @@ class ScheduleHelper(private val activity: Activity) {
         val skipCount = times.intervalCount * stopPosition + workDayPosition * workDay.countInterval
         val timeIntervals = times.timeTable.subList(skipCount, skipCount + workDay.countInterval)
 
-        if(timeIntervals.max()!! < currentTime) {
+        val maxTime = timeIntervals.max()
+        if(maxTime != null && maxTime < currentTime) {
             return "only tomorrow"
         }
 
