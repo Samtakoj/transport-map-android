@@ -99,12 +99,9 @@ class MainActivity : AppCompatActivity() {
                                     getFavoritesRoutes()
                                 }
                                 routeList = if (!TextUtils.isEmpty(newValue!!.trim())) {
-//                                    val dialog = indeterminateProgressDialog("This a progress dialog")
-//                                    dialog.show()
                                     bg {
                                         getRoutesByInputValue(newValue)
                                     }.await()
-//                                    dialog.hide()
                                 } else {
                                     allRoutes
                                 }
@@ -205,27 +202,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return resultMap
-
-//        return routeBox.query().equal(RouteCsv_.isFavorites, true).order(RouteCsv_.num).build().find().groupBy { route ->
-//            "${route.num}-${route.transportType}"
-//        }.flatMap { grouped ->
-//                    grouped.value.take(1)
-//                }.groupBy { it.transportType }.mapValues {
-//            val transportType = it.key
-//            it.value.sortedBy {
-//                if (transportType != "metro") {
-//                    var char = it.num.last()
-//                    var counter = 0
-//                    while (!"0123456789".contains(char)) {
-//                        counter++
-//                        char = it.num.substring(0, it.num.length - counter).last()
-//                    }
-//                    it.num.substring(0, it.num.length - counter).toInt()
-//                } else {
-//                    it.num.substring(1).toInt()
-//                }
-//            }
-//        }
     }
 
     private fun getRoutesByInputValue(value: String): Map<String, List<RouteCsv>> {

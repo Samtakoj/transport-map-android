@@ -29,14 +29,12 @@ import org.jetbrains.anko.startActivity
 
 
 class GoogleMapActivity : FragmentActivity(), OnMarkerClickListener, OnMapReadyCallback {
-    private var mMap: GoogleMap? = null
     private var mGoogleMapPlugin: GoogleMapWorldPlugin? = null
-    private var mWorld: World? = null
 
     override fun onMapReady(googleMap: GoogleMap?) {
-        mMap = googleMap
+        val mMap = googleMap
 
-        mWorld = World(this@GoogleMapActivity)
+        val mWorld = World(this@GoogleMapActivity)
 
         val playServicesProvider = LocationGooglePlayServicesProvider()
         playServicesProvider.setCheckLocationSettings(true)
@@ -46,18 +44,17 @@ class GoogleMapActivity : FragmentActivity(), OnMarkerClickListener, OnMapReadyC
                 withProvider(LocationManagerProvider()).
                 build()
 
-        var latLng: LatLng
         SmartLocation.with(this@GoogleMapActivity).location(provider).config(LocationParams.BEST_EFFORT)
                 .start { location ->
-                    mWorld!!.setLocation(location)
+                    mWorld.setLocation(location)
                 }
         val location = SmartLocation.with(this).location().lastLocation
-        if (location?.latitude != null) mWorld!!.setLocation(location)
-        latLng = LatLng(location!!.latitude, location.longitude)
+        if (location?.latitude != null) mWorld.setLocation(location)
+        val latLng = LatLng(location!!.latitude, location.longitude)
 
         mGoogleMapPlugin = GoogleMapWorldPlugin(this@GoogleMapActivity, mMap)
 
-        mWorld!!.addPlugin(mGoogleMapPlugin)
+        mWorld.addPlugin(mGoogleMapPlugin)
 
         mMap!!.setOnMarkerClickListener(this@GoogleMapActivity)
 
@@ -68,7 +65,7 @@ class GoogleMapActivity : FragmentActivity(), OnMarkerClickListener, OnMapReadyC
         user.setGeoPosition(mWorld!!.latitude, mWorld!!.longitude)
         user.setImageResource(R.drawable.user_marker)
         user.name = "Your position"
-        mWorld!!.addBeyondarObject(user)
+        mWorld.addBeyondarObject(user)
 
         val stops = transportApp().boxStore.boxFor(StopCsv::class.java).query().filter{
             ScheduleHelper.calculateDistanceMeters(location!!.longitude, location.latitude, it.lng * 0.00001, it.ltd * 0.00001) <= 500
@@ -79,7 +76,7 @@ class GoogleMapActivity : FragmentActivity(), OnMarkerClickListener, OnMapReadyC
             obj.setGeoPosition(stop.ltd * 0.00001, stop.lng * 0.00001)
             obj.setImageResource(R.drawable.stop_icon)
             obj.name = stop.name
-            mWorld!!.addBeyondarObject(obj)
+            mWorld.addBeyondarObject(obj)
         }
     }
 
