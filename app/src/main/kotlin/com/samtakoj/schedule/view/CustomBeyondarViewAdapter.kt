@@ -28,7 +28,6 @@ class CustomBeyondarViewAdapter(val activity: Activity): BeyondarViewAdapter(act
         val routeList = routeBox.query().contains(RouteCsv_.stops, beyondarObject!!.id.toString()).order(RouteCsv_.num).build().find()
 
         context.startActivity<RouteActivity>("routes" to routeList, "stopName" to beyondarObject.name)
-
     }
 
     override fun getView(beyondarObject: BeyondarObject?, recycledView: View?, parent: ViewGroup): View? {
