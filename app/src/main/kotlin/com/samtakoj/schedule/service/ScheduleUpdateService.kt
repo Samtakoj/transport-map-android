@@ -15,20 +15,6 @@ import io.reactivex.schedulers.Schedulers
 class ScheduleUpdateService: GcmTaskService() {
 
     override fun onRunTask(p0: TaskParams?): Int {
-//        val app = application as TransportApplication
-//        val stopBox = app.boxStore.boxFor(StopCsv::class.java)
-//        val routeBox = app.boxStore.boxFor(RouteCsv::class.java)
-//        val timeBox = app.boxStore.boxFor(RouteCsv::class.java)
-//
-//        app.persistedStopStore.get(BarCode("Stop", "stops"))
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe { stops ->
-//                    if (stops.size > 0) {
-//                        stopBox.removeAll()
-//                        stopBox.put(stops)
-//                    }
-//                }
         return GcmNetworkManager.RESULT_SUCCESS
     }
 }
